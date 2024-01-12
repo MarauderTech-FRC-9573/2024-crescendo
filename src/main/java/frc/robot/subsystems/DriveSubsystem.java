@@ -16,7 +16,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     public double getEncoderMeters() {
         return (driveLeftEncoder.getDistance() + driveRightEncoder.getDistance()) / 2 * kEncoderTick2Meter; 
-    
     }
 
     public void setMotors(double leftSpeed, double rightSpeed) {

@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
@@ -12,6 +13,8 @@ public class DriveForwardCmd extends Command {
     
     private final DriveSubsystem driveSubsystem;
     private final double distance;
+
+    PIDController pid = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD); // values need tuning 
     
     private final double iLimit = 1.0;    
     double setpoint = 0;
@@ -42,11 +45,8 @@ public class DriveForwardCmd extends Command {
         if (Math.abs(error) < iLimit) {
             errorSum += error * dt;
         }
-        
-        double errorRate = (error - lastError) / dt;
-        double outputSpeed = DriveConstants.kP * error + DriveConstants.kI * errorSum + DriveConstants.kD * errorRate;
-        
-        driveSubsystem.setMotors(outputSpeed, -outputSpeed);
+                
+        driveSubsystem.setMotors(pid.calculate(encoder.getDistance(), setpoint), -pid.calculate(encoder.getDistance(), setpoint));
         
         lastTimestamp = Timer.getFPGATimestamp();
         lastError = error;
@@ -55,6 +55,7 @@ public class DriveForwardCmd extends Command {
     @Override
     public void end(boolean interrputed) {
         driveSubsystem.setMotors(0, 0);
+        pid.reset();
         System.out.println("DriveForward done!");
     }
     
