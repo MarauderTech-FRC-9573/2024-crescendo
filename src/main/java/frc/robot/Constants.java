@@ -16,6 +16,13 @@ public final class Constants {
   public static final class DriveConstants {
     public static final int kLeftMotorPort = 0;
     public static final int kRightMotorPort = 0;
+  }
+
+  public static final class IntakeConstants {
+
+  }
+
+  public static final class ShooterConstants {
 
   }
 
