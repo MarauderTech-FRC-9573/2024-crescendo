@@ -26,6 +26,14 @@ public final class Constants {
 
   }
 
+  public static final class IntakeConstants {
+
+  }
+
+  public static final class ShooterConstants {
+
+  }
+
   public static final class OIConstants {
     public static final int kDriverJoystickPort = 0;
 
