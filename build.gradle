@@ -7,10 +7,14 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.7.1'
 }
 
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
+wpi.sim.envVar("HALSIMWS_HOST", "127.0.0.1")
+wpi.sim.addWebsocketsClient().defaultEnabled = true
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
