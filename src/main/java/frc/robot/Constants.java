@@ -16,6 +16,14 @@ public final class Constants {
   public static final class DriveConstants {
     public static final int kLeftMotorPort = 0;
     public static final int kRightMotorPort = 0;
+
+    public static final double kDriveTick2Feet = 1.0 / 128 * 6 * Math.PI / 12;
+
+    // values are related to PID and need to be tuned:
+    public static final double kP = 0.5;
+    public static final double kI = 0.5;
+    public static final double kD = 0.1;
+
   }
 
   public static final class IntakeConstants {
