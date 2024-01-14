@@ -13,9 +13,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-wpi.sim.envVar("HALSIMWS_HOST", "127.0.0.1")
-wpi.sim.addWebsocketsClient().defaultEnabled = true
-
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
