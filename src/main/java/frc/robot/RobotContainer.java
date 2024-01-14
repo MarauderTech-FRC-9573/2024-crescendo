@@ -18,7 +18,7 @@ public class RobotContainer {
   }
   
   private void configureButtonBindings() {
-    new JoystickButton(joystick1, 0).whileTrue(new DriveForwardCmd(driveSubsystem, 10));
+    new JoystickButton(joystick1, 1).whileTrue(new DriveForwardCmd(driveSubsystem, 10));
   }
   
   // public Command getAutonomousCommand() {
