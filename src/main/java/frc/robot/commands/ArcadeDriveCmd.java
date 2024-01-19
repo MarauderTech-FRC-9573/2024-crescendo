@@ -31,9 +31,7 @@ public class ArcadeDriveCmd extends Command {
     double speed = speedFunction.get();
     double turn = turnFunction.get();
 
-    double left = speed + turn;
-    double right = speed - turn;
-    driveSubsystem.setMotors(left, right);
+    driveSubsystem.setMaxOutput(speed);
   }
 
   @Override 

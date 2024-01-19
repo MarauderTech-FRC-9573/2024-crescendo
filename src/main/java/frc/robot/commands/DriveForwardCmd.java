@@ -14,7 +14,6 @@ public class DriveForwardCmd extends Command {
     private final DriveSubsystem driveSubsystem;
     private final double distance;
 
-    PIDController pid = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD); // values need tuning 
     
     private final double iLimit = 1.0;    
     double setpoint = 0;
@@ -46,7 +45,7 @@ public class DriveForwardCmd extends Command {
             errorSum += error * dt;
         }
                 
-        driveSubsystem.setMotors(pid.calculate(encoder.getDistance(), setpoint), -pid.calculate(encoder.getDistance(), setpoint));
+        driveSubsystem.setMaxOutput(pid.calculate(encoder.getDistance(), setpoint), -pid.calculate(encoder.getDistance(), setpoint));
         
         lastTimestamp = Timer.getFPGATimestamp();
         lastError = error;
@@ -54,7 +53,7 @@ public class DriveForwardCmd extends Command {
     
     @Override
     public void end(boolean interrputed) {
-        driveSubsystem.setMotors(0, 0);
+        driveSubsystem.setMaxOutput(0);
         pid.reset();
         System.out.println("DriveForward done!");
     }
