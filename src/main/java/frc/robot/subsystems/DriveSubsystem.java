@@ -20,53 +20,38 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotBase;
+
+import org.w3c.dom.traversal.DocumentTraversal;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveSubsystem extends SubsystemBase { 
     // The motors on the left side of the drive.
-    private final PWMSparkMax driveLeftLeadMotor = new PWMSparkMax(0);
-    private final PWMSparkMax driveRightLeadMotor = new PWMSparkMax(1);
+    private final PWMSparkMax driveLeftLeadMotor = new PWMSparkMax(DriveConstants.leftLeadMotorPort);
+    private final PWMSparkMax driveRightLeadMotor = new PWMSparkMax(DriveConstants.rightLeadMotorPort);
     
     // The motors on the right side of the drive.
-    private final PWMSparkMax driveLeftFollowerMotor = new PWMSparkMax(2);
-    private final PWMSparkMax driveRightFollowerMotor = new PWMSparkMax(3);
+    private final PWMSparkMax driveLeftFollowerMotor = new PWMSparkMax(DriveConstants.leftFollowMotorPort);
+    private final PWMSparkMax driveRightFollowerMotor = new PWMSparkMax(DriveConstants.rightFollowMotorPort);
     
     // The robot's drive
     private final DifferentialDrive differentialDrive = new DifferentialDrive(driveLeftLeadMotor::set, driveRightLeadMotor::set);
     
     // The left-side drive encoder
-    private final Encoder driveLeadLeftEncoder =
-    new Encoder(
-    DriveConstants.kLeftEncoderPorts[0],
-    DriveConstants.kLeftEncoderPorts[1],
-    DriveConstants.kLeftEncoderReversed);
+    private final Encoder driveLeadLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
     
     // The right-side drive encoder
-    private final Encoder driveLeadRightEncoder =
-    new Encoder(
-    DriveConstants.kRightEncoderPorts[0],
-    DriveConstants.kRightEncoderPorts[1],
-    DriveConstants.kRightEncoderReversed);
+    private final Encoder driveLeadRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1], DriveConstants.kRightEncoderReversed);
 
-     private final Encoder driveFollowLeftEncoder =
-    new Encoder(
-    DriveConstants.kLeftEncoderPorts[0],
-    DriveConstants.kLeftEncoderPorts[1],
-    DriveConstants.kLeftEncoderReversed);
+     private final Encoder driveFollowLeftEncoder = new Encoder(DriveConstants.kLeftFollowEncoderPorts[0], DriveConstants.kLeftFollowEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
 
-    private final Encoder driveFollowRightEncoder =
-    new Encoder(
-    DriveConstants.kLeftEncoderPorts[0],
-    DriveConstants.kLeftEncoderPorts[1],
-    DriveConstants.kLeftEncoderReversed);
+    private final Encoder driveFollowRightEncoder = new Encoder(DriveConstants.kRightFollowEncoderPorts[0], DriveConstants.kRightFollowEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
 
-
-    
     // PID controllers 
     // values need to be double checked
-    private final PIDController leftPIDController = new PIDController(1, 0, 0);
-    private final PIDController rightPIDController = new PIDController(1, 0, 0);
+    private final PIDController leftPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
+    private final PIDController rightPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
     
     // The gyro sensor
     private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
@@ -83,9 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final ADXRS450_GyroSim m_gyroSim;
 
     // someone check this 
-      private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(3.0);
-
-
+    private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(3.0);
     
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem() {
