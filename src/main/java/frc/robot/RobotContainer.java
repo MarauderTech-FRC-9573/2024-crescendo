@@ -9,7 +9,7 @@ import frc.robot.Constants.OIConstants;
 
 public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  private final Joystick joystick1 = new Joystick(0); // Fix: Added joystick1 declaration
+  private final Joystick joystick1 = new Joystick(3);
   
   public RobotContainer() {
     configureButtonBindings();
