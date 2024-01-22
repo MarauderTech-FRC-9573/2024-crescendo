@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An example command that uses an example subsystem. */
 public class ArcadeDriveCmd extends Command {
-  private final double DEADBAND = 0.05;
   private final DriveSubsystem driveSubsystem;
   private final CommandXboxController controller;
 
@@ -32,6 +31,11 @@ public class ArcadeDriveCmd extends Command {
   public void execute() {
     double xSpeed = -controller.getLeftY();
     double ySpeed = -controller.getLeftX();
+
+    // convert xSpeed and ySpeed into linear velocity and angular velocity 
+    double linearVelocity = MathUtil.clamp(controller.getLeftY(), -1.0, 1.0);
+    double angularVelocity = MathUtil.clamp(controller.getLeftX(), -1.0, 1.0);
+
     
     driveSubsystem.drive(xSpeed, ySpeed);
   }

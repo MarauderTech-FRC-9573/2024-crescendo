@@ -41,14 +41,10 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDrive differentialDrive = new DifferentialDrive(driveLeftLeadMotor::set, driveRightLeadMotor::set);
     
     // The left-side drive encoder
-    private final Encoder driveLeadLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
+    private final Encoder driveLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
     
     // The right-side drive encoder
-    private final Encoder driveLeadRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1], DriveConstants.kRightEncoderReversed);
-
-    private final Encoder driveFollowLeftEncoder = new Encoder(DriveConstants.kLeftFollowEncoderPorts[0], DriveConstants.kLeftFollowEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
-
-    private final Encoder driveFollowRightEncoder = new Encoder(DriveConstants.kRightFollowEncoderPorts[0], DriveConstants.kRightFollowEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
+    private final Encoder driveRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1], DriveConstants.kRightEncoderReversed);
 
     // PID controllers 
     private final PIDController leftPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
@@ -84,15 +80,15 @@ public class DriveSubsystem extends SubsystemBase {
         // driveRightFollowerMotor.setInverted(true);
         
         // Sets the distance per pulse for the encoders
-        driveLeadLeftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
-        driveLeadRightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
+        driveLeftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
+        driveRightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
         
         resetEncoders();
         m_odometry =
         new DifferentialDriveOdometry(
         Rotation2d.fromDegrees(getHeading()),
-        driveLeadLeftEncoder.getDistance(),
-        driveLeadRightEncoder.getDistance());
+        driveLeftEncoder.getDistance(),
+        driveRightEncoder.getDistance());
         
         // simulation code 
         if (RobotBase.isSimulation()) { 
@@ -106,8 +102,8 @@ public class DriveSubsystem extends SubsystemBase {
             VecBuilder.fill(0, 0, 0.0001, 0.1, 0.1, 0.005, 0.005));
             
             // The encoder and gyro angle sims let us set simulated sensor readings
-            simLeftEncoder = new EncoderSim(driveLeadLeftEncoder);
-            simRightEncoder = new EncoderSim(driveLeadRightEncoder);
+            simLeftEncoder = new EncoderSim(driveLeftEncoder);
+            simRightEncoder = new EncoderSim(driveRightEncoder);
             m_gyroSim = new ADXRS450_GyroSim(m_gyro);
             
             // the Field2d class lets us visualize our robot in the simulation GUI.
@@ -130,23 +126,23 @@ public class DriveSubsystem extends SubsystemBase {
     
     // resets encoders to read 0 
     public void resetEncoders() {
-        driveLeadLeftEncoder.reset();
-        driveLeadRightEncoder.reset();
+        driveLeftEncoder.reset();
+        driveRightEncoder.reset();
     }
     
     // returns average of two 
     public double getAverageEncoderDistance() {
-        return (driveLeadLeftEncoder.getDistance() + driveLeadRightEncoder.getDistance()) / 2.0;
+        return (driveLeftEncoder.getDistance() + driveRightEncoder.getDistance()) / 2.0;
     }
     
     // returns value of left encoder
     public Encoder getLeftEncoder() {
-        return driveLeadLeftEncoder;
+        return driveLeftEncoder;
     }
     
     // returns value of right encoder
     public Encoder getRightEncoder() {
-        return driveLeadRightEncoder;
+        return driveRightEncoder;
     }
     
     
@@ -156,8 +152,8 @@ public class DriveSubsystem extends SubsystemBase {
     
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
         
-        final double leftOutput = leftPIDController.calculate(driveLeadLeftEncoder.getRate(), speeds.leftMetersPerSecond);
-        final double rightOutput = rightPIDController.calculate(driveLeadRightEncoder.getRate(), speeds.rightMetersPerSecond);
+        final double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), speeds.leftMetersPerSecond);
+        final double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), speeds.rightMetersPerSecond);
         driveLeftLeadMotor.setVoltage(leftOutput);
         driveRightLeadMotor.setVoltage(rightOutput);
     }
@@ -168,8 +164,8 @@ public class DriveSubsystem extends SubsystemBase {
     * @param xSpeed Linear velocity in m/s.
     * @param rot Angular velocity in rad/s.
     */
-    public void drive(double leftSpeed, double rightSpeed) {
-        DifferentialDriveWheelSpeeds wheelSpeeds = new DifferentialDriveWheelSpeeds(leftSpeed, rightSpeed);
+    public void drive(double xSpeed, double rot) {
+        var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
         setSpeeds(wheelSpeeds);
     }
     
