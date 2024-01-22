@@ -11,7 +11,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 
 public final class Constants {
   public static final class DriveConstants {
-    public static final int joystickPort = 3; 
+    public static final int joystickPort = 0; 
 
     public static final int leftLeadMotorPort = 0;    
     public static final int rightLeadMotorPort = 1;    
@@ -69,10 +69,6 @@ public final class Constants {
     
   }
   
-  public static final class OIConstants {
-    public static final int kDriverJoystickPort = 0;
-    
-    public static final int kArcadeDriveSpeedAxis = 1;
-    public static final int kArcadeDriveTurnAxis = 3;
+  public static final class OIConstants {    
   }
 }

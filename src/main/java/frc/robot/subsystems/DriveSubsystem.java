@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -34,6 +35,7 @@ public class DriveSubsystem extends SubsystemBase {
     // The motors on the right side of the drive.
     private final PWMSparkMax driveLeftFollowerMotor = new PWMSparkMax(DriveConstants.leftFollowMotorPort);
     private final PWMSparkMax driveRightFollowerMotor = new PWMSparkMax(DriveConstants.rightFollowMotorPort);
+
     
     // The robot's drive
     private final DifferentialDrive differentialDrive = new DifferentialDrive(driveLeftLeadMotor::set, driveRightLeadMotor::set);
@@ -44,12 +46,11 @@ public class DriveSubsystem extends SubsystemBase {
     // The right-side drive encoder
     private final Encoder driveLeadRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1], DriveConstants.kRightEncoderReversed);
 
-     private final Encoder driveFollowLeftEncoder = new Encoder(DriveConstants.kLeftFollowEncoderPorts[0], DriveConstants.kLeftFollowEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
+    private final Encoder driveFollowLeftEncoder = new Encoder(DriveConstants.kLeftFollowEncoderPorts[0], DriveConstants.kLeftFollowEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
 
     private final Encoder driveFollowRightEncoder = new Encoder(DriveConstants.kRightFollowEncoderPorts[0], DriveConstants.kRightFollowEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
 
     // PID controllers 
-    // values need to be double checked
     private final PIDController leftPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
     private final PIDController rightPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
     
@@ -63,7 +64,6 @@ public class DriveSubsystem extends SubsystemBase {
     public DifferentialDrivetrainSim m_drivetrainSimulator;
     private final EncoderSim simLeftEncoder;
     private final EncoderSim simRightEncoder;
-    // The Field2d class shows the field in the sim GUI
     private final Field2d m_fieldSim;
     private final ADXRS450_GyroSim m_gyroSim;
 

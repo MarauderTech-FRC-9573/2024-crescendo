@@ -12,13 +12,6 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Field": "Field2d"
-    },
-    "windows": {
-      "/SmartDashboard/Field": {
-        "window": {
-          "visible": true
-        }
-      }
     }
   },
   "NetworkTables": {
@@ -55,7 +48,9 @@
         "open": true
       },
       "open": true
-    },
-    "visible": true
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
