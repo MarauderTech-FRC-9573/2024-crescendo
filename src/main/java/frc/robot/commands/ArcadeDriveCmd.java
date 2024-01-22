@@ -32,21 +32,13 @@ public class ArcadeDriveCmd extends Command {
   public void execute() {
     double xSpeed = -controller.getLeftY();
     double ySpeed = -controller.getLeftX();
-    double rSpeed = -controller.getRightX();
-    double inputScalar = Math.max(1.0-controller.getRightTriggerAxis(), 0.15);
-    
-    xSpeed = MathUtil.applyDeadband(xSpeed, DEADBAND) * inputScalar;
-    ySpeed = MathUtil.applyDeadband(ySpeed, DEADBAND) * inputScalar;
-    rSpeed = MathUtil.applyDeadband(rSpeed, DEADBAND) * inputScalar;
     
     driveSubsystem.drive(xSpeed, ySpeed);
-
   }
 
   @Override 
   public void end(boolean interrputed)  {
     System.out.println("ArcadeDrive done!");
-
   }
 
   @Override 
