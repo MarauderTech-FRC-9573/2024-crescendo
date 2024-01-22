@@ -6,32 +6,41 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An example command that uses an example subsystem. */
 public class ArcadeDriveCmd extends Command {
+  private final double DEADBAND = 0.05;
   private final DriveSubsystem driveSubsystem;
-  private final Supplier<Double> speedFunction, turnFunction;
+  private final CommandXboxController controller;
 
   // initializer for the ArcadeDriveCmd, taking in a driveSubsystem instance, and speed & turn 
-  public ArcadeDriveCmd(DriveSubsystem driveSubsystem, Supplier<Double> speedFunction, Supplier<Double> turnFunction) {
+  public ArcadeDriveCmd(DriveSubsystem driveSubsystem, CommandXboxController controller) {
     this.driveSubsystem = driveSubsystem;
-    this.speedFunction = speedFunction;
-    this.turnFunction = turnFunction;
+    this.controller = controller;
     addRequirements(driveSubsystem);
   }
 
   @Override
-  public void initialize() {
-    System.out.println("ArcadeDrive started!");
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
-    double speed = speedFunction.get();
-    double turn = turnFunction.get();
+    double xSpeed = -controller.getLeftY();
+    double ySpeed = -controller.getLeftX();
+    double rSpeed = -controller.getRightX();
+    double inputScalar = Math.max(1.0-controller.getRightTriggerAxis(), 0.15);
+    
+    xSpeed = MathUtil.applyDeadband(xSpeed, DEADBAND) * inputScalar;
+    ySpeed = MathUtil.applyDeadband(ySpeed, DEADBAND) * inputScalar;
+    rSpeed = MathUtil.applyDeadband(rSpeed, DEADBAND) * inputScalar;
+    
+    driveSubsystem.drive(xSpeed, ySpeed);
 
-    driveSubsystem.setMaxOutput(speed);
   }
 
   @Override 

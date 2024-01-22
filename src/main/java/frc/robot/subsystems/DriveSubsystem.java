@@ -157,7 +157,7 @@ public class DriveSubsystem extends SubsystemBase {
         
         final double leftOutput = leftPIDController.calculate(driveLeadLeftEncoder.getRate(), speeds.leftMetersPerSecond);
         final double rightOutput = rightPIDController.calculate(driveLeadRightEncoder.getRate(), speeds.rightMetersPerSecond);
-        driveLeftLeadMotor.setVoltage(leftOutput );
+        driveLeftLeadMotor.setVoltage(leftOutput);
         driveRightLeadMotor.setVoltage(rightOutput);
     }
     
@@ -167,8 +167,8 @@ public class DriveSubsystem extends SubsystemBase {
     * @param xSpeed Linear velocity in m/s.
     * @param rot Angular velocity in rad/s.
     */
-    public void drive(double xSpeed, double rot) {
-        var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
+    public void drive(double leftSpeed, double rightSpeed) {
+        DifferentialDriveWheelSpeeds wheelSpeeds = new DifferentialDriveWheelSpeeds(leftSpeed, rightSpeed);
         setSpeeds(wheelSpeeds);
     }
     
