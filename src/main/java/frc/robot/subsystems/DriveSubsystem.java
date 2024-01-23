@@ -36,7 +36,6 @@ public class DriveSubsystem extends SubsystemBase {
     private final PWMSparkMax driveLeftFollowerMotor = new PWMSparkMax(DriveConstants.leftFollowMotorPort);
     private final PWMSparkMax driveRightFollowerMotor = new PWMSparkMax(DriveConstants.rightFollowMotorPort);
 
-    
     // The robot's drive
     private final DifferentialDrive differentialDrive = new DifferentialDrive(driveLeftLeadMotor::set, driveRightLeadMotor::set);
     
@@ -84,22 +83,12 @@ public class DriveSubsystem extends SubsystemBase {
         driveRightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
         
         resetEncoders();
-        m_odometry =
-        new DifferentialDriveOdometry(
-        Rotation2d.fromDegrees(getHeading()),
-        driveLeftEncoder.getDistance(),
-        driveRightEncoder.getDistance());
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance());
         
         // simulation code 
         if (RobotBase.isSimulation()) { 
             m_drivetrainSimulator =
-            new DifferentialDrivetrainSim(
-            DriveConstants.kDrivetrainPlant,
-            DriveConstants.kDriveGearbox,
-            DriveConstants.kDriveGearing,
-            DriveConstants.kTrackwidthMeters,
-            DriveConstants.kWheelDiameterMeters / 2.0,
-            VecBuilder.fill(0, 0, 0.0001, 0.1, 0.1, 0.005, 0.005));
+            new DifferentialDrivetrainSim(DriveConstants.kDrivetrainPlant, DriveConstants.kDriveGearbox, DriveConstants.kDriveGearing, DriveConstants.kTrackwidthMeters, DriveConstants.kWheelDiameterMeters / 2.0, VecBuilder.fill(0, 0, 0.0001, 0.1, 0.1, 0.005, 0.005));
             
             // The encoder and gyro angle sims let us set simulated sensor readings
             simLeftEncoder = new EncoderSim(driveLeftEncoder);
@@ -123,7 +112,6 @@ public class DriveSubsystem extends SubsystemBase {
         m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
     }
     
-    
     // resets encoders to read 0 
     public void resetEncoders() {
         driveLeftEncoder.reset();
@@ -145,16 +133,17 @@ public class DriveSubsystem extends SubsystemBase {
         return driveRightEncoder;
     }
     
-    
     public void setMaxOutput(double maxOutput) {
         differentialDrive.setMaxOutput(maxOutput);
     }
     
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-        
         final double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), speeds.leftMetersPerSecond);
         final double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), speeds.rightMetersPerSecond);
-        driveLeftLeadMotor.setVoltage(leftOutput);
+
+        System.out.println("leftOutput: " + leftOutput + ", rightOutput: " + rightOutput);
+
+        driveLeftFollowerMotor.setVoltage(leftOutput);
         driveRightLeadMotor.setVoltage(rightOutput);
     }
     

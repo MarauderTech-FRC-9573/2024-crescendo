@@ -1,10 +1,28 @@
 {
   "HALProvider": {
+    "DIO": {
+      "window": {
+        "visible": true
+      }
+    },
+    "Encoders": {
+      "window": {
+        "visible": true
+      }
+    },
     "Other Devices": {
       "ADXRS450[0]": {
         "header": {
           "open": true
         }
+      }
+    },
+    "RoboRIO": {
+      "5V Rail": {
+        "open": true
+      },
+      "window": {
+        "visible": true
       }
     }
   },
@@ -12,6 +30,13 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
@@ -48,9 +73,28 @@
         "open": true
       },
       "open": true
-    }
+    },
+    "visible": true
   },
   "NetworkTables View": {
     "visible": false
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 338
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    }
   }
 }
