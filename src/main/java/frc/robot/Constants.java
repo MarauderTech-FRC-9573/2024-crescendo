@@ -37,6 +37,10 @@ public final class Constants {
     public static final double kDriveGearing = 8;
     public static double kTrackwidthMeters = 0.69; 
     public static double kWheelDiameterMeters = 0.15;
+
+    public static int operatorControllerPort;
+
+    public static int driveControllerPort;
     
     public static final LinearSystem<N2, N2, N2> kDrivetrainPlant =
     LinearSystemId.identifyDrivetrainSystem(

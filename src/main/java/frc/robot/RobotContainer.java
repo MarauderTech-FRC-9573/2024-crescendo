@@ -1,8 +1,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ArcadeDriveCmd;
-// import frc.robot.commands.DriveForwardCmd;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.DriveForwardCmd;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -13,12 +14,14 @@ public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private final XboxController joystick1 = new XboxController(DriveConstants.joystickPort);
+
+  private final CommandXboxController driveController = new CommandXboxController(DriveConstants.driveControllerPort);
+  private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
   
   public RobotContainer() {
     configureButtonBindings();
+    driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.arcadeDrive(-driveController.getLeftY(), -driveController.getRightX(), driveController), driveSubsystem));
 
-    driveSubsystem.setDefaultCommand(new ArcadeDriveCmd(driveSubsystem, joystick1));
   }
   
   private void configureButtonBindings() {

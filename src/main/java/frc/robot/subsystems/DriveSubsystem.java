@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.ArcadeDriveCmd;
 // Simulation libraries
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -21,9 +21,11 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 
 import org.w3c.dom.traversal.DocumentTraversal;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
@@ -35,7 +37,7 @@ public class DriveSubsystem extends SubsystemBase {
     // The motors on the right side of the drive.
     private final PWMSparkMax driveLeftFollowerMotor = new PWMSparkMax(DriveConstants.leftFollowMotorPort);
     private final PWMSparkMax driveRightFollowerMotor = new PWMSparkMax(DriveConstants.rightFollowMotorPort);
-
+    
     // The robot's drive
     private final DifferentialDrive differentialDrive = new DifferentialDrive(driveLeftLeadMotor::set, driveRightLeadMotor::set);
     
@@ -44,7 +46,7 @@ public class DriveSubsystem extends SubsystemBase {
     
     // The right-side drive encoder
     private final Encoder driveRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1], DriveConstants.kRightEncoderReversed);
-
+    
     // PID controllers 
     private final PIDController leftPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
     private final PIDController rightPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
@@ -61,7 +63,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final EncoderSim simRightEncoder;
     private final Field2d m_fieldSim;
     private final ADXRS450_GyroSim m_gyroSim;
-
+    
     // someone check this 
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(3.0);
     
@@ -73,10 +75,8 @@ public class DriveSubsystem extends SubsystemBase {
         driveLeftLeadMotor.addFollower(driveLeftFollowerMotor);
         driveRightLeadMotor.addFollower(driveRightFollowerMotor);
         
-        // We need to invert one side of the drivetrain so that positive voltages
-        // result in both sides moving forward. Depending on how your robot's
-        // gearbox is constructed, you might have to invert the left side instead.
-        // driveRightFollowerMotor.setInverted(true);
+        driveLeftLeadMotor.setInverted(true);
+        driveLeftLeadMotor.setInverted(false);
         
         // Sets the distance per pulse for the encoders
         driveLeftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
@@ -104,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_gyroSim = null;
             m_fieldSim = null;
         }
-
+        
     }
     
     @Override
@@ -140,9 +140,9 @@ public class DriveSubsystem extends SubsystemBase {
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
         final double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), speeds.leftMetersPerSecond);
         final double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), speeds.rightMetersPerSecond);
-
+        
         System.out.println("leftOutput: " + leftOutput + ", rightOutput: " + rightOutput);
-
+        
         driveLeftFollowerMotor.setVoltage(leftOutput);
         driveRightLeadMotor.setVoltage(rightOutput);
     }
@@ -150,12 +150,23 @@ public class DriveSubsystem extends SubsystemBase {
     /**
     * Drives the robot with the given linear velocity and angular velocity.
     *
-    * @param xSpeed Linear velocity in m/s.
-    * @param rot Angular velocity in rad/s.
+    * xSpeed Linear velocity in m/s.
+    * rot Angular velocity in rad/s.
     */
     public void drive(double xSpeed, double rot) {
         var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
         setSpeeds(wheelSpeeds);
+    }
+    
+    public void arcadeDrive(double speed, double rotation, CommandXboxController controller) {
+        double xSpeed = MathUtil.clamp(-controller.getLeftY(), -1.0, 1.0); // Forward/Backward speed
+        double ySpeed = MathUtil.clamp(controller.getLeftX(), -1.0, 1.0);  // Turning speed
+        
+        // Debugging
+        System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
+        
+        this.drive(xSpeed, ySpeed);
+        
     }
     
     public double getHeading() {
