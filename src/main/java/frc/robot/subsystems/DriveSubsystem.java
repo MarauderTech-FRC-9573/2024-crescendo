@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
@@ -12,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
-
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 
 import org.w3c.dom.traversal.DocumentTraversal;
@@ -67,6 +69,10 @@ public class DriveSubsystem extends SubsystemBase {
     // someone check this 
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(3.0);
     
+    // Gains are for example purposes only - must be determined for your own
+    // robot!
+    private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);
+
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem() {
         SendableRegistry.addChild(differentialDrive, driveLeftLeadMotor);
@@ -76,7 +82,7 @@ public class DriveSubsystem extends SubsystemBase {
         driveRightLeadMotor.addFollower(driveRightFollowerMotor);
         
         driveLeftLeadMotor.setInverted(true);
-        driveLeftLeadMotor.setInverted(false);
+        driveRightLeadMotor.setInverted(false);
         
         // Sets the distance per pulse for the encoders
         driveLeftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
@@ -107,11 +113,6 @@ public class DriveSubsystem extends SubsystemBase {
         
     }
     
-    @Override
-    public void periodic()  {
-        m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
-    }
-    
     // resets encoders to read 0 
     public void resetEncoders() {
         driveLeftEncoder.reset();
@@ -132,19 +133,23 @@ public class DriveSubsystem extends SubsystemBase {
     public Encoder getRightEncoder() {
         return driveRightEncoder;
     }
-    
+   // Is this needed? 
     public void setMaxOutput(double maxOutput) {
         differentialDrive.setMaxOutput(maxOutput);
     }
-    
+    // Edited this PID here because it was missing the feedforward
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+
+        var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
+        var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
+
         final double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), speeds.leftMetersPerSecond);
         final double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), speeds.rightMetersPerSecond);
         
         System.out.println("leftOutput: " + leftOutput + ", rightOutput: " + rightOutput);
         
-        driveLeftFollowerMotor.setVoltage(leftOutput);
-        driveRightLeadMotor.setVoltage(rightOutput);
+        driveLeftLeadMotor.setVoltage(leftOutput + leftFeedforward);
+        driveRightLeadMotor.setVoltage(rightOutput + rightFeedforward);
     }
     
     /**
@@ -172,6 +177,54 @@ public class DriveSubsystem extends SubsystemBase {
     public double getHeading() {
         return Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0);
     }
+
+    // Added odometry related stuff here and moved periodic function here
+
+    /** Update robot odometry. */
+  public void updateOdometry() {
+    m_odometry.update(
+        m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance());
+  }
+
+    /** Resets robot odometry. */
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        m_drivetrainSimulator.setPose(pose);
+        m_odometry.resetPosition(
+            m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), pose);
+  }
+
+    /** Check the current robot pose. */
+    public Pose2d getPose() {
+        return m_odometry.getPoseMeters();
+    }
+
+    /** Update our simulation. This should be run every robot loop in simulation. */
+    public void simulationPeriodic() {
+        // To update our simulation, we set motor voltage inputs, update the
+        // simulation, and write the simulated positions and velocities to our
+        // simulated encoder and gyro. We negate the right side so that positive
+        // voltages make the right side move forward.
+        m_drivetrainSimulator.setInputs(
+            driveLeftLeadMotor.get() * RobotController.getInputVoltage(),
+            driveRightLeadMotor.get() * RobotController.getInputVoltage());
+        m_drivetrainSimulator.update(0.02);
+
+        simLeftEncoder.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
+        simLeftEncoder.setRate(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+        simRightEncoder.setDistance(m_drivetrainSimulator.getRightPositionMeters());
+        simRightEncoder.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+        m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
+    }
+
+    /** Update odometry - this should be run every robot loop. */
+    @Override
+    public void periodic()  {
+        updateOdometry();
+        m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
+    }
+
 }
+
 
 
