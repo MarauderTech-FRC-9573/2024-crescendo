@@ -28,9 +28,16 @@ public final class Constants {
 
   public static final class IntakeConstants {
 
+    public static int launchWheelPort;
+
   }
 
   public static final class ShooterConstants {
+
+    public static double kIntakeLauncherSpeed;
+    public static double kIntakeFeederSpeed;
+    public static int launchWheelPort;
+    public static int intakeWheelPort;
 
   }
 
