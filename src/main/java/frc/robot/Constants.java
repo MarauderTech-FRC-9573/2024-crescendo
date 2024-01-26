@@ -70,7 +70,15 @@ public final class Constants {
   }
   
   public static final class ShooterConstants {
-    
+
+    public static double kIntakeLauncherSpeed = 3.0;
+    public static double kIntakeFeederSpeed = 3.0;
+    public static int launchWheelPort = 3;
+    public static int intakeWheelPort = 4;
+    public static double kLaunchWheelSpeed;
+    public static double kFeedWheelSpeed;
+
+
   }
   
   public static final class OIConstants {    
