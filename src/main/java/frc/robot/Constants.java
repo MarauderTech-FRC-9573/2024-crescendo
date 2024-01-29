@@ -73,8 +73,8 @@ public final class Constants {
 
     public static double kIntakeLauncherSpeed = 3.0;
     public static double kIntakeFeederSpeed = 3.0;
-    public static int launchWheelPort = 3;
-    public static int intakeWheelPort = 4;
+    public static int launchWheelPort = 5;
+    public static int intakeWheelPort = 6;
     public static double kLaunchWheelSpeed;
     public static double kFeedWheelSpeed;
 
