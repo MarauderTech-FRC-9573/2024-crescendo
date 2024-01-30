@@ -77,6 +77,7 @@ public final class Constants {
     public static int intakeWheelPort = 6;
     public static double kLaunchWheelSpeed;
     public static double kFeedWheelSpeed;
+    public static double kLauncherDelay;
 
 
   }
