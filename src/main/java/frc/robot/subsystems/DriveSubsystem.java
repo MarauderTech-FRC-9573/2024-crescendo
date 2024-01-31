@@ -141,7 +141,7 @@ public class DriveSubsystem extends SubsystemBase {
         final double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), speeds.leftMetersPerSecond);
         final double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), speeds.rightMetersPerSecond);
         
-        System.out.println("leftOutput: " + leftOutput + ", rightOutput: " + rightOutput);
+        // System.out.println("leftOutput: " + leftOutput + ", rightOutput: " + rightOutput);
         
         driveLeftLeadMotor.setVoltage(leftOutput + leftFeedforward);
         driveRightLeadMotor.setVoltage(rightOutput + rightFeedforward);
@@ -163,7 +163,7 @@ public class DriveSubsystem extends SubsystemBase {
         double ySpeed = MathUtil.clamp(controller.getLeftX(), -1.0, 1.0);  // Turning speed
         
         // Debugging
-        System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
+        // System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
         
         this.drive(xSpeed, ySpeed);
         
