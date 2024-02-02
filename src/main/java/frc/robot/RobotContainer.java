@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.Autos;
+// import frc.robot.commands.Autos;
 import frc.robot.commands.LaunchNote;
 import frc.robot.commands.PrepareLaunch;
 import frc.robot.subsystems.DriveSubsystem;
@@ -22,7 +22,7 @@ public class RobotContainer {
   
   public RobotContainer() {
     configureButtonBindings();
-    driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.arcadeDrive(-driveController.getLeftY(), -driveController.getRightX(), driveController), driveSubsystem));
+    driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.arcadeDrive(-driveController.getLeftY(), -driveController.getRightX()), driveSubsystem));
     
   }
   
@@ -36,9 +36,9 @@ public class RobotContainer {
     
   }
   
-  public Command getAutonomousCommand() {
-    return Autos.exampleAuto(driveSubsystem, driveController);
-    }
+  // public Command getAutonomousCommand() {
+  //   return Autos.exampleAuto(driveSubsystem, driveController);
+  //   }
   }
   
   

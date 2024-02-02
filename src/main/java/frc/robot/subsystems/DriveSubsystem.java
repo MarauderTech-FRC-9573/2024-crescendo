@@ -157,17 +157,22 @@ public class DriveSubsystem extends SubsystemBase {
         setSpeeds(wheelSpeeds);
     }
     
-    public void arcadeDrive(double speed, double rotation, CommandXboxController controller) {
-        double xSpeed = MathUtil.clamp(-controller.getLeftY(), -1.0, 1.0); // Forward/Backward speed
-        double ySpeed = MathUtil.clamp(controller.getLeftX(), -1.0, 1.0);  // Turning speed
+    // public void arcadeDrive(double speed, double rotation, CommandXboxController controller) {
+    //     double xSpeed = MathUtil.clamp(-controller.getLeftY(), -1.0, 1.0); // Forward/Backward speed
+    //     double ySpeed = MathUtil.clamp(controller.getLeftX(), -1.0, 1.0);  // Turning speed
         
-        // Debugging
-        // System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
+    //     // Debugging
+    //     // System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
         
-        this.drive(xSpeed, ySpeed);
-        differentialDrive.feed();
+    //     this.drive(xSpeed, ySpeed);
+    //     differentialDrive.feed();
         
-    }
+    // }
+
+    public void arcadeDrive(double speed, double rotation) {
+        differentialDrive.arcadeDrive(speed, rotation);
+      }
+    
     
     public double getHeading() {
         return Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0);
