@@ -131,20 +131,6 @@ public class DriveSubsystem extends SubsystemBase {
     public void setMaxOutput(double maxOutput) {
         differentialDrive.setMaxOutput(maxOutput);
     }
-    // Edited this PID here because it was missing the feedforward
-    public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-
-        var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
-        var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
-
-        // final double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), speeds.leftMetersPerSecond);
-        // final double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), speeds.rightMetersPerSecond);
-        
-        // System.out.println("leftOutput: " + leftOutput + ", rightOutput: " + rightOutput);
-        
-        driveLeftLeadMotor.setVoltage(leftFeedforward);
-        driveRightLeadMotor.setVoltage(rightFeedforward);
-    }
     
     /**
     * Drives the robot with the given linear velocity and angular velocity.
@@ -152,23 +138,27 @@ public class DriveSubsystem extends SubsystemBase {
     * xSpeed Linear velocity in m/s.
     * rot Angular velocity in rad/s.
     */
+
+     // Edited this PID here because it was missing the feedforward
+    public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+
+        var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
+        var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
+
+        final double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), speeds.leftMetersPerSecond);
+        final double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), speeds.rightMetersPerSecond);
+        
+        System.out.println("leftOutput: " + leftOutput + ", rightOutput: " + rightOutput);
+        
+        driveLeftLeadMotor.setVoltage(leftFeedforward);
+        driveRightLeadMotor.setVoltage(rightFeedforward);
+    }
+
     public void drive(double xSpeed, double rot) {
         var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
         setSpeeds(wheelSpeeds);
     }
     
-    // public void arcadeDrive(double speed, double rotation, CommandXboxController controller) {
-    //     double xSpeed = MathUtil.clamp(-controller.getLeftY(), -1.0, 1.0); // Forward/Backward speed
-    //     double ySpeed = MathUtil.clamp(controller.getLeftX(), -1.0, 1.0);  // Turning speed
-        
-    //     // Debugging
-    //     // System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
-        
-    //     this.drive(xSpeed, ySpeed);
-    //     differentialDrive.feed();
-        
-    // }
-
     public void arcadeDrive(double speed, double rotation) {
         differentialDrive.arcadeDrive(speed, rotation);
       }
