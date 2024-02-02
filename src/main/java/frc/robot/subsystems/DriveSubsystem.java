@@ -215,8 +215,14 @@ public class DriveSubsystem extends SubsystemBase {
     /** Update odometry - this should be run every robot loop. */
     @Override
     public void periodic()  {
+        
         updateOdometry();
-        m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
+        
+        if (m_fieldSim != null) {
+
+            m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
+
+        }
     }
 
 }
