@@ -137,13 +137,13 @@ public class DriveSubsystem extends SubsystemBase {
         var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
         var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
 
-        final double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), speeds.leftMetersPerSecond);
-        final double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), speeds.rightMetersPerSecond);
+        // final double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), speeds.leftMetersPerSecond);
+        // final double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), speeds.rightMetersPerSecond);
         
         // System.out.println("leftOutput: " + leftOutput + ", rightOutput: " + rightOutput);
         
-        driveLeftLeadMotor.setVoltage(leftOutput + leftFeedforward);
-        driveRightLeadMotor.setVoltage(rightOutput + rightFeedforward);
+        driveLeftLeadMotor.setVoltage(leftFeedforward);
+        driveRightLeadMotor.setVoltage(rightFeedforward);
     }
     
     /**
