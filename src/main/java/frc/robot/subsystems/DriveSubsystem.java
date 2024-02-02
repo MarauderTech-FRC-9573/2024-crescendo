@@ -88,8 +88,7 @@ public class DriveSubsystem extends SubsystemBase {
         
         // simulation code 
         if (RobotBase.isSimulation()) { 
-            m_drivetrainSimulator =
-            new DifferentialDrivetrainSim(DriveConstants.kDrivetrainPlant, DriveConstants.kDriveGearbox, DriveConstants.kDriveGearing, DriveConstants.kTrackwidthMeters, DriveConstants.kWheelDiameterMeters / 2.0, VecBuilder.fill(0, 0, 0.0001, 0.1, 0.1, 0.005, 0.005));
+            m_drivetrainSimulator = new DifferentialDrivetrainSim(DriveConstants.kDrivetrainPlant, DriveConstants.kDriveGearbox, DriveConstants.kDriveGearing, DriveConstants.kTrackwidthMeters, DriveConstants.kWheelDiameterMeters / 2.0, VecBuilder.fill(0, 0, 0.0001, 0.1, 0.1, 0.005, 0.005));
             
             // The encoder and gyro angle sims let us set simulated sensor readings
             simLeftEncoder = new EncoderSim(driveLeftEncoder);
@@ -132,7 +131,15 @@ public class DriveSubsystem extends SubsystemBase {
     public void setMaxOutput(double maxOutput) {
         differentialDrive.setMaxOutput(maxOutput);
     }
-    // Edited this PID here because it was missing the feedforward
+    
+    /**
+    * Drives the robot with the given linear velocity and angular velocity.
+    *
+    * xSpeed Linear velocity in m/s.
+    * rot Angular velocity in rad/s.
+    */
+
+     // Edited this PID here because it was missing the feedforward
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
 
         var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
@@ -143,31 +150,19 @@ public class DriveSubsystem extends SubsystemBase {
         
         System.out.println("leftOutput: " + leftOutput + ", rightOutput: " + rightOutput);
         
-        driveLeftLeadMotor.setVoltage(leftOutput + leftFeedforward);
-        driveRightLeadMotor.setVoltage(rightOutput + rightFeedforward);
+        driveLeftLeadMotor.setVoltage(leftFeedforward);
+        driveRightLeadMotor.setVoltage(rightFeedforward);
     }
-    
-    /**
-    * Drives the robot with the given linear velocity and angular velocity.
-    *
-    * xSpeed Linear velocity in m/s.
-    * rot Angular velocity in rad/s.
-    */
+
     public void drive(double xSpeed, double rot) {
         var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
         setSpeeds(wheelSpeeds);
     }
     
-    public void arcadeDrive(double speed, double rotation, CommandXboxController controller) {
-        double xSpeed = MathUtil.clamp(-controller.getLeftY(), -1.0, 1.0); // Forward/Backward speed
-        double ySpeed = MathUtil.clamp(controller.getLeftX(), -1.0, 1.0);  // Turning speed
-        
-        // Debugging
-        System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
-        
-        this.drive(xSpeed, ySpeed);
-        
-    }
+    public void arcadeDrive(double speed, double rotation) {
+        differentialDrive.arcadeDrive(speed, rotation);
+      }
+    
     
     public double getHeading() {
         return Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0);
