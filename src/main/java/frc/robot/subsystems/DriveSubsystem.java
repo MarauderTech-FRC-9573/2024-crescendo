@@ -37,7 +37,7 @@ public class DriveSubsystem extends SubsystemBase {
     
     // The robot's drive
     private final DifferentialDrive differentialDrive = new DifferentialDrive(driveLeftLeadMotor::set, driveRightLeadMotor::set);
-    
+
     // The left-side drive encoder
     private final Encoder driveLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
     
@@ -215,8 +215,14 @@ public class DriveSubsystem extends SubsystemBase {
     /** Update odometry - this should be run every robot loop. */
     @Override
     public void periodic()  {
+        
         updateOdometry();
-        m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
+        
+        if (m_fieldSim != null) {
+
+            m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
+
+        }
     }
 
 }
