@@ -24,6 +24,26 @@ public class ShooterSubsystem extends SubsystemBase{
             });
     }
 
+    public Command shootAmp() {
+        return this.startEnd(
+            () -> {
+                setFeedWheel(ShooterConstants.kAmpFeederSpeed);
+                setLaunchWheel(ShooterConstants.kAmpLauncherSpeed);
+            }, () -> {
+                stop();
+            });
+    }
+
+    public Command shootSpeaker() {
+        return this.startEnd(
+            () -> {
+                setFeedWheel(ShooterConstants.kSpeakerFeederSpeed);
+                setLaunchWheel(ShooterConstants.kSpeakerLauncherSpeed);
+            }, () -> {
+                stop();
+            });
+    }
+
     public void setLaunchWheel(double speed) {
         launchWheel.set(speed);
     }
