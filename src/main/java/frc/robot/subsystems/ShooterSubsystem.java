@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ShooterSubsystem extends SubsystemBase{
+public class ShooterSubsystem extends SubsystemBase {}
     PWMSparkMax launchWheel;
     PWMSparkMax intakeWheel;
 
@@ -13,6 +13,17 @@ public class ShooterSubsystem extends SubsystemBase{
         launchWheel = new PWMSparkMax(ShooterConstants.launchWheelPort);
         intakeWheel = new PWMSparkMax(ShooterConstants.intakeWheelPort);
     }
+
+public class LaunchNote extends Command {
+   PWMLauncher m_launcher;
+
+public LaunchNote(PWMLauncher launcher) {
+    m_launcher = launcher;
+
+
+    
+    addRequirements(m_launcher);
+}
 
     public Command getIntake() {
         return this.startEnd(
@@ -24,25 +35,24 @@ public class ShooterSubsystem extends SubsystemBase{
             });
     }
 
-    public Command shootAmp() {
-        return this.startEnd(
-            () -> {
-                setFeedWheel(ShooterConstants.kAmpFeederSpeed);
-                setLaunchWheel(ShooterConstants.kAmpLauncherSpeed);
-            }, () -> {
-                stop();
-            });
-    }
+@Override
+public void initialize() {
+    m_launcher.setLaunchWheel(kLauncherSpeed);
+    m_launcher.setFeedWheel(kLaunchFeederSpeed);
+}
+@Override
+public void execute() {
 
-    public Command shootSpeaker() {
-        return this.startEnd(
-            () -> {
-                setFeedWheel(ShooterConstants.kSpeakerFeederSpeed);
-                setLaunchWheel(ShooterConstants.kSpeakerLauncherSpeed);
-            }, () -> {
-                stop();
-            });
-    }
+}
+
+@Override
+public boolean isFinished() {
+    return false;
+}
+@Override
+public void end(boolean interrupted) {
+    m_launcher.stop();
+}
 
     public void setLaunchWheel(double speed) {
         launchWheel.set(speed);
