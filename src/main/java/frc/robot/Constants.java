@@ -11,12 +11,17 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 
 public final class Constants {
   public static final class DriveConstants {
-    public static final int joystickPort = 0; 
 
-    public static final int leftLeadMotorPort = 1;    
-    public static final int rightLeadMotorPort = 2;    
-    public static final int leftFollowMotorPort = 3;    
-    public static final int rightFollowMotorPort = 4;    
+      // PWM ports/CAN IDs for motor controllers
+      public static final int kLeftRearID = 5;
+      public static final int kLeftFrontID = 4;
+      public static final int kRightRearID = 3;
+      public static final int kRightFrontID = 2;
+  
+      // Current limit for drivetrain motors
+      public static final int kCurrentLimit = 60;
+  
+    public static final int joystickPort = 0;    
     
     public static final double kDriveTick2Feet = 1.0 / 128 * 6 * Math.PI / 12;
     
