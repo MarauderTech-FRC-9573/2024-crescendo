@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class LaunchNote extends Command {
+public class LaunchAmp extends Command {
     ShooterSubsystem shooterSubsystem;
 
     public LaunchNote(ShooterSubsystem shooterSubsystem) {
