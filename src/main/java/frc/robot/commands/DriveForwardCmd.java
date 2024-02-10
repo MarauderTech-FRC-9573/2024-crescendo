@@ -9,21 +9,21 @@ public class DriveForwardCmd extends Command {
     private double distance;
     private double speed;
     private Pose2d startPose;
-
+    
     public DriveForwardCmd(DriveSubsystem driveSubsystem, double distance, double speed) {
         this.driveSubsystem = driveSubsystem;
         this.distance = distance;
         this.speed = speed;
         addRequirements(driveSubsystem);
     }
-
+    
     @Override
     public void initialize() {
-
+        
     }
-
+    
     @Override
     public void execute() {
-        driveSubsystem.drive(speed, 0);
+        driveSubsystem.arcadeDrive(speed, 0);
     }
 }
