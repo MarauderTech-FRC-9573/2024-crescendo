@@ -180,3 +180,4 @@ ctre_sim/
 # Binarys and other raws
 .class
 .bin
+*.class
