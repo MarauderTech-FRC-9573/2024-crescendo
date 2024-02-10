@@ -4,7 +4,7 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.ShooterConstants;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -14,8 +14,8 @@ public class ShooterSubsystem extends SubsystemBase {
   CANSparkMax m_feedWheel;
 
   public ShooterSubsystem() {
-    m_launchWheel = new CANSparkMax(ShooterConstants.launchWheelPort, MotorType.kBrushed);
-    m_feedWheel = new CANSparkMax(ShooterConstants.intakeWheelPort, MotorType.kBrushed);
+    m_launchWheel = new CANSparkMax(ShooterConstants.launchWheelPort, CANSparkLowLevel.MotorType.kBrushed);
+    m_feedWheel = new CANSparkMax(ShooterConstants.intakeWheelPort, CANSparkLowLevel.MotorType.kBrushed);
 
   }
 
