@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ShooterAmpConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class LaunchAmp extends Command {
@@ -14,8 +14,8 @@ public class LaunchAmp extends Command {
 
     @Override
     public void initialize() {
-        shooterSubsystem.setLaunchWheel(ShooterAmpConstants.kLaunchWheelSpeed);
-        shooterSubsystem.setFeedWheel(ShooterAmpConstants.kFeedWheelSpeed);
+        shooterSubsystem.setLaunchWheel(ShooterConstants.AmpLaunchWheelSpeed);
+        shooterSubsystem.setFeedWheel(ShooterConstants.AmpFeedWheelSpeed);
     }
 
     @Override 

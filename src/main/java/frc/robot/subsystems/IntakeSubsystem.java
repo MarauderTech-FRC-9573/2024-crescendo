@@ -1,5 +1,5 @@
 package frc.robot.subsystems;
-import frc.robot.Constants.IntakeConstants; 
+import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase{

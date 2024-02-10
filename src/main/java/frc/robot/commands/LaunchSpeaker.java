@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ShooterSpeakerConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class LaunchSpeaker extends Command{
@@ -14,8 +14,8 @@ public class LaunchSpeaker extends Command{
 
     @Override
     public void initialize() {
-        shooterSubsystem.setLaunchWheel(ShooterSpeakerConstants.kLaunchWheelSpeed);
-        shooterSubsystem.setFeedWheel(ShooterSpeakerConstants.kFeedWheelSpeed);
+        shooterSubsystem.setLaunchWheel(ShooterConstants.SpeakerLaunchWheelSpeed);
+        shooterSubsystem.setFeedWheel(ShooterConstants.SpeakerFeedWheelSpeed);
     }
 
     @Override 

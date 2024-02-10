@@ -65,45 +65,19 @@ public final class Constants {
     
   }
   
-  public static final class IntakeConstants {
+  public static final class ShooterConstants {
     
     public static double kIntakeLauncherSpeed = -3.0;
     public static double kIntakeFeederSpeed = -3.0;
     public static int launchWheelPort = 5;
     public static int intakeWheelPort = 6;
-    public static double kLaunchWheelSpeed;
-    public static double kFeedWheelSpeed;
-    public static double kLauncherDelay;
-
-
-  }
+    public static double AmpLaunchWheelSpeed = 3.0;
+    public static double AmpFeedWheelSpeed = 3.0;
+    public static double SpeakerLaunchWheelSpeed = 6.0;
+    public static double SpeakerFeedWheelSpeed = 6.0;
   
-  public static final class ShooterAmpConstants {
-
-    public static double kIntakeLauncherSpeed = 3.0;
-    public static double kIntakeFeederSpeed = 3.0;
-    public static int launchWheelPort = 5;
-    public static int intakeWheelPort = 6;
-    public static double kLaunchWheelSpeed;
-    public static double kFeedWheelSpeed;
-    public static double kLauncherDelay;
-
-
-  }
-
-    public static final class ShooterSpeakerConstants {
-
-    public static double kIntakeLauncherSpeed = 6.0;
-    public static double kIntakeFeederSpeed = 6.0;
-    public static int launchWheelPort = 5;
-    public static int intakeWheelPort = 6;
-    public static double kLaunchWheelSpeed;
-    public static double kFeedWheelSpeed;
-    public static double kLauncherDelay;
-
-
-  }
   
+  }
   public static final class OIConstants {    
   }
 }
