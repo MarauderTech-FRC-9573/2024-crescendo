@@ -23,8 +23,8 @@ public class ShooterSubsystem extends SubsystemBase {
     return this.startEnd(
 
         () -> {
-          setFeedWheel(ShooterConstants.kIntakeFeederSpeed);
-          setLaunchWheel(ShooterConstants.kIntakeLauncherSpeed);
+          setFeedWheel(-ShooterConstants.kIntakeFeederSpeed);
+          setLaunchWheel(-ShooterConstants.kIntakeLauncherSpeed);
         },
 
         () -> {
