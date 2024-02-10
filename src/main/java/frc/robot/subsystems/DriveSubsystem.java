@@ -2,9 +2,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 // Simulation libraries
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,11 +12,7 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -29,52 +23,48 @@ import static frc.robot.Constants.DriveConstants.*;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class DriveSubsystem extends SubsystemBase {
-    // For testing PID
-    private double targetLeftVelocity = 0; // Target velocity in meters per second
-    private double targetRightVelocity = 0; // Target velocity in meters per second
+    // MOTOR CONTROLLERS
+    CANSparkMax leftFront;
+    CANSparkMax leftRear;
+    CANSparkMax rightFront;
+    CANSparkMax rightRear;
     
-    // The gyro sensor
+    // ENCODERS
+    private final Encoder driveLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
+    private final Encoder driveRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1], DriveConstants.kRightEncoderReversed);
+    
+    // PID
+    private double targetLeftVelocity = 3; // Target velocity in meters per second
+    private double targetRightVelocity = 3; // Target velocity in meters per second
+
+    private final PIDController leftPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
+    private final PIDController rightPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
+    
+    // GRYOSCOPE
     private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
     
-    // Odometry class for tracking robot pose
+    // ODOMETRY 
     private final DifferentialDriveOdometry m_odometry;
     
-    // These classes help us simulate our drivetrain
+    // SIMULATION
     public DifferentialDrivetrainSim m_drivetrainSimulator;
     private final EncoderSim simLeftEncoder;
     private final EncoderSim simRightEncoder;
     private final Field2d m_fieldSim;
     private final ADXRS450_GyroSim m_gyroSim;
     
-    // The left-side drive encoder
-    private final Encoder driveLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
-    
-    // The right-side drive encoder
-    private final Encoder driveRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1], DriveConstants.kRightEncoderReversed);
-    
-    
     /*Class member variables. These variables represent things the class needs to keep track of and use between
     different method calls. */
     DifferentialDrive m_drivetrain;
     
-    private final PIDController leftPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
-    private final PIDController rightPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
-    
     private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);
-    
     
     /*Constructor. This method is called when an instance of the class is created. This should generally be used to set up
     * member variables and perform any configuration or set up necessary on hardware.
     */
-    CANSparkMax leftFront;
-    CANSparkMax leftRear;
-    CANSparkMax rightFront;
-    CANSparkMax rightRear;
     public DriveSubsystem() {
         leftFront = new CANSparkMax(kLeftFrontID, MotorType.kBrushed);
         leftRear = new CANSparkMax(kLeftRearID, MotorType.kBrushed);
@@ -104,9 +94,7 @@ public class DriveSubsystem extends SubsystemBase {
         driveLeftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
         driveRightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
         
-        
         m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance());
-        
         
         // simulation code 
         if (RobotBase.isSimulation()) { 
@@ -154,7 +142,7 @@ public class DriveSubsystem extends SubsystemBase {
         rightMotorInput = MathUtil.clamp(rightMotorInput, -1.0, 1.0);
         
         // Set the motor speeds
-        m_drivetrain.tankDrive(leftMotorInput, rightMotorInput);
+        m_drivetrain.arcadeDrive(leftMotorInput, rightMotorInput);
         
         if (m_fieldSim != null) {
             m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
@@ -166,9 +154,6 @@ public class DriveSubsystem extends SubsystemBase {
     public void arcadeDrive(double speed, double rotation) {
         m_drivetrain.arcadeDrive(speed, rotation);
     }
-    
-    
-    
     
     
     /* 
