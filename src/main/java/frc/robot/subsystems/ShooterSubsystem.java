@@ -45,3 +45,4 @@ public class ShooterSubsystem extends SubsystemBase {
     m_launchWheel.set(0);
     m_feedWheel.set(0);
   }
+}
