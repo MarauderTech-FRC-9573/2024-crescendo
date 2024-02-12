@@ -1,6 +1,3 @@
-/*
- * For Shooter Subsystem
- */
 
 package frc.robot.commands;
 import static frc.robot.Constants.ShooterConstants;
@@ -8,17 +5,17 @@ import static frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class PrepareLaunch extends Command {
+public class PrepareLaunchAmp extends Command {
     ShooterSubsystem launcher;
 
-    public PrepareLaunch(ShooterSubsystem launcher) {
+    public PrepareLaunchAmp(ShooterSubsystem launcher) {
         this.launcher = launcher;
         addRequirements(launcher);
     }
 
     @Override 
     public void initialize() {
-        launcher.setLaunchWheel(ShooterConstants.kLaunchWheelSpeed);
+        launcher.setLaunchWheel(ShooterConstants.AmpLaunchWheelSpeed);
     }
 
     @Override 

@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import static frc.robot.Constants.DriveConstants.*;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -76,10 +76,10 @@ public class DriveSubsystem extends SubsystemBase {
     CANSparkMax rightFront;
     CANSparkMax rightRear;
     public DriveSubsystem() {
-        leftFront = new CANSparkMax(kLeftFrontID, MotorType.kBrushed);
-        leftRear = new CANSparkMax(kLeftRearID, MotorType.kBrushed);
-        rightFront = new CANSparkMax(kRightFrontID, MotorType.kBrushed);
-        rightRear = new CANSparkMax(kRightRearID, MotorType.kBrushed);
+        leftFront = new CANSparkMax(kLeftFrontID, CANSparkLowLevel.MotorType.kBrushed);
+        leftRear = new CANSparkMax(kLeftRearID, CANSparkLowLevel.MotorType.kBrushed);
+        rightFront = new CANSparkMax(kRightFrontID, CANSparkLowLevel.MotorType.kBrushed);
+        rightRear = new CANSparkMax(kRightRearID, CANSparkLowLevel.MotorType.kBrushed);
         
         /*Sets current limits for the drivetrain motors. This helps reduce the likelihood of wheel spin, reduces motor heating
         *at stall (Drivetrain pushing against something) and helps maintain battery voltage under heavy demand */
