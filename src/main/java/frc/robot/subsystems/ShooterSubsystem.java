@@ -40,10 +40,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setFeedWheel(double speed) {
     m_feedWheel.set(speed);
   }
-
-
+  
   public void stop() {
     m_launchWheel.set(0);
     m_feedWheel.set(0);
   }
-}
