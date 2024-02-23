@@ -21,17 +21,6 @@ public final class Constants {
     // Current limit for drivetrain motors
     public static final int kCurrentLimit = 60;
   
-    public static final int joystickPort = 0;    
-
-    // PWM ports/CAN IDs for motor controllers
-    public static final int kLeftRearID = 5;
-    public static final int kLeftFrontID = 4;
-    public static final int kRightRearID = 3;
-    public static final int kRightFrontID = 2;
-    
-    // Current limit for drivetrain motors
-    public static final int kCurrentLimit = 60;
-    
     public static int operatorControllerPort = 1;
     public static int driveControllerPort = 0;
     
@@ -63,7 +52,7 @@ public final class Constants {
     
     public static final int kEncoderCPR = 1024;
     public static final double kEncoderDistancePerPulse = (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR; // Assumes the encoders are directly mounted on the wheel shafts
-     
+
   }
   
   public static final class ShooterConstants {
