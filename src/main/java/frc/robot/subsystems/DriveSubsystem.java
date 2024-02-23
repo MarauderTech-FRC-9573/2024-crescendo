@@ -22,14 +22,9 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import static frc.robot.Constants.DriveConstants.*;
 
 import com.revrobotics.CANSparkMax;
-<<<<<<< HEAD
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-=======
 import com.revrobotics.CANSparkLowLevel;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
->>>>>>> main
-
 
 public class DriveSubsystem extends SubsystemBase {
     // MOTOR CONTROLLERS
