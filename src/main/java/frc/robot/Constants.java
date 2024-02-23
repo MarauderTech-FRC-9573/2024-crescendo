@@ -11,6 +11,20 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 
 public final class Constants {
   public static final class DriveConstants {
+<<<<<<< HEAD
+=======
+
+      // PWM ports/CAN IDs for motor controllers
+      public static final int kLeftRearID = 5;
+      public static final int kLeftFrontID = 4;
+      public static final int kRightRearID = 3;
+      public static final int kRightFrontID = 2;
+  
+      // Current limit for drivetrain motors
+      public static final int kCurrentLimit = 60;
+  
+    public static final int joystickPort = 0;    
+>>>>>>> main
     
     // PWM ports/CAN IDs for motor controllers
     public static final int kLeftRearID = 5;
@@ -54,12 +68,9 @@ public final class Constants {
     public static final double kEncoderDistancePerPulse = (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR; // Assumes the encoders are directly mounted on the wheel shafts 
   }
   
-  public static final class IntakeConstants {
-    
-  }
-  
   public static final class ShooterConstants {
     
+<<<<<<< HEAD
     public static double kIntakeLauncherSpeed = 3.0;
     public static double kIntakeFeederSpeed = 3.0;
     public static int launchWheelPort = 5;
@@ -70,7 +81,19 @@ public final class Constants {
     
     
   }
+=======
+    public static double kIntakeLauncherSpeed = -3.0;
+    public static double kIntakeFeederSpeed = -3.0;
+    public static int launchWheelPort = 6;
+    public static int intakeWheelPort = 7;
+    public static double AmpLaunchWheelSpeed = 3.0;
+    public static double AmpFeedWheelSpeed = 3.0;
+    public static double SpeakerLaunchWheelSpeed = 6.0;
+    public static double SpeakerFeedWheelSpeed = 6.0;
+>>>>>>> main
   
+  
+  }
   public static final class OIConstants {    
   }
 }
