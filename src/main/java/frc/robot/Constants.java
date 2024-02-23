@@ -11,24 +11,24 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 
 public final class Constants {
   public static final class DriveConstants {
-
-      // PWM ports/CAN IDs for motor controllers
-      public static final int kLeftRearID = 5;
-      public static final int kLeftFrontID = 4;
-      public static final int kRightRearID = 3;
-      public static final int kRightFrontID = 2;
-  
-      // Current limit for drivetrain motors
-      public static final int kCurrentLimit = 60;
-  
-    public static final int joystickPort = 0;    
     
-    public static final double kDriveTick2Feet = 1.0 / 128 * 6 * Math.PI / 12;
+    // PWM ports/CAN IDs for motor controllers
+    public static final int kLeftRearID = 5;
+    public static final int kLeftFrontID = 4;
+    public static final int kRightRearID = 3;
+    public static final int kRightFrontID = 2;
+  
+    // Current limit for drivetrain motors
+    public static final int kCurrentLimit = 60;
+  
+    public static int operatorControllerPort = 1;
+    public static int driveControllerPort = 0;
     
     // values are related to PID and need to be tuned:
     public static final double kP = 0.5;
     public static final double kI = 0.5;
     public static final double kD = 0.1;
+    public static final double kDriveTick2Feet = 1.0 / 128 * 6 * Math.PI / 12;
     
     // varys per robot and must be tuned 
     // try Robot Characterization Toolsuite to get these values
@@ -42,32 +42,17 @@ public final class Constants {
     public static final double kDriveGearing = 8;
     public static double kTrackwidthMeters = 0.69; 
     public static double kWheelDiameterMeters = 0.15;
-
-    public static int operatorControllerPort;
-
-    public static int driveControllerPort;
     
-    public static final LinearSystem<N2, N2, N2> kDrivetrainPlant =
-    LinearSystemId.identifyDrivetrainSystem(
-    kvVoltSecondsPerMeter,
-    kaVoltSecondsSquaredPerMeter,
-    kvVoltSecondsPerRadian,
-    kaVoltSecondsSquaredPerRadian);    
+    public static final LinearSystem<N2, N2, N2> kDrivetrainPlant = LinearSystemId.identifyDrivetrainSystem(kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter,kvVoltSecondsPerRadian, kaVoltSecondsSquaredPerRadian);    
     
     public static final int[] kLeftLeadEncoderPorts = new int[] {4, 5};
-    public static final int[] kRightLeadEncoderPorts = new int[] {6,7 };
-    public static final int[] kLeftFollowEncoderPorts = new int[] {8, 9};
-    public static final int[] kRightFollowEncoderPorts = new int[] {10, 11};
-
+    public static final int[] kRightLeadEncoderPorts = new int[] {6, 7};
     public static final boolean kLeftEncoderReversed = false;
     public static final boolean kRightEncoderReversed = true;
     
     public static final int kEncoderCPR = 1024;
-    public static final double kEncoderDistancePerPulse =
-    // Assumes the encoders are directly mounted on the wheel shafts
-    (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
-    
-    
+    public static final double kEncoderDistancePerPulse = (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR; // Assumes the encoders are directly mounted on the wheel shafts
+
   }
   
   public static final class ShooterConstants {
@@ -81,8 +66,9 @@ public final class Constants {
     public static double SpeakerLaunchWheelSpeed = 6.0;
     public static double SpeakerFeedWheelSpeed = 6.0;
   
-  
   }
+
   public static final class OIConstants {    
+
   }
 }
