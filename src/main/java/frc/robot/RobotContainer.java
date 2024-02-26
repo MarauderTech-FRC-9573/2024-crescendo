@@ -14,6 +14,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.CameraTest;
 
 public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
@@ -42,8 +43,8 @@ public class RobotContainer {
   }
   
   public Command getAutonomousCommand() {
-    return Autos.exampleAuto(driveSubsystem, driveController);
-    }
+    return new CameraTest(visionSubsystem);
+  }
   }
   
   
