@@ -148,7 +148,9 @@ public class DriveSubsystem extends SubsystemBase {
         if (m_fieldSim != null) {
             m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
         }
-        
+
+        SmartDashboard.putNumber("Gyro", Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0));
+
     }
     
     
