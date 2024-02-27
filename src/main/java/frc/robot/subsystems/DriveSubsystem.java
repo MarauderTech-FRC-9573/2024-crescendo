@@ -158,6 +158,23 @@ public class DriveSubsystem extends SubsystemBase {
         m_drivetrain.arcadeDrive(speed, rotation);
     }
     
+    /**
+     * Returns the turn rate of the robot.
+     *
+     * @return The turn rate of the robot, in degrees per second
+     */
+    public double getTurnRate() {
+
+        return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+
+    }
+
+    /** Zeroes the heading of the robot. */
+    public void zeroHeading() {
+
+        m_gyro.reset();
+        
+    }
     
     /* 
     * CODE FOR SIMULATION
@@ -227,7 +244,7 @@ public class DriveSubsystem extends SubsystemBase {
     public Encoder getRightEncoder() {
         return driveRightEncoder;
     }
-    // Is this needed? 
+    // Is this needed? Apparently this is useful for scaling robot speed
     public void setMaxOutput(double maxOutput) {
         m_drivetrain.setMaxOutput(maxOutput);
     }
