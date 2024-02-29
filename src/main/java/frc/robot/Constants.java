@@ -11,6 +11,7 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
 
 public final class Constants {
   public static final class DriveConstants {
@@ -140,7 +141,11 @@ public final class Constants {
     
     public static final double ANGULAR_P = 0.1;
     public static final double ANGULAR_D = 0.0;
+    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
+    public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+    public static final double GOAL_RANGE_METERS = Units.feetToMeters(3);
     public static PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+    public static double CAMERA_PITCH_RADIANS = Units.degreesToRadians(3);
     
   }
   
