@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AimAtTarget;
 import frc.robot.commands.Autos;
 import frc.robot.commands.LaunchAmp;
 import frc.robot.commands.LaunchSpeaker;
@@ -14,7 +15,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.CameraTest;
 
 public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
@@ -42,9 +42,9 @@ public class RobotContainer {
     
   }
   
-  public Command getAutonomousCommand() {
-    return new CameraTest(visionSubsystem);
-  }
-  }
+  // public Command getAutonomousCommand() {
+  //   return new AimAtTarget(visionSubsystem);
+  // }
+}
   
   
