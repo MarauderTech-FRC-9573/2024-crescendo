@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N2;
@@ -13,16 +14,16 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 
 public final class Constants {
   public static final class DriveConstants {
-
-      // PWM ports/CAN IDs for motor controllers
-      public static final int kLeftRearID = 5;
-      public static final int kLeftFrontID = 4;
-      public static final int kRightRearID = 3;
-      public static final int kRightFrontID = 2;
-  
-      // Current limit for drivetrain motors
-      public static final int kCurrentLimit = 60;
-  
+    
+    // PWM ports/CAN IDs for motor controllers
+    public static final int kLeftRearID = 5;
+    public static final int kLeftFrontID = 4;
+    public static final int kRightRearID = 3;
+    public static final int kRightFrontID = 2;
+    
+    // Current limit for drivetrain motors
+    public static final int kCurrentLimit = 60;
+    
     public static final int joystickPort = 0;    
     
     public static final double kDriveTick2Feet = 1.0 / 128 * 6 * Math.PI / 12;
@@ -44,9 +45,9 @@ public final class Constants {
     public static final double kDriveGearing = 8;
     public static double kTrackwidthMeters = 0.69; 
     public static double kWheelDiameterMeters = 0.15;
-
+    
     public static int operatorControllerPort;
-
+    
     public static int driveControllerPort;
     
     public static final LinearSystem<N2, N2, N2> kDrivetrainPlant =
@@ -60,7 +61,7 @@ public final class Constants {
     public static final int[] kRightLeadEncoderPorts = new int[] {6,7 };
     public static final int[] kLeftFollowEncoderPorts = new int[] {8, 9};
     public static final int[] kRightFollowEncoderPorts = new int[] {10, 11};
-
+    
     public static final boolean kLeftEncoderReversed = false;
     public static final boolean kRightEncoderReversed = true;
     
@@ -82,25 +83,25 @@ public final class Constants {
     public static double AmpFeedWheelSpeed = 3.0;
     public static double SpeakerLaunchWheelSpeed = 6.0;
     public static double SpeakerFeedWheelSpeed = 6.0;
-  
-  
+    
+    
   }
   public static final class OIConstants {    
   }
-
+  
   public static class VisionConstants {
     public static final String kCameraName1 = "Camera1";
     public static final String kCameraName2 = "Camera2";
     public static final Transform3d kCamera1ToRobotOffset = new Transform3d();
-    public static final Transform3d kCamera2ToRobotOffset = new Transform3d(0.0, -0.12, 0.0, new Rotation3d());
-
-
+    public static final Transform3d kCamera2ToRobotOffset = new Transform3d(0.0, -0.12, 0.0, new Rotation3d());    
+    
+    
     public static final double kCamera1HeightMeters = 0.215;
     public static final double kCamera2HeightMeters = 0.0;
     public static final double kCamera3HeightMeters = 0.0;
-
+    
     public static final double KCameraPitchRadians = 0.0;
-
+    
     public static final double kTarget1HeightMeters = 0.540;
     public static final double kTarget2HeightMeters = 0.522;
     public static final double kTarget3HeightMeters = 0.530;
@@ -109,34 +110,43 @@ public final class Constants {
     public static final double kTarget6HeightMeters = 0.0;
     public static final double kTarget7HeightMeters = 0.0;
     public static final double kTarget8HeightMeters = 0.0;
-
+    
     public static double findTargetHeight(int targetID) {
       switch(targetID) {
         case 1: targetID = 1;
-          return kTarget1HeightMeters;
+        return kTarget1HeightMeters;
         case 2: targetID = 2;
-          return kTarget2HeightMeters;
+        return kTarget2HeightMeters;
         case 3: targetID = 3;
-          return kTarget3HeightMeters;
+        return kTarget3HeightMeters;
         case 4: targetID = 4;
-          return kTarget4HeightMeters;
+        return kTarget4HeightMeters;
         case 5: targetID = 5;
-          return kTarget5HeightMeters;
+        return kTarget5HeightMeters;
         case 6: targetID = 6;
-          return kTarget6HeightMeters;
+        return kTarget6HeightMeters;
         case 7: targetID = 7;
-          return kTarget7HeightMeters;
+        return kTarget7HeightMeters;
         case 8: targetID = 8;
-          return kTarget8HeightMeters;
+        return kTarget8HeightMeters;
         default: throw new Error("Invalid Target ID");
       }
     }
+    
+    // PID constants should be tuned per robot
+    public static final double LINEAR_P = 0.1;
+    public static final double LINEAR_D = 0.0;
+    public static PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
+    
+    public static final double ANGULAR_P = 0.1;
+    public static final double ANGULAR_D = 0.0;
+    public static PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+    
   }
-
+  
   public static class FieldConstants {
     public static final double kFieldLength = 4.0;
     public static final double kFieldWidth = 3.0;
   }
-
-
+  
 }
