@@ -40,7 +40,7 @@ public class DriveSubsystem extends SubsystemBase {
     // PID
     private double targetLeftVelocity = 3; // Target velocity in meters per second
     private double targetRightVelocity = 3; // Target velocity in meters per second
-
+    
     private final PIDController leftPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
     private final PIDController rightPIDController = new PIDController(DriveConstants.kP, DriveConstants.kI, DriveConstants.kD);
     
@@ -90,10 +90,6 @@ public class DriveSubsystem extends SubsystemBase {
         // Put the front motors into the differential drive object. This will control all 4 motors with
         // the rears set to follow the fronts
         m_drivetrain = new DifferentialDrive(leftFront, rightFront);
-        resetEncoders();
-        
-        driveLeftEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
-        driveRightEncoder.setDistancePerPulse(DriveConstants.kEncoderDistancePerPulse);
         
         m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance());
         
@@ -148,11 +144,11 @@ public class DriveSubsystem extends SubsystemBase {
         if (m_fieldSim != null) {
             m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
         }
-
+        
         SmartDashboard.putNumber("Gyro", Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0));
-
+        
     }
-
+    
     public double calculateTurningCorrection() {
         return (DriveConstants.kAngleSetpoint - m_gyro.getAngle()) * DriveConstants.kP;
     }
@@ -162,25 +158,21 @@ public class DriveSubsystem extends SubsystemBase {
         m_drivetrain.arcadeDrive(speed, rotation);
     }
     
+    // Pertaining to odometry and gryo PID
+    
     /**
-     * Returns the turn rate of the robot.
-     *
-     * @return The turn rate of the robot, in degrees per second
-     */
+    * Returns the turn rate of the robot.
+    *
+    * @return The turn rate of the robot, in degrees per second
+    */
     public double getTurnRate() {
         return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
     }
-
+    
     /** Zeroes the heading of the robot. */
     public void zeroHeading() {
-
         m_gyro.reset();
-        
     }
-    
-    /* 
-    * CODE FOR SIMULATION
-    */
     
     public double getHeading() {
         return Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
@@ -192,7 +184,6 @@ public class DriveSubsystem extends SubsystemBase {
     
     /** Resets robot odometry. */
     public void resetOdometry(Pose2d pose) {
-        resetEncoders();
         m_drivetrainSimulator.setPose(pose);
         m_odometry.resetPosition(
         m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), pose);
@@ -202,6 +193,12 @@ public class DriveSubsystem extends SubsystemBase {
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
     }
+    
+    
+    /* 
+    * CODE FOR SIMULATION
+    */
+    
     
     /** Update our simulation. This should be run every robot loop in simulation. */
     public void simulationPeriodic() {
