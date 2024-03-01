@@ -44,10 +44,13 @@ public class AimAtTarget extends Command{
 
             forwardSpeed = -VisionConstants.forwardController.calculate(range, VisionConstants.GOAL_RANGE_METERS);
             rotationSpeed = -VisionConstants.turnController.calculate(result.getBestTarget().getYaw(), 0);
+            System.out.println("TARGET DETECTED");
+
         } else {
             // If we have no targets, stay still.
             forwardSpeed = 0;
             rotationSpeed = 0;
+            System.out.println("TARGET NOT DETECTED");
         }
         
         // Use our forward/turn speeds to control the drivetrain
