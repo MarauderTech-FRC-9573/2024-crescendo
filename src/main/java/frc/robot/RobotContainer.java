@@ -39,6 +39,7 @@ public class RobotContainer {
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
+    operatorController.x().whileTrue(new AimAtTarget(visionSubsystem, driveSubsystem, operatorController).withTimeout(1));
     
   }
   
