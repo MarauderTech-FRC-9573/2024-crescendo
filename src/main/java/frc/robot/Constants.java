@@ -70,6 +70,9 @@ public final class Constants {
     
     public static final int kEncoderCPR = 1024;
     public static final double kEncoderDistancePerPulse = (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR; // Assumes the encoders are directly mounted on the wheel shafts
+    
+    public static final int kAngleSetpoint = 0;
+
 
   }
   

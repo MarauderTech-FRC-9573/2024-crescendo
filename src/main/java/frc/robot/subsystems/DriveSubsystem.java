@@ -152,6 +152,10 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Gyro", Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0));
 
     }
+
+    public double calculateTurningCorrection() {
+        return (DriveConstants.kAngleSetpoint - m_gyro.getAngle()) * DriveConstants.kP;
+    }
     
     
     public void arcadeDrive(double speed, double rotation) {
@@ -164,9 +168,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return The turn rate of the robot, in degrees per second
      */
     public double getTurnRate() {
-
         return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-
     }
 
     /** Zeroes the heading of the robot. */
@@ -181,12 +183,11 @@ public class DriveSubsystem extends SubsystemBase {
     */
     
     public double getHeading() {
-        return Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0);
+        return Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
     }
     
     public void updateOdometry() {
-        m_odometry.update(
-        m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance());
+        m_odometry.update(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance());
     }
     
     /** Resets robot odometry. */
@@ -220,30 +221,6 @@ public class DriveSubsystem extends SubsystemBase {
         m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
     }
     
-    /*
-    * ENCODERS
-    */
-    
-    // resets encoders to read 0 
-    public void resetEncoders() {
-        driveLeftEncoder.reset();
-        driveRightEncoder.reset();
-    }
-    
-    // returns average of two 
-    public double getAverageEncoderDistance() {
-        return (driveLeftEncoder.getDistance() + driveRightEncoder.getDistance()) / 2.0;
-    }
-    
-    // returns value of left encoder
-    public Encoder getLeftEncoder() {
-        return driveLeftEncoder;
-    }
-    
-    // returns value of right encoder
-    public Encoder getRightEncoder() {
-        return driveRightEncoder;
-    }
     // Is this needed? Apparently this is useful for scaling robot speed
     public void setMaxOutput(double maxOutput) {
         m_drivetrain.setMaxOutput(maxOutput);
