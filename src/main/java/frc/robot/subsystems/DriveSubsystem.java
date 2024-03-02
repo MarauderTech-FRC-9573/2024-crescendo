@@ -133,6 +133,9 @@ public class DriveSubsystem extends SubsystemBase {
         // Apply the calculated output to the motors along with feedforward for velocity control
         double leftMotorInput = leftOutput + m_feedforward.calculate(targetLeftVelocity);
         double rightMotorInput = rightOutput + m_feedforward.calculate(targetRightVelocity);
+
+        System.out.println(leftMotorInput);
+        System.out.println(rightMotorInput);
         
         // Ensure the motor input is within the allowable range
         leftMotorInput = MathUtil.clamp(leftMotorInput, -1.0, 1.0);
@@ -144,6 +147,8 @@ public class DriveSubsystem extends SubsystemBase {
         if (m_fieldSim != null) {
             m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
         }
+
+        System.out.println(Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0));
         
         SmartDashboard.putNumber("Gyro", Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0));
         
@@ -155,9 +160,9 @@ public class DriveSubsystem extends SubsystemBase {
     
     
     public void arcadeDrive(double speed, double rotation) {
-        double correction = calculateTurningCorrection();
-        System.out.println("correction: " + correction);
-        m_drivetrain.arcadeDrive(speed, rotation-correction);
+        // double correction = calculateTurningCorrection();
+        // System.out.println("correction: " + correction);
+        m_drivetrain.arcadeDrive(speed, rotation);
     }
     
     // Pertaining to odometry and gryo PID
