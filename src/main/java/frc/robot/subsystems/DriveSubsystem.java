@@ -134,8 +134,8 @@ public class DriveSubsystem extends SubsystemBase {
         double leftMotorInput = leftOutput + m_feedforward.calculate(targetLeftVelocity);
         double rightMotorInput = rightOutput + m_feedforward.calculate(targetRightVelocity);
 
-        System.out.println(leftMotorInput);
-        System.out.println(rightMotorInput);
+        System.out.println("leftMotorInput: " + leftMotorInput);
+        System.out.println("rightMotorInput: "+ rightMotorInput);
         
         // Ensure the motor input is within the allowable range
         leftMotorInput = MathUtil.clamp(leftMotorInput, -1.0, 1.0);
@@ -148,7 +148,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
         }
 
-        System.out.println(Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0));
+        System.out.println("Gyro get heading: " + Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0));
         
         SmartDashboard.putNumber("Gyro", Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0));
         
