@@ -26,6 +26,8 @@ public class TurnToAngle extends PIDCommand {
         output -> drive.arcadeDrive(0, output),
         // Require the drive
         drive);
+        
+    System.out.println("Turn to angle running:");
 
     // Set the controller to be continuous (because it is an angle controller)
     getController().enableContinuousInput(-180, 180);

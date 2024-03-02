@@ -33,7 +33,7 @@ public class TurnToAngleProfiled extends ProfiledPIDCommand {
         (output, setpoint) -> drive.arcadeDrive(0, output),
         // Require the drive
         drive);
-
+    System.out.println("TurnToAngleProfiled running:");
     // Set the controller to be continuous (because it is an angle controller)
     getController().enableContinuousInput(-180, 180);
     // Set the controller tolerance - the delta tolerance ensures the robot is stationary at the
