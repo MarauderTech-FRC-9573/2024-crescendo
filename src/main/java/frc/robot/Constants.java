@@ -25,9 +25,9 @@ public final class Constants {
     public static int driveControllerPort = 0;
     
     // values are related to PID and need to be tuned:
-    public static final double kP = 0.5;
-    public static final double kI = 0.5;
-    public static final double kD = 0.1;
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
     public static final double kDriveTick2Feet = 1.0 / 128 * 6 * Math.PI / 12;
 
     //PID values for gyro taken from wpilib gyrocommand example
@@ -38,7 +38,7 @@ public final class Constants {
     public static final double kStabilizationI = 0.5;
     public static final double kStabilizationD = 0;
 
-    public static final double kTurnP = 1;
+    public static final double kTurnP = 0;
     public static final double kTurnI = 0;
     public static final double kTurnD = 0;
 
