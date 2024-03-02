@@ -8,18 +8,18 @@ import frc.robot.subsystems.IntakeSubsystem;
  *
 */
 
-public class IntakeReleaser extends Command {
-    IntakeSubsystem IntakeSubsystem;
+public class IntakeReceiver extends Command {
+    IntakeSubsystem intakeSubsystem;
 
-    public IntakeReleaser(IntakeSubsystem IntakeSubsystem) {
-        this.IntakeSubsystem = intakeSubsystem;
+    public IntakeReceiver(IntakeSubsystem intakeSubsystem) {
+        this.intakeSubsystem = intakeSubsystem;
         addRequirements(intakeSubsystem);
     }
 
     @Override
     public void initialize() {
-        intakeSubsystem.setBrushWheel(IntakeConstants.BrushMotorReceive);
-
+        intakeSubsystem.setBrushMotor(IntakeConstants.BrushMotorReceive);
+        
     }
 
     @Override 

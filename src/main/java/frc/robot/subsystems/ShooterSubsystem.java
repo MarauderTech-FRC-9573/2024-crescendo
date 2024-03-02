@@ -1,7 +1,4 @@
-
 package frc.robot.subsystems;
-
-import static frc.robot.Constants.ShooterConstants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
