@@ -83,6 +83,24 @@ public final class Constants {
   
   
   }
+  // New Constants for the Intake
+  public static final class IntakeConstants {
+
+
+    public static double BrushMotorRelease = 3.0;
+    public static double BrushMotorReceive = -3.0;
+    //Intake constants for the first motor to recieve and release
+    public static double IntakeMotorMoveFoward = 3.0;
+    public static double IntakeMotorMoveBack = -3.0;
+    /*Intake constants for the second motor to move the intakesubsystem.
+    To move to get or receive the note from the ground.
+    And to move the received note to the shooter and release.
+    */
+    public static int brushMotorPort = 8;
+    public static int intakeMotorPort = 9;
+    //Subject to change
+
+  }
   public static final class OIConstants {    
   }
 }
