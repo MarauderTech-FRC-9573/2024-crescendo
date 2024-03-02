@@ -161,15 +161,18 @@ public class DriveSubsystem extends SubsystemBase {
     
     public void arcadeDrive(double speed, double rotation) {
 
+        speed = Math.floor(speed);
+        rotation = Math.floor(rotation);
+
         System.out.println("Speed: " + speed);
         System.out.println("Rotation: " + rotation);
-        
 
-        if (speed == 0 && rotation == 0) {
+        // Stops the robot from moving if there is no controller input, preventing drift 
+        if (speed == 0 && rotation == 0) { 
             m_drivetrain.arcadeDrive(0,0);
+        } else { 
+            m_drivetrain.arcadeDrive(speed, rotation);
         }
-
-        m_drivetrain.arcadeDrive(speed, rotation);
     }
     
     // Pertaining to odometry and gryo PID
