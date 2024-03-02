@@ -33,8 +33,6 @@ public class AimAtTarget extends Command{
     
     @Override 
     public void execute() {        
-        // Vision-alignment mode
-        // Query the latest result from PhotonVision
         PhotonPipelineResult result = m_vision.getLatestResult();
         
         if (result.hasTargets()) {
@@ -42,8 +40,8 @@ public class AimAtTarget extends Command{
             // -1.0 required to ensure positive PID controller effort _increases_ yaw
             double range = PhotonUtils.calculateDistanceToTargetMeters(VisionConstants.CAMERA_HEIGHT_METERS, VisionConstants.TARGET_HEIGHT_METERS, VisionConstants.CAMERA_PITCH_RADIANS, Units.degreesToRadians(result.getBestTarget().getPitch()));
 
-            forwardSpeed = -VisionConstants.forwardController.calculate(range, VisionConstants.GOAL_RANGE_METERS);
-            rotationSpeed = -VisionConstants.turnController.calculate(result.getBestTarget().getYaw(), 0);
+            forwardSpeed = m_vision.forwardController.calculate(range, VisionConstants.GOAL_RANGE_METERS);
+            rotationSpeed = -m_vision.turnController.calculate(result.getBestTarget().getYaw(), 0);
             System.out.println("TARGET DETECTED");
 
         } else {
