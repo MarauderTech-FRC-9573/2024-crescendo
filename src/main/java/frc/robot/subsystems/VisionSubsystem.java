@@ -41,6 +41,8 @@ public class VisionSubsystem extends SubsystemBase {
         for (var target : result.getTargets()) {
             System.out.println("Detected April tag: " + target);
         }
+    } else  { 
+        System.out.println("No April tags detected");
     }
 }
 

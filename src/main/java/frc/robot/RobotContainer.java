@@ -28,6 +28,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureButtonBindings();
     driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.arcadeDrive(-driveController.getLeftY(), -driveController.getRightX()), driveSubsystem));
+    visionSubsystem.setDefaultCommand(new RunCommand(() -> visionSubsystem.getAprilTags(), visionSubsystem));
     
   }
   
