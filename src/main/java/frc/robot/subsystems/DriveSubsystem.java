@@ -161,6 +161,10 @@ public class DriveSubsystem extends SubsystemBase {
     
     public void arcadeDrive(double speed, double rotation) {
 
+        System.out.println("Speed: " + speed);
+        System.out.println("Rotation: " + rotation);
+        
+
         if (speed == 0 && rotation == 0) {
             m_drivetrain.arcadeDrive(0,0);
         }
