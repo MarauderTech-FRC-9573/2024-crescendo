@@ -160,8 +160,11 @@ public class DriveSubsystem extends SubsystemBase {
     
     
     public void arcadeDrive(double speed, double rotation) {
-        // double correction = calculateTurningCorrection();
-        // System.out.println("correction: " + correction);
+
+        if (speed == 0 && rotation == 0) {
+            m_drivetrain.arcadeDrive(0,0);
+        }
+
         m_drivetrain.arcadeDrive(speed, rotation);
     }
     
