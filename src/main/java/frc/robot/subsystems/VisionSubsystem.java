@@ -35,5 +35,15 @@ public class VisionSubsystem extends SubsystemBase {
     return camera.getLatestResult();
   }
 
+  public void getAprilTags() {
+    var result = camera.getLatestResult();
+    if (result.hasTargets()) {
+        for (var target : result.getTargets()) {
+            System.out.println("Detected April tag: " + target);
+        }
+    }
+}
+
+
   
 }
