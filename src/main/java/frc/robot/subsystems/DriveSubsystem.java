@@ -155,7 +155,9 @@ public class DriveSubsystem extends SubsystemBase {
     
     
     public void arcadeDrive(double speed, double rotation) {
-        m_drivetrain.arcadeDrive(speed, rotation);
+        double correction = calculateTurningCorrection();
+        System.out.println("correction: " + correction);
+        m_drivetrain.arcadeDrive(speed, rotation-correction);
     }
     
     // Pertaining to odometry and gryo PID
