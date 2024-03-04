@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Autos;
@@ -47,13 +48,15 @@ public class RobotContainer {
 
     // Scales Robot speed
     operatorController.rightBumper()
-        .onTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.5)))
-        .onFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(1)));
+        .onTrue(//new InstantCommand(() -> driveSubsystem.setMaxOutput(0.5)))
+        new PrintCommand("Right Bumper being Pressed"))
+        .onFalse(//new InstantCommand(() -> driveSubsystem.setMaxOutput(1)))
+        new PrintCommand("Right Bumper onFalse trigger"));
 
     // Stabilize robot to drive straight with gyro when left bumper is held
     operatorController.leftBumper()
         .whileTrue(
-            new PIDCommand(
+            /*new PIDCommand(
                 new PIDController(
                     DriveConstants.kStabilizationP,
                     DriveConstants.kStabilizationI,
@@ -65,15 +68,18 @@ public class RobotContainer {
                 // Pipe the output to the turning controls
                 output -> driveSubsystem.arcadeDrive(-operatorController.getLeftY(), output),
                 // Require the robot drive
-                driveSubsystem));
+                driveSubsystem)); */
+                new PrintCommand("Left Bumper being held"));
 
     // Turn to 90 degrees when the 'X' button is pressed, with a 5 second timeout
     operatorController.x()
-        .onTrue(new TurnToAngle(90, driveSubsystem).withTimeout(5));
+        .onTrue(//new TurnToAngle(90, driveSubsystem).withTimeout(5));
+        new PrintCommand("X Button Pressed"));
 
     // Turn to -90 degrees with a profile when the Circle button is pressed, with a 5 second timeout
     operatorController.y()
-        .onTrue(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(5));
+        .onTrue(//new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(5)
+        new PrintCommand("Y Button Pressed."));
     
   }
   
