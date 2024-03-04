@@ -89,7 +89,7 @@ public class DriveSubsystem extends SubsystemBase {
     * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
     public void arcadeDrive(double speed, double rotation) {
         if (speed == 0 && rotation == 0) {
-            m_drivetrain.arcadeDrive(0, 0)
+            m_drivetrain.arcadeDrive(0, 0);
         } else {
             m_drivetrain.arcadeDrive(speed, rotation);
         }
