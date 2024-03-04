@@ -54,6 +54,8 @@ public class DriveSubsystem extends SubsystemBase {
     
     // ODOMETRY 
     private final DifferentialDriveOdometry m_odometry;
+
+    private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);
     
     
     /*Constructor. This method is called when an instance of the class is created. This should generally be used to set up
@@ -83,6 +85,8 @@ public class DriveSubsystem extends SubsystemBase {
         // Put the front motors into the differential drive object. This will control all 4 motors with
         // the rears set to follow the fronts
         m_drivetrain = new DifferentialDrive(leftFront, rightFront);
+
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance());
     }
     
     /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
@@ -91,7 +95,23 @@ public class DriveSubsystem extends SubsystemBase {
         if (speed == 0 && rotation == 0) {
             m_drivetrain.arcadeDrive(0, 0);
         } else {
-            m_drivetrain.arcadeDrive(speed, rotation);
+            // Calculate the PID output for left and right motors
+            double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
+            double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
+            
+            // Apply the calculated output to the motors along with feedforward for velocity control
+            double leftMotorInput = leftOutput + m_feedforward.calculate(targetLeftVelocity);
+            double rightMotorInput = rightOutput + m_feedforward.calculate(targetRightVelocity);
+            
+            System.out.println("leftMotorInput: " + leftMotorInput);
+            System.out.println("rightMotorInput: "+ rightMotorInput);
+            
+            // Ensure the motor input is within the allowable range
+            leftMotorInput = MathUtil.clamp(leftMotorInput, -1.0, 1.0);
+            rightMotorInput = MathUtil.clamp(rightMotorInput, -1.0, 1.0);
+            
+            // Set the motor speeds            
+            m_drivetrain.arcadeDrive(speed + leftMotorInput, rotation + rightMotorInput);
         }
     }
     
@@ -100,4 +120,9 @@ public class DriveSubsystem extends SubsystemBase {
         /*This method will be called once per scheduler run. It can be used for running tasks we know we want to update each
         * loop such as processing sensor data. Our drivetrain is simple so we don't have anything to put here */
     }
+
+    public double getHeading() {
+        return Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    }
+
 }
