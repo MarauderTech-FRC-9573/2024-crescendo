@@ -109,6 +109,9 @@ public class DriveSubsystem extends SubsystemBase {
             // Ensure the motor input is within the allowable range
             leftMotorInput = MathUtil.clamp(leftMotorInput, -1.0, 1.0);
             rightMotorInput = MathUtil.clamp(rightMotorInput, -1.0, 1.0);
+
+            System.out.println("leftMotorInput Post Clamp: " + leftMotorInput);
+            System.out.println("rightMotorInput Post Clamp: "+ rightMotorInput);
             
             // Set the motor speeds            
             m_drivetrain.arcadeDrive(speed + leftMotorInput, rotation + rightMotorInput);
