@@ -96,10 +96,16 @@ public class DriveSubsystem extends SubsystemBase {
             m_drivetrain.arcadeDrive(0, 0);
         } else {
             // Calculate the PID output for left and right motors
+            System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+            System.out.println("Right Encoder: " + driveRightEncoder.getRate());
+
             double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
             double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
             
             // Apply the calculated output to the motors along with feedforward for velocity control
+            System.out.println("Left feedforward: " + m_feedFoward.calculate(targetLeftVelocity));
+            System.out.println("Right feedFoward: " + m_feedforward.calculate(targetRightVelocity));
+
             double leftMotorInput = leftOutput + m_feedforward.calculate(targetLeftVelocity);
             double rightMotorInput = rightOutput + m_feedforward.calculate(targetRightVelocity);
             
@@ -112,7 +118,12 @@ public class DriveSubsystem extends SubsystemBase {
 
             System.out.println("leftMotorInput Post Clamp: " + leftMotorInput);
             System.out.println("rightMotorInput Post Clamp: "+ rightMotorInput);
+
+            System.out.println("Speed input passed to arcadeDrive: " + speed);
+            System.out.println("Rotation input passed to arcadeDrive: " + rotation);
             
+            System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftMotorInput));
+            System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightMotorInput));
             // Set the motor speeds            
             m_drivetrain.arcadeDrive(speed + leftMotorInput, rotation + rightMotorInput);
         }
