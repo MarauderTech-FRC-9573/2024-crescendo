@@ -103,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
             double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
             
             // Apply the calculated output to the motors along with feedforward for velocity control
-            System.out.println("Left feedforward: " + m_feedFoward.calculate(targetLeftVelocity));
+            System.out.println("Left feedforward: " + m_feedforward.calculate(targetLeftVelocity));
             System.out.println("Right feedFoward: " + m_feedforward.calculate(targetRightVelocity));
 
             double leftMotorInput = leftOutput + m_feedforward.calculate(targetLeftVelocity);
