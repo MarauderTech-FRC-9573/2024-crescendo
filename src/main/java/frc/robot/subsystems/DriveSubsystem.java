@@ -95,6 +95,8 @@ public class DriveSubsystem extends SubsystemBase {
         
     }
     
+    boolean isStopped = false;
+
     /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
     * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
     public void driveArcade(double speed, double rotation) {
@@ -102,10 +104,16 @@ public class DriveSubsystem extends SubsystemBase {
         System.out.println("Rotation input to driveArcade: " + rotation);
         
         if (Math.floor(speed) == 0 && Math.floor(rotation) == 0) {
-            m_drivetrain.arcadeDrive(-5, -5);
-            System.out.println("No controller input, not moving");
-            
+
+            if (isStopped)  {
+                System.out.println("Controller input, not moving");
+            } else {
+                m_drivetrain.arcadeDrive(-1, -1);
+                System.out.println("No controller input, not moving");
+                isStopped = true;
+            }
         } else {
+            isStopped = false;
             System.out.println("Controller input, moving");
             // Calculate the PID output for left and right motors
             System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
