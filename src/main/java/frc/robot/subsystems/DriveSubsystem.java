@@ -112,8 +112,8 @@ public class DriveSubsystem extends SubsystemBase {
             leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
             rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
 
-            // System.out.println("leftMotorInput Post Clamp: " + leftOutput);
-            // System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
+            System.out.println("leftMotorInput Post Clamp: " + leftOutput);
+            System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
 
             // System.out.println("Speed input passed to arcadeDrive: " + speed);
             // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
