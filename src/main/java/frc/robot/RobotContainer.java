@@ -40,23 +40,23 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
-    //operatorController.a().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(1).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
-    //operatorController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(1).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
+    driveController.a().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(1).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
+    driveController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(1).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     //operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
 
     // Scales Robot speed
-    operatorController.rightBumper()
+    driveController.rightBumper()
         .whileTrue(//new InstantCommand(() -> driveSubsystem.setMaxOutput(0.5)))
         new PrintCommand("Right Bumper being Pressed"));
         //.onFalse(//new InstantCommand(() -> driveSubsystem.setMaxOutput(1)))
         //new PrintCommand("Right Bumper onFalse trigger"));
 
     // Stabilize robot to drive straight with gyro when left bumper is held
-    operatorController.leftBumper()
+    driveController.leftBumper()
         .whileTrue(
-            /*new PIDCommand(
+            new PIDCommand(
                 new PIDController(
                     DriveConstants.kStabilizationP,
                     DriveConstants.kStabilizationI,
@@ -66,20 +66,17 @@ public class RobotContainer {
                 // Setpoint is 0
                 0,
                 // Pipe the output to the turning controls
-                output -> driveSubsystem.arcadeDrive(-operatorController.getLeftY(), output),
+                output -> driveSubsystem.driveArcade(-driveController.getLeftY(), output),
                 // Require the robot drive
-                driveSubsystem)); */
-                new PrintCommand("Left Bumper being held"));
+                driveSubsystem)); 
 
     // Turn to 90 degrees when the 'X' button is pressed, with a 5 second timeout
-    operatorController.x()
-        .whileTrue(//new TurnToAngle(90, driveSubsystem).withTimeout(5));
-        new PrintCommand("X Button Pressed").withTimeout(1));
+    driveController.x()
+        .whileTrue(new TurnToAngle(90, driveSubsystem).withTimeout(5));
 
     // Turn to -90 degrees with a profile when the Circle button is pressed, with a 5 second timeout
-    operatorController.y()
-        .whileTrue(//new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(5)
-        new PrintCommand("Y Button Pressed.").withTimeout(1));
+    driveController.y()
+        .whileTrue(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(5));
     
   }
   

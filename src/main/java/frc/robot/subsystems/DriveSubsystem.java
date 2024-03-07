@@ -136,4 +136,22 @@ public class DriveSubsystem extends SubsystemBase {
         return Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
     }
 
+    public void zeroHeading() {
+
+        m_gyro.reset();
+
+    }
+
+    public void setMaxOutput(double maxOutput) {
+
+        m_drivetrain.setMaxOutput(maxOutput);
+
+    }
+
+    public double getTurnRate() {
+
+        return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+
+    }
+
 }
