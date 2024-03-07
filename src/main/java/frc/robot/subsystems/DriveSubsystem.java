@@ -108,7 +108,7 @@ public class DriveSubsystem extends SubsystemBase {
             if (isStopped)  {
                 System.out.println("Controller input, not moving");
             } else {
-                m_drivetrain.arcadeDrive(-1, -1);
+                m_drivetrain.arcadeDrive(0, 0);
                 System.out.println("No controller input, not moving");
                 isStopped = true;
             }
