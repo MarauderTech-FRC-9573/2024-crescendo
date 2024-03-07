@@ -91,17 +91,17 @@ public class DriveSubsystem extends SubsystemBase {
     
     /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
     * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
-    public void arcadeDrive(double speed, double rotation) {
-        System.out.println(speed);
-        System.out.println(rotation);
+    public void driveArcade(double speed, double rotation) {
+        System.out.println("Speed input to driveArcade: " + speed);
+        System.out.println("Rotation input to driveArcade: " + rotation);
 
         if (Math.floor(speed) == 0 && Math.floor(rotation) == 0) {
-            // m_drivetrain.arcadeDrive(0, 0);
+            m_drivetrain.arcadeDrive(0, 0);
             System.out.println("No controller input, not moving");
             
         } else {
             // Calculate the PID output for left and right motors
-            System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+            /*System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
             System.out.println("Right Encoder: " + driveRightEncoder.getRate());
 
             double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
@@ -128,9 +128,9 @@ public class DriveSubsystem extends SubsystemBase {
             System.out.println("Rotation input passed to arcadeDrive: " + rotation);
             
             System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftMotorInput));
-            System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightMotorInput));
+            System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightMotorInput)); */
             // Set the motor speeds            
-            // m_drivetrain.arcadeDrive(speed + leftMotorInput, rotation + rightMotorInput);
+            m_drivetrain.arcadeDrive(speed, rotation);
         }
     }
     
