@@ -55,7 +55,10 @@ public class DriveSubsystem extends SubsystemBase {
     // ODOMETRY 
     private final DifferentialDriveOdometry m_odometry;
 
-    private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);
+    Pose2d m_pose;
+    
+    // Gains must be determined, disabled because that's what causes it to spin weirdly
+    // private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);
     
     
     /*Constructor. This method is called when an instance of the class is created. This should generally be used to set up
@@ -85,36 +88,47 @@ public class DriveSubsystem extends SubsystemBase {
         // Put the front motors into the differential drive object. This will control all 4 motors with
         // the rears set to follow the fronts
         m_drivetrain = new DifferentialDrive(leftFront, rightFront);
-
-        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance());
+        
+        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));
+        
+        
+        
     }
     
+    boolean isStopped = false;
+
     /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
     * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
     public void driveArcade(double speed, double rotation) {
-        //System.out.println("Speed input to driveArcade: " + speed);
-        //System.out.println("Rotation input to driveArcade: " + rotation);
-
+        System.out.println("Speed input to driveArcade: " + speed);
+        System.out.println("Rotation input to driveArcade: " + rotation);
+        
         if (Math.floor(speed) == 0 && Math.floor(rotation) == 0) {
-            m_drivetrain.arcadeDrive(0, 0);
-            //System.out.println("No controller input, not moving");
-            
-        } else {
-            //System.out.println("Controller input, moving");
-            // Calculate the PID output for left and right motors
-            //System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
-            //System.out.println("Right Encoder: " + driveRightEncoder.getRate());
 
+            if (isStopped)  {
+                System.out.println("Controller input, not moving");
+            } else {
+                m_drivetrain.arcadeDrive(0, 0);
+                System.out.println("No controller input, not moving");
+                isStopped = true;
+            }
+        } else {
+            isStopped = false;
+            System.out.println("Controller input, moving");
+            // Calculate the PID output for left and right motors
+            System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+            System.out.println("Right Encoder: " + driveRightEncoder.getRate());
+            
             double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
             double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
-                        
+            
             // Ensure the motor input is within the allowable range
             leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
             rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
-
-            //System.out.println("leftMotorInput Post Clamp: " + leftOutput);
-            //System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
-
+            
+            System.out.println("leftMotorInput Post Clamp: " + leftOutput);
+            System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
+            
             // System.out.println("Speed input passed to arcadeDrive: " + speed);
             // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
             
@@ -122,38 +136,42 @@ public class DriveSubsystem extends SubsystemBase {
             // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
             // Set the motor speeds            
             m_drivetrain.arcadeDrive(speed + leftOutput, rotation + rightOutput);
-
         }
     }
     
+    
+    
     @Override
     public void periodic() {
-        /*This method will be called once per scheduler run. It can be used for running tasks we know we want to update each
-        * loop such as processing sensor data. Our drivetrain is simple so we don't have anything to put here */
-        SmartDashboard.putNumber("Gyro", Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0));
-        System.out.println("Gyro Angle: " + this.getHeading());
+        // Get the rotation of the robot from the gyro.
+        var gyroAngle = m_gyro.getRotation2d();
+        
+        // Update the pose
+        m_pose = m_odometry.update(gyroAngle,
+        driveLeftEncoder.getDistance(),
+        driveRightEncoder.getDistance());
     }
-
+    
     public double getHeading() {
         return Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
     }
-
+    
     public void zeroHeading() {
-
+        
         m_gyro.reset();
-
+        
     }
-
+    
     public void setMaxOutput(double maxOutput) {
-
+        
         m_drivetrain.setMaxOutput(maxOutput);
-
+        
     }
-
+    
     public double getTurnRate() {
-
+        
         return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-
+        
     }
-
+    
 }
