@@ -92,18 +92,18 @@ public class DriveSubsystem extends SubsystemBase {
     /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
     * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
     public void driveArcade(double speed, double rotation) {
-        System.out.println("Speed input to driveArcade: " + speed);
-        System.out.println("Rotation input to driveArcade: " + rotation);
+        //System.out.println("Speed input to driveArcade: " + speed);
+        //System.out.println("Rotation input to driveArcade: " + rotation);
 
         if (Math.floor(speed) == 0 && Math.floor(rotation) == 0) {
             m_drivetrain.arcadeDrive(0, 0);
-            System.out.println("No controller input, not moving");
+            //System.out.println("No controller input, not moving");
             
         } else {
-            System.out.println("Controller input, moving");
+            //System.out.println("Controller input, moving");
             // Calculate the PID output for left and right motors
-            System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
-            System.out.println("Right Encoder: " + driveRightEncoder.getRate());
+            //System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+            //System.out.println("Right Encoder: " + driveRightEncoder.getRate());
 
             double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
             double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
@@ -112,8 +112,8 @@ public class DriveSubsystem extends SubsystemBase {
             leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
             rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
 
-            System.out.println("leftMotorInput Post Clamp: " + leftOutput);
-            System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
+            //System.out.println("leftMotorInput Post Clamp: " + leftOutput);
+            //System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
 
             // System.out.println("Speed input passed to arcadeDrive: " + speed);
             // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
@@ -130,6 +130,8 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
         /*This method will be called once per scheduler run. It can be used for running tasks we know we want to update each
         * loop such as processing sensor data. Our drivetrain is simple so we don't have anything to put here */
+        SmartDashboard.putNumber("Gyro", Math.IEEEremainder(m_gyro.getAngle(), 360) * (false ? -1.0 : 1.0));
+        System.out.println("Gyro Angle: " + this.getHeading());
     }
 
     public double getHeading() {
