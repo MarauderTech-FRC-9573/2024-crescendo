@@ -100,37 +100,29 @@ public class DriveSubsystem extends SubsystemBase {
             System.out.println("No controller input, not moving");
             
         } else {
+            System.out.println("Controller input, moving");
             // Calculate the PID output for left and right motors
-            /*System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+            System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
             System.out.println("Right Encoder: " + driveRightEncoder.getRate());
 
             double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
             double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
-            
-            // Apply the calculated output to the motors along with feedforward for velocity control
-            System.out.println("Left feedforward: " + m_feedforward.calculate(targetLeftVelocity));
-            System.out.println("Right feedFoward: " + m_feedforward.calculate(targetRightVelocity));
-
-            double leftMotorInput = leftOutput + m_feedforward.calculate(targetLeftVelocity);
-            double rightMotorInput = rightOutput + m_feedforward.calculate(targetRightVelocity);
-            
-            System.out.println("leftMotorInput: " + leftMotorInput);
-            System.out.println("rightMotorInput: "+ rightMotorInput);
-            
+                        
             // Ensure the motor input is within the allowable range
-            leftMotorInput = MathUtil.clamp(leftMotorInput, -1.0, 1.0);
-            rightMotorInput = MathUtil.clamp(rightMotorInput, -1.0, 1.0);
+            leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
+            rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
 
-            System.out.println("leftMotorInput Post Clamp: " + leftMotorInput);
-            System.out.println("rightMotorInput Post Clamp: "+ rightMotorInput);
+            // System.out.println("leftMotorInput Post Clamp: " + leftOutput);
+            // System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
 
-            System.out.println("Speed input passed to arcadeDrive: " + speed);
-            System.out.println("Rotation input passed to arcadeDrive: " + rotation);
+            // System.out.println("Speed input passed to arcadeDrive: " + speed);
+            // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
             
-            System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftMotorInput));
-            System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightMotorInput)); */
+            // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
+            // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
             // Set the motor speeds            
-            m_drivetrain.arcadeDrive(speed, rotation);
+            m_drivetrain.arcadeDrive(speed + leftOutput, rotation + rightOutput);
+
         }
     }
     
