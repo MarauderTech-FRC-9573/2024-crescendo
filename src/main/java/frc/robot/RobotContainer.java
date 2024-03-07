@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Autos;
@@ -40,19 +41,16 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
-    driveController.a().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(1).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
-    driveController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(1).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
+    driveController.x().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(1).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
+    driveController.y().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(1).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     //operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
 
     // Scales Robot speed
     driveController.rightBumper()
-        .whileTrue(//new InstantCommand(() -> driveSubsystem.setMaxOutput(0.5)))
-        new PrintCommand("Right Bumper being Pressed"));
-        //.onFalse(//new InstantCommand(() -> driveSubsystem.setMaxOutput(1)))
-        //new PrintCommand("Right Bumper onFalse trigger"));
-
+        .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.5)))
+        .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(1.0)));
     // Stabilize robot to drive straight with gyro when left bumper is held
     driveController.leftBumper()
         .whileTrue(
@@ -71,12 +69,12 @@ public class RobotContainer {
                 driveSubsystem)); 
 
     // Turn to 90 degrees when the 'X' button is pressed, with a 5 second timeout
-    driveController.x()
-        .whileTrue(new TurnToAngle(90, driveSubsystem).withTimeout(5));
+    driveController.a()
+        .whileTrue(new WaitCommand(0.1).andThen(new TurnToAngle(90, driveSubsystem).withTimeout(5)));
 
     // Turn to -90 degrees with a profile when the Circle button is pressed, with a 5 second timeout
-    driveController.y()
-        .whileTrue(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(5));
+    driveController.b()
+        .whileTrue(new WaitCommand(0.1).andThen(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(5)));
     
   }
   
