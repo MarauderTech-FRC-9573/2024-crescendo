@@ -150,6 +150,8 @@ public class DriveSubsystem extends SubsystemBase {
         m_pose = m_odometry.update(gyroAngle,
         driveLeftEncoder.getDistance(),
         driveRightEncoder.getDistance());
+        SmartDashboard.putNumber("Gyro ", this.getHeading());
+        System.out.println("Gyro: " + this.getHeading());
     }
     
     public double getHeading() {
