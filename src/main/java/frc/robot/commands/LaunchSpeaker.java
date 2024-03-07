@@ -13,7 +13,7 @@ public class LaunchSpeaker extends Command{
     }
 
     @Override
-    public void initialize() {
+    public void initialize() {        
         shooterSubsystem.setLaunchWheel(ShooterConstants.SpeakerLaunchWheelSpeed);
         shooterSubsystem.setFeedWheel(ShooterConstants.SpeakerFeedWheelSpeed);
     }
