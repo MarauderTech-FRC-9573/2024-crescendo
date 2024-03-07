@@ -20,9 +20,9 @@ public static Command exampleAuto(DriveSubsystem drivetrain, CommandXboxControll
      * with the .withTimeout(1) decorator to timeout after 1 second, and use the .andThen decorator
      * to stop the drivetrain after the first command times out
      */
-    return new RunCommand(() -> drivetrain.arcadeDrive(-.5, 0))
+    return new RunCommand(() -> drivetrain.driveArcade(-.5, 0))
             .withTimeout(1)
-            .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0)));
+            .andThen(new RunCommand(() -> drivetrain.driveArcade(0, 0)));
 }
 
         private Autos() {

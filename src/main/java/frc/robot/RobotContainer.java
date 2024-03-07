@@ -24,9 +24,9 @@ import frc.robot.Constants.ShooterConstants;
 
 public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  // private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  // private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  // private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
 
   private final CommandXboxController driveController = new CommandXboxController(DriveConstants.driveControllerPort);
   private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
@@ -48,10 +48,10 @@ public class RobotContainer {
 
     // Scales Robot speed
     operatorController.rightBumper()
-        .onTrue(//new InstantCommand(() -> driveSubsystem.setMaxOutput(0.5)))
-        new PrintCommand("Right Bumper being Pressed"))
-        .onFalse(//new InstantCommand(() -> driveSubsystem.setMaxOutput(1)))
-        new PrintCommand("Right Bumper onFalse trigger"));
+        .whileTrue(//new InstantCommand(() -> driveSubsystem.setMaxOutput(0.5)))
+        new PrintCommand("Right Bumper being Pressed"));
+        //.onFalse(//new InstantCommand(() -> driveSubsystem.setMaxOutput(1)))
+        //new PrintCommand("Right Bumper onFalse trigger"));
 
     // Stabilize robot to drive straight with gyro when left bumper is held
     operatorController.leftBumper()
@@ -73,13 +73,13 @@ public class RobotContainer {
 
     // Turn to 90 degrees when the 'X' button is pressed, with a 5 second timeout
     operatorController.x()
-        .onTrue(//new TurnToAngle(90, driveSubsystem).withTimeout(5));
-        new PrintCommand("X Button Pressed"));
+        .whileTrue(//new TurnToAngle(90, driveSubsystem).withTimeout(5));
+        new PrintCommand("X Button Pressed").withTimeout(1));
 
     // Turn to -90 degrees with a profile when the Circle button is pressed, with a 5 second timeout
     operatorController.y()
-        .onTrue(//new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(5)
-        new PrintCommand("Y Button Pressed."));
+        .whileTrue(//new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(5)
+        new PrintCommand("Y Button Pressed.").withTimeout(1));
     
   }
   
