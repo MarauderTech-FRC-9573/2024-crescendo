@@ -15,7 +15,7 @@ public class PrepareLaunchAmp extends Command {
 
     @Override 
     public void initialize() {
-        launcher.setLaunchWheel(ShooterConstants.AmpLaunchWheelSpeed);
+        launcher.setLaunchWheel(ShooterConstants.kSpeakerAmpLaunchSpeed);
     }
 
     @Override 
