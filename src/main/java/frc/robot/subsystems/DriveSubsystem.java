@@ -2,7 +2,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 // Simulation libraries
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,6 +15,11 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -20,6 +27,18 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import static frc.robot.Constants.DriveConstants.*;
+
+import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
+
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
@@ -54,8 +73,10 @@ public class DriveSubsystem extends SubsystemBase {
     
     // ODOMETRY 
     private final DifferentialDriveOdometry m_odometry;
-
+    
     Pose2d m_pose;
+    
+    final SysIdRoutine m_sysIdRoutine;
     
     // Gains must be determined, disabled because that's what causes it to spin weirdly
     // private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);
@@ -91,12 +112,57 @@ public class DriveSubsystem extends SubsystemBase {
         
         m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));
         
+        // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+        final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+        // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+        final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+        // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+        final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+        
+        // Create a new SysId routine for characterizing the drive.
+        m_sysIdRoutine =
+        new SysIdRoutine(
+        // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+        new SysIdRoutine.Config(),
+        new SysIdRoutine.Mechanism(
+        // Tell SysId how to plumb the driving voltage to the motors.
+        (Measure<Voltage> volts) -> {
+            leftFront.setVoltage(volts.in(Volts));
+            rightFront.setVoltage(volts.in(Volts));
+        },
+        // Tell SysId how to record a frame of data for each motor on the mechanism being
+        // characterized.
+        log -> {
+            // Record a frame for the left motors.  Since these share an encoder, we consider
+            // the entire group to be one motor.
+            log.motor("drive-left")
+            .voltage(
+            m_appliedVoltage.mut_replace(
+            leftFront.get() * RobotController.getBatteryVoltage(), Volts))
+            .linearPosition(m_distance.mut_replace(driveLeftEncoder.getDistance(), Meters))
+            .linearVelocity(
+            m_velocity.mut_replace(driveLeftEncoder.getRate(), MetersPerSecond));
+            // Record a frame for the right motors.  Since these share an encoder, we consider
+            // the entire group to be one motor.
+            log.motor("drive-right")
+            .voltage(
+            m_appliedVoltage.mut_replace(
+            driveRightEncoder.get() * RobotController.getBatteryVoltage(), Volts))
+            .linearPosition(m_distance.mut_replace(driveRightEncoder.getDistance(), Meters))
+            .linearVelocity(
+            m_velocity.mut_replace(driveRightEncoder.getRate(), MetersPerSecond));
+        },
+        // Tell SysId to make generated commands require this subsystem, suffix test state in
+        // WPILog with this subsystem's name ("drive")
+        this));
+        
+        
         
         
     }
     
     boolean isStopped = false;
-
+    
     /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
     * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
     public void driveArcade(double speed, double rotation) {
@@ -104,7 +170,7 @@ public class DriveSubsystem extends SubsystemBase {
         System.out.println("Rotation input to driveArcade: " + rotation);
         
         if (Math.floor(speed) == 0 && Math.floor(rotation) == 0) {
-
+            
             if (isStopped)  {
                 System.out.println("Controller input, not moving");
             } else {
@@ -174,6 +240,24 @@ public class DriveSubsystem extends SubsystemBase {
         
         return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
         
+    }
+    
+    /**
+    * Returns a command that will execute a quasistatic test in the given direction.
+    *
+    * @param direction The direction (forward or reverse) to run the test in
+    */
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return m_sysIdRoutine.quasistatic(direction);
+    }
+    
+    /**
+    * Returns a command that will execute a dynamic test in the given direction.
+    *
+    * @param direction The direction (forward or reverse) to run the test in
+    */
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return m_sysIdRoutine.dynamic(direction);
     }
     
 }
