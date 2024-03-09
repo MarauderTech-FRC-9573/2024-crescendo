@@ -28,7 +28,7 @@ public class VisionSubsystem extends SubsystemBase {
   final double GOAL_RANGE_METERS = Units.feetToMeters(3);
   
   // Change this to match the name of your camera as shown in the web UI
-  PhotonCamera camera = new PhotonCamera("photonvision");
+  public PhotonCamera camera = new PhotonCamera("photonvision");
   
 
   public PhotonPipelineResult getLatestResult() {

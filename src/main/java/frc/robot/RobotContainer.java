@@ -9,13 +9,12 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.AimAtTarget;
-import frc.robot.commands.Autos;
 import frc.robot.commands.LaunchAmp;
 import frc.robot.commands.LaunchSpeaker;
 import frc.robot.commands.PrepareLaunchAmp;
 import frc.robot.commands.PrepareLaunchSpeaker;
 import frc.robot.commands.TurnToAngleProfiled;
+import frc.robot.commands.autonomous.AimAndRange;
 import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -83,11 +82,11 @@ public class RobotContainer {
 
     driveController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
     
-    driveController.x().whileTrue(new AimAtTarget(visionSubsystem, driveSubsystem, operatorController).withTimeout(1));
+    driveController.x().whileTrue(new AimAndRange().withTimeout(1));
     
   }
   
-  // public Command getAutonomousCommand() {
-  //   return new AimAtTarget(visionSubsystem);
-  // }
+  public Command getAutonomousCommand() {
+    return new AimAndRange(); 
+  }
 }
