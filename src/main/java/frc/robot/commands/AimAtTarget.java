@@ -52,7 +52,7 @@ public class AimAtTarget extends Command{
         }
         
         // Use our forward/turn speeds to control the drivetrain
-        m_drivetrain.arcadeDrive(forwardSpeed, rotationSpeed);
+        m_drivetrain.driveArcade(forwardSpeed, rotationSpeed);
     }
     
     
