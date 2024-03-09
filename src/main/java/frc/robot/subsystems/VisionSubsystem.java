@@ -1,60 +1,51 @@
 package frc.robot.subsystems;
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.CvSink;
-import edu.wpi.first.cscore.CvSource;
-import edu.wpi.first.cscore.UsbCamera;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 
 public class VisionSubsystem extends SubsystemBase {
-  private final UsbCamera camera;
-  private final CvSink cvSink;
-  private final CvSource outputStream;
 
-  public VisionSubsystem() {
-    camera = CameraServer.startAutomaticCapture();
-    camera.setResolution(640, 480);
+  public static final double LINEAR_P = 0.1;
+  public static final double LINEAR_D = 0.0;
+  public static PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
 
-    cvSink = CameraServer.getVideo();
-    outputStream = CameraServer.putVideo("Rectangle", 640, 480);
+  public static final double ANGULAR_P = 0.1;
+  public static final double ANGULAR_D = 0.0;
+  public static PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
-    // Start the vision thread
-    Thread visionThread = new Thread(this::visionProcessing);
-    visionThread.start();
+  // Constants such as camera and target height stored. Change per robot and goal!
+  final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
+  final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+  // Angle between horizontal and the camera.
+  final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
+  
+  // How far from the target we want to be
+  final double GOAL_RANGE_METERS = Units.feetToMeters(3);
+  
+  // Change this to match the name of your camera as shown in the web UI
+  PhotonCamera camera = new PhotonCamera("photonvision");
+  
+
+  public PhotonPipelineResult getLatestResult() {
+    return camera.getLatestResult();
   }
 
-  private void visionProcessing() {
-    Mat mat = new Mat();
-
-    while (!Thread.interrupted()) {
-      if (cvSink.grabFrame(mat) == 0) {
-        outputStream.notifyError(cvSink.getError());
-        continue;
-      }
-
-      // Perform your vision processing here
-      processImage(mat);
-
-      outputStream.putFrame(mat);
+  public void getAprilTags() {
+    var result = camera.getLatestResult();
+    if (result.hasTargets()) {
+        for (var target : result.getTargets()) {
+            System.out.println("Detected April tag: " + target);
+        }
+    } else  { 
+        System.out.println("No April tags detected");
     }
-  }
+}
 
-  private void processImage(Mat mat) {
-    // Example: Draw a rectangle on the image
-    Imgproc.rectangle(mat, new Point(100, 100), new Point(400, 400),
-        new Scalar(255, 255, 255), 5);
 
-    // Add your actual vision processing logic here
-    // You can use OpenCV functions to analyze and manipulate the image
-    // For example, thresholding, contour detection, etc.
-  }
-
-  @Override
-  public void periodic() {
-    // Add any periodic tasks related to the vision subsystem here
-  }
+  
 }
