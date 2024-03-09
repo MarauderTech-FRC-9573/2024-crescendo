@@ -22,11 +22,15 @@ public class AimAndRange extends Command{
     DriveSubsystem m_drivetrain;
     VisionSubsystem m_camera;
     PhotonCamera m_photonCamera;
+    PIDController forwardController;
+    PIDController turnController;
     
     public void AimAndRange(VisionSubsystem visionSubsystem, DriveSubsystem driveSubsystem) {
         m_camera = visionSubsystem;
         m_drivetrain = driveSubsystem;
         m_photonCamera = m_camera.camera;
+        forwardController = m_camera.forwardController;
+        turnController = m_camera.turnController; 
     }
     
     @Override
@@ -34,15 +38,7 @@ public class AimAndRange extends Command{
     }
     
     @Override 
-    public void execute() {        
-        final double LINEAR_P = 0.1;
-        final double LINEAR_D = 0.0;
-        PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
-        
-        final double ANGULAR_P = 0.1;
-        final double ANGULAR_D = 0.0;
-        PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
-        
+    public void execute() {                
         PhotonPipelineResult result = m_camera.getLatestResult();
         
         if (result.hasTargets()) {
@@ -59,6 +55,7 @@ public class AimAndRange extends Command{
             double rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
             
             m_drivetrain.driveArcade(forwardSpeed, rotationSpeed);
+
         };
         
     }
