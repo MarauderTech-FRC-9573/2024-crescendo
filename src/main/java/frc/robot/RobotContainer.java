@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -29,7 +30,8 @@ public class RobotContainer {
   
   public final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
   
-  
+  PowerDistribution pdp = new PowerDistribution();
+
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
@@ -44,13 +46,15 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.driveArcade(-driveController.getLeftY(), -driveController.getRightX()), driveSubsystem));
     
     visionSubsystem.setDefaultCommand(new RunCommand(() -> visionSubsystem.getAprilTags(), visionSubsystem));
+
+    pdp.setSwitchableChannel(true);
     
   }
 
   public void initializeAutoChooser(){
     m_autoChooser.setDefaultOption(
       "Aim and Range",
-      new AimAndRange());
+      new AimAndRange(visionSubsystem, driveSubsystem).withTimeout(15));
     m_autoChooser.addOption(
       "Turn to 90",
       new TurnToAngle(90, driveSubsystem));
@@ -96,7 +100,7 @@ public class RobotContainer {
     
     driveController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
     
-    driveController.x().whileTrue(new AimAndRange().withTimeout(1));
+    driveController.x().whileTrue(new AimAndRange(visionSubsystem, driveSubsystem).withTimeout(1));
     
   }
   

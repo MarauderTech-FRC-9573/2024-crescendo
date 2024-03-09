@@ -6,14 +6,9 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.Constants.VisionConstants;
 
 public class AimAndRange extends Command{
     double forwardSpeed;
@@ -23,16 +18,16 @@ public class AimAndRange extends Command{
     VisionSubsystem m_camera;
     PhotonCamera m_photonCamera;
     PIDController forwardController;
-    PIDController turnController;
+    PIDController turnController; // Declare turnController variable
     
-    public void AimAndRange(VisionSubsystem visionSubsystem, DriveSubsystem driveSubsystem) {
+    public AimAndRange(VisionSubsystem visionSubsystem, DriveSubsystem driveSubsystem) {
         m_camera = visionSubsystem;
         m_drivetrain = driveSubsystem;
         m_photonCamera = m_camera.camera;
         forwardController = m_camera.forwardController;
         turnController = m_camera.turnController; 
     }
-    
+
     @Override
     public void initialize() {
     }
