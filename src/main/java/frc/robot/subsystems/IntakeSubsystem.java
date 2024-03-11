@@ -17,7 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor = new CANSparkMax(IntakeConstants.intakeMotorPort, CANSparkLowLevel.MotorType.kBrushed);
     Boolean a = true;
     Boolean intakeMotor = a;
-    public Command moveIntakeCommand() {
+    final Command moveIntakeCommand() {{
       return this.startEnd(
   /* New command in the IntakeSubsystem instead of a new command in the commands
    * Supposed to have the ground intake start on the ground first or IntakeMotor is true.
@@ -27,9 +27,10 @@ public class IntakeSubsystem extends SubsystemBase {
    * Need to check for errors
    */
           () -> {
-            If (intakeMotor = true) {
+            If (intakeMotor = true); {
               setIntakeMotor(-IntakeConstants.IntakeMotorMoveBack).withTimeout(1);
-            } else if (intakeMotor = false) {
+            } 
+            Else (intakeMotor = false); {
               setIntakeMotor(-IntakeConstants.IntakeMotorMoveForward).withTimeout(1);
             }
           },
@@ -39,7 +40,7 @@ public class IntakeSubsystem extends SubsystemBase {
             Boolean a = intakeMotor;
             stop();
           });
-    }
+    }}
 
   public void setBrushMotor(double speed) {
     m_brushMotor.set(speed);
@@ -55,4 +56,6 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor.set(0);
   }
 }
+
+
 }
