@@ -91,16 +91,17 @@ public class RobotContainer {
     driveSubsystem)); 
     
     // Turn to 90 degrees when the 'X' button is pressed, with a 5 second timeout
-    driveController.a()
-    .whileTrue(new WaitCommand(0.1).andThen(new TurnToAngle(90, driveSubsystem).withTimeout(1)));
+    // driveController.a()
+    // .whileTrue(new WaitCommand(0.1).andThen(new TurnToAngle(90, driveSubsystem).withTimeout(1)));
     
-    // Turn to -90 degrees with a profile when the Circle button is pressed, with a 5 second timeout
-    driveController.b()
-    .whileTrue(new WaitCommand(0.1).andThen(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(1)));
+    // // Turn to -90 degrees with a profile when the Circle button is pressed, with a 5 second timeout
+    // driveController.b()
+    // .whileTrue(new WaitCommand(0.1).andThen(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(1)));
     
-    driveController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
+    driveController.x().whileTrue(shooterSubsystem.getIntakeCommand());
+    driveController.y().whileTrue(shooterSubsystem.getLaunchCommand());
     
-    driveController.x().whileTrue(new AimAndRange(visionSubsystem, driveSubsystem).withTimeout(1));
+    // driveController.x().whileTrue(new AimAndRange(visionSubsystem, driveSubsystem).withTimeout(1));
     
   }
   

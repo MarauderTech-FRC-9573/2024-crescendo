@@ -31,6 +31,18 @@ public class ShooterSubsystem extends SubsystemBase {
           stop();
         });
   }
+  public Command getLaunchCommand() {
+    return this.startEnd(
+
+        () -> {
+          setFeedWheel(ShooterConstants.kIntakeFeederSpeed);
+          setLaunchWheel(ShooterConstants.kIntakeLauncherSpeed);
+        },
+
+        () -> {
+          stop();
+        });
+  }
 
   public void setLaunchWheel(double speed) {
     m_launchWheel.set(speed);
