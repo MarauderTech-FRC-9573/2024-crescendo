@@ -11,51 +11,42 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax m_brushMotor;
   CANSparkMax m_intakeMotor;
-
+  
   public IntakeSubsystem() {
     m_brushMotor = new CANSparkMax(IntakeConstants.brushMotorPort, CANSparkLowLevel.MotorType.kBrushed);
     m_intakeMotor = new CANSparkMax(IntakeConstants.intakeMotorPort, CANSparkLowLevel.MotorType.kBrushed);
     Boolean a = true;
     Boolean intakeMotor = a;
-    final Command moveIntakeCommand() {{
-      return this.startEnd(
-  /* New command in the IntakeSubsystem instead of a new command in the commands
-   * Supposed to have the ground intake start on the ground first or IntakeMotor is true.
-   * When the command is called, it checks if the intake is on the ground or up with a true(On the ground) or false(Up to the shooter).
-   * Then sets the motor to the speed to move forward or back depending on the true or false statement for a specific amount of time.
-   * When the command ends, the intake should be up near the shooter so it sets IntakeMotor to false
-   * Need to check for errors
-   */
-          () -> {
-            If (intakeMotor = true); {
-              setIntakeMotor(-IntakeConstants.IntakeMotorMoveBack).withTimeout(1);
-            } 
-            Else (intakeMotor = false); {
-              setIntakeMotor(-IntakeConstants.IntakeMotorMoveForward).withTimeout(1);
-            }
-          },
-  
-          () -> {
-            Boolean intakeMotor = not(a);
-            Boolean a = intakeMotor;
-            stop();
-          });
-    }}
-
-  public void setBrushMotor(double speed) {
-    m_brushMotor.set(speed);
   }
-
-
-  public void setIntakeMotor(double speed) {
-    m_intakeMotor.set(speed);
+    
+    public void setBrushMotor(double speed) {
+      m_brushMotor.set(speed);
+    }
+    
+    
+    public void setIntakeMotor(double speed) {
+      m_intakeMotor.set(speed);
+    }
+    
+    public void stop() {
+      m_brushMotor.set(0);
+      m_intakeMotor.set(0);
+    }
+    
+    public Command moveIntake() {
+      return new SequentialCommandGroup(
+        new InstantCommand(() -> {
+      if (intakeMotor) {
+        setIntakeMotor(-IntakeConstants.IntakeMotorMoveBack);
+      } else {
+        setIntakeMotor(-IntakeConstants.IntakeMotorMoveForward);
+      }
+      
+      intakeMotor = !intakeMotor; 
+      }, this),
+      new WaitCommand(1),
+      new InstantCommand(this::stop, this)
+      );      
+      
+    }
   }
-  
-  public void stop() {
-    m_brushMotor.set(0);
-    m_intakeMotor.set(0);
-  }
-}
-
-
-}
