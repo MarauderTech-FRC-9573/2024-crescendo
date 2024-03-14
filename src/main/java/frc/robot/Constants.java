@@ -66,6 +66,8 @@ public final class Constants {
     public static final double kEncoderDistancePerPulse =
     // Assumes the encoders are directly mounted on the wheel shafts
     (kWheelDiameterMeters * Math.PI) / (double) kEncoderCPR;
+
+    public static final boolean kGyroReversed = false;
     
     
   }
@@ -87,7 +89,7 @@ public final class Constants {
     public static final double kSpeakerAmpLaunchSpeed = -0.5;
     public static final double kSpeakerAmpLaunchFeederSpeed = -0.5;
     public static final double kIntakeLauncherSpeed = 1;
-    public static final double KIntakeFeederSpeed = .2;
+    public static final double kIntakeFeederSpeed = .2;
 
     public static final double kLauncherDelay = 1;
   
