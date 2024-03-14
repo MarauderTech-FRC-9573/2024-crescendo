@@ -17,14 +17,17 @@ public class ShooterSubsystem extends SubsystemBase {
     m_launchWheel = new CANSparkMax(ShooterConstants.launchWheelPort, CANSparkLowLevel.MotorType.kBrushed);
     m_feedWheel = new CANSparkMax(ShooterConstants.intakeWheelPort, CANSparkLowLevel.MotorType.kBrushed);
 
+    m_launchWheel.setSmartCurrentLimit(ShooterConstants.kLauncherCurrentLimit);
+    m_feedWheel.setSmartCurrentLimit(ShooterConstants.kFeedCurrentLimit);
+
   }
 
   public Command getIntakeCommand() {
     return this.startEnd(
 
         () -> {
-          setFeedWheel(-ShooterConstants.kIntakeFeederSpeed);
-          setLaunchWheel(-ShooterConstants.kIntakeLauncherSpeed);
+          setFeedWheel(ShooterConstants.KIntakeFeederSpeed);
+          setLaunchWheel(ShooterConstants.kIntakeLauncherSpeed);
         },
 
         () -> {

@@ -18,8 +18,7 @@ public class PrepareLaunchSpeaker extends Command {
 
     @Override 
     public void initialize() {
-        System.out.println("Prep Speak init");
-        launcher.setLaunchWheel(ShooterConstants.SpeakerLaunchWheelSpeed);
+        launcher.setLaunchWheel(ShooterConstants.kSpeakerLauncherSpeed);
     }
 
     @Override 
