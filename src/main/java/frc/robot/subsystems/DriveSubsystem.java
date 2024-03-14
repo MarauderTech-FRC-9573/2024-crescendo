@@ -97,53 +97,6 @@ public class DriveSubsystem extends SubsystemBase {
         
         m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));
         
-        // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-        final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-        // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-        final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-        // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-        final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
-        
-        // Create a new SysId routine for characterizing the drive.
-        m_sysIdRoutine =
-        new SysIdRoutine(
-        // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-        new SysIdRoutine.Config(),
-        new SysIdRoutine.Mechanism(
-        // Tell SysId how to plumb the driving voltage to the motors.
-        (Measure<Voltage> volts) -> {
-            leftFront.setVoltage(volts.in(Volts));
-            rightFront.setVoltage(volts.in(Volts));
-        },
-        // Tell SysId how to record a frame of data for each motor on the mechanism being
-        // characterized.
-        log -> {
-            // Record a frame for the left motors.  Since these share an encoder, we consider
-            // the entire group to be one motor.
-            log.motor("drive-left")
-            .voltage(
-            m_appliedVoltage.mut_replace(
-            leftFront.get() * RobotController.getBatteryVoltage(), Volts))
-            .linearPosition(m_distance.mut_replace(driveLeftEncoder.getDistance(), Meters))
-            .linearVelocity(
-            m_velocity.mut_replace(driveLeftEncoder.getRate(), MetersPerSecond));
-            // Record a frame for the right motors.  Since these share an encoder, we consider
-            // the entire group to be one motor.
-            log.motor("drive-right")
-            .voltage(
-            m_appliedVoltage.mut_replace(
-            driveRightEncoder.get() * RobotController.getBatteryVoltage(), Volts))
-            .linearPosition(m_distance.mut_replace(driveRightEncoder.getDistance(), Meters))
-            .linearVelocity(
-            m_velocity.mut_replace(driveRightEncoder.getRate(), MetersPerSecond));
-        },
-        // Tell SysId to make generated commands require this subsystem, suffix test state in
-        // WPILog with this subsystem's name ("drive")
-        this));
-        
-        
-        
-        
     }
     
     boolean isStopped = false;
@@ -154,7 +107,7 @@ public class DriveSubsystem extends SubsystemBase {
         System.out.println("Speed input to driveArcade: " + speed);
         System.out.println("Rotation input to driveArcade: " + rotation);
         
-        if (Math.floor(speed) == 0 && Math.floor(rotation) == 0) {
+        /* if (Math.floor(speed) == 0 && Math.floor(rotation) == 0) {
             
             if (isStopped)  {
                 System.out.println("Controller input, not moving");
@@ -164,30 +117,29 @@ public class DriveSubsystem extends SubsystemBase {
                 isStopped = true;
             }
         } else {
-            isStopped = false;
-            System.out.println("Controller input, moving");
-            // Calculate the PID output for left and right motors
-            System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
-            System.out.println("Right Encoder: " + driveRightEncoder.getRate());
-            
-            double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
-            double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
-            
-            // Ensure the motor input is within the allowable range
-            leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
-            rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
-            
-            System.out.println("leftMotorInput Post Clamp: " + leftOutput);
-            System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
-            
-            // System.out.println("Speed input passed to arcadeDrive: " + speed);
-            // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
-            
-            // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
-            // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
-            // Set the motor speeds            
-            m_drivetrain.arcadeDrive(speed + leftOutput, rotation + rightOutput);
-        }
+            isStopped = false; This doesn't work, so temp commmenting it out*/
+        System.out.println("Controller input, moving");
+        // Calculate the PID output for left and right motors
+        System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+        System.out.println("Right Encoder: " + driveRightEncoder.getRate());
+        
+        double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
+        double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
+        
+        // Ensure the motor input is within the allowable range
+        leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
+        rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
+        
+        System.out.println("leftMotorInput Post Clamp: " + leftOutput);
+        System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
+        
+        // System.out.println("Speed input passed to arcadeDrive: " + speed);
+        // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
+        
+        // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
+        // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
+        // Set the motor speeds            
+        m_drivetrain.arcadeDrive(speed + leftOutput, rotation + rightOutput); 
     }
     
     
@@ -225,24 +177,6 @@ public class DriveSubsystem extends SubsystemBase {
         
         return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
         
-    }
-    
-    /**
-    * Returns a command that will execute a quasistatic test in the given direction.
-    *
-    * @param direction The direction (forward or reverse) to run the test in
-    */
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutine.quasistatic(direction);
-    }
-    
-    /**
-    * Returns a command that will execute a dynamic test in the given direction.
-    *
-    * @param direction The direction (forward or reverse) to run the test in
-    */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutine.dynamic(direction);
     }
     
 }
