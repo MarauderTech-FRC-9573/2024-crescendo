@@ -18,7 +18,7 @@ public class IntakeMove extends Command {
 
     @Override
     public void initialize() {
-        intakeSubsystem.setIntakeMotor(IntakeConstants.IntakeMotorMoveFoward);
+        intakeSubsystem.setIntakeMotor(IntakeConstants.IntakeMotorMoveForward);
         
     }
 

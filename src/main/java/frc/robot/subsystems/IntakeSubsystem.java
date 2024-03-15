@@ -4,19 +4,19 @@ import static frc.robot.Constants.ShooterConstants;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import edu.wpi.first.wpilibj2.command.*;
+
 //Almost same code as the shootersubsystem.
 public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax m_brushMotor;
   CANSparkMax m_intakeMotor;
+  Boolean intakeMotor;
   
   public IntakeSubsystem() {
     m_brushMotor = new CANSparkMax(IntakeConstants.brushMotorPort, CANSparkLowLevel.MotorType.kBrushed);
     m_intakeMotor = new CANSparkMax(IntakeConstants.intakeMotorPort, CANSparkLowLevel.MotorType.kBrushed);
-    Boolean a = true;
-    Boolean intakeMotor = a;
+    intakeMotor = true;
   }
     
     public void setBrushMotor(double speed) {
