@@ -60,7 +60,6 @@ public class DriveSubsystem extends SubsystemBase {
     
     Pose2d m_pose;
     
-    final SysIdRoutine m_sysIdRoutine;
     
     // Gains must be determined, disabled because that's what causes it to spin weirdly
     // private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);

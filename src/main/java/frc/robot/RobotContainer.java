@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.Autos;
 import frc.robot.commands.LaunchAmp;
 import frc.robot.commands.LaunchSpeaker;
 import frc.robot.commands.PrepareLaunchAmp;
@@ -26,7 +25,7 @@ public class RobotContainer {
   
   public RobotContainer() {
     configureButtonBindings();
-    driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.arcadeDrive(-driveController.getLeftY(), -driveController.getRightX()), driveSubsystem));
+    driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.driveArcade(-driveController.getLeftY(), -driveController.getRightX()), driveSubsystem));
     
   }
   
@@ -40,19 +39,19 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
 
     //New commands from this branch specifically, idk why they were removed
-    operatorController.x().onTrue(new WaitCommand(0.1).andThen(new TurnToAngle(90, driveSubsystem).withTimeout(1)));
-    operatorController.y().onTrue(new WaitCommand(0.1).andThen(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(1)));
+    // operatorController.x().onTrue(new WaitCommand(0.1).andThen(new TurnToAngle(90, driveSubsystem).withTimeout(1)));
+    // operatorController.y().onTrue(new WaitCommand(0.1).andThen(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(1)));
 
-    driveController.rightBumper()
-        .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
-        .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(1.0)));
+    // driveController.rightBumper()
+    //     .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
+    //     .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(1.0)));
 
     
   }
   
-  public Command getAutonomousCommand() {
-    return Autos.exampleAuto(driveSubsystem, driveController);
-    }
+  // public Command getAutonomousCommand() {
+  //   return Autos.exampleAuto(driveSubsystem, driveController);
+  //   }
   }
   
   
