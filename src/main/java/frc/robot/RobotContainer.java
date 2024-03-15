@@ -43,8 +43,8 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
 
     //New commands from this branch specifically, idk why they were removed
-    operatorController.x().onTrue(new WaitCommand(0.1).andThen(new TurnToAngle(90, driveSubsystem).withTimeout(1)));
-    operatorController.y().onTrue(new WaitCommand(0.1).andThen(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(1)));
+    driveController.x().whileTrue(shooterSubsystem.getIntakeCommand());
+    driveController.y().whileTrue(shooterSubsystem.getLaunchCommand());
 
     driveController.rightBumper()
         .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))

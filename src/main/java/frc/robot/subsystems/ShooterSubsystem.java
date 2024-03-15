@@ -1,8 +1,5 @@
 
 package frc.robot.subsystems;
-
-import static frc.robot.Constants.ShooterConstants;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
 import edu.wpi.first.wpilibj2.command.Command;
