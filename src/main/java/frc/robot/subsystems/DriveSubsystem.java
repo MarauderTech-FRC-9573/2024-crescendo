@@ -87,7 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
         
         
         // Invert the left side so both side drive forward with positive motor outputs
-        leftFront.setInverted(false);
+        leftFront.setInverted(true);
         rightFront.setInverted(true);
         
         // Put the front motors into the differential drive object. This will control all 4 motors with
