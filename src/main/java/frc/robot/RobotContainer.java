@@ -13,6 +13,10 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.TurnToAngle;
+import frc.robot.commands.TurnToAngleProfiled;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
@@ -39,12 +43,12 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
 
     //New commands from this branch specifically, idk why they were removed
-    // operatorController.x().onTrue(new WaitCommand(0.1).andThen(new TurnToAngle(90, driveSubsystem).withTimeout(1)));
-    // operatorController.y().onTrue(new WaitCommand(0.1).andThen(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(1)));
+    operatorController.x().onTrue(new WaitCommand(0.1).andThen(new TurnToAngle(90, driveSubsystem).withTimeout(1)));
+    operatorController.y().onTrue(new WaitCommand(0.1).andThen(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(1)));
 
-    // driveController.rightBumper()
-    //     .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
-    //     .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(1.0)));
+    driveController.rightBumper()
+        .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
+        .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(1.0)));
 
     
   }
