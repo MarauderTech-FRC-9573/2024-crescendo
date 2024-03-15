@@ -138,7 +138,7 @@ public class DriveSubsystem extends SubsystemBase {
         // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
         // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
         // Set the motor speeds            
-        m_drivetrain.arcadeDrive(speed + leftOutput, rotation + rightOutput); 
+        m_drivetrain.arcadeDrive(speed + leftOutput, -rotation + rightOutput); 
     }
     
     
