@@ -1,9 +1,12 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Autos;
+import frc.robot.commands.IntakeMove;
 import frc.robot.commands.LaunchAmp;
 import frc.robot.commands.LaunchSpeaker;
 import frc.robot.commands.PrepareLaunchAmp;
@@ -23,11 +26,13 @@ public class RobotContainer {
 
   private final CommandXboxController driveController = new CommandXboxController(DriveConstants.driveControllerPort);
   private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
+
+  private final PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
   
   public RobotContainer() {
+    pdh.setSwitchableChannel(true);
     configureButtonBindings();
     driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.arcadeDrive(-driveController.getLeftY(), -driveController.getRightX()), driveSubsystem));
-    
   }
   
   private void configureButtonBindings() {
@@ -39,6 +44,7 @@ public class RobotContainer {
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
     
+    operatorController.x().whileTrue(new IntakeMove(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
   }
   
   public Command getAutonomousCommand() {
