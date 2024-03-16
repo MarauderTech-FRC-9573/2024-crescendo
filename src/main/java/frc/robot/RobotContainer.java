@@ -15,6 +15,7 @@ import frc.robot.commands.TurnToAngle;
 import frc.robot.commands.TurnToAngleProfiled;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.commands.IntakeSource;
 
 public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
@@ -34,11 +35,11 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
-    operatorController.a().whileTrue(new LaunchSpeaker(shooterSubsystem));
-    operatorController.b().whileTrue(new LaunchAmp(shooterSubsystem));
+    driveController.a().whileTrue(new LaunchSpeaker(shooterSubsystem));
+    driveController.b().whileTrue(new LaunchAmp(shooterSubsystem));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
-    operatorController.leftBumper().whileTrue(new IntakeSource(shooterSubsystem));
+    driveController.leftBumper().whileTrue(new IntakeSource(shooterSubsystem));
 
     //New commands from this branch specifically, idk why they were removed
 

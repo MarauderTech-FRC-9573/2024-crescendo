@@ -162,8 +162,8 @@ public final class Constants {
     // in reverse
     public static final double kSpeakerLauncherSpeed = -1;
     public static final double kSpeakerLaunchFeederSpeed = -1;
-    public static final double kSpeakerAmpLaunchSpeed = -0.5;
-    public static final double kSpeakerAmpLaunchFeederSpeed = -0.5;
+    public static final double kSpeakerAmpLaunchSpeed = -0.3;
+    public static final double kSpeakerAmpLaunchFeederSpeed = -0.3;
     public static final double kIntakeLauncherSpeed = 1;
     public static final double kIntakeFeederSpeed = .2;
 
