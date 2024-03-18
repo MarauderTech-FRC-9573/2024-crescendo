@@ -104,8 +104,8 @@ public final class Constants {
 
   public static class OIConstants { 
           
-    public static int operatorControllerPort = 1;
-    public static int driveControllerPort = 0;
+    public static int operatorControllerPort;
+    public static int driveControllerPort;
   
   }
 

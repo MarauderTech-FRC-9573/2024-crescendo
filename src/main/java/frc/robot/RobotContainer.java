@@ -52,15 +52,12 @@ public class RobotContainer {
     // Control the drive with split-stick arcade controls
     m_driverController
         .a()
-        .and(m_driverController.rightBumper())
         .whileTrue(new RunCommand(() -> m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward), m_drive));
     m_driverController
         .b()
-        .and(m_driverController.rightBumper())
         .whileTrue(new RunCommand(() -> m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse), m_drive));
     m_driverController
         .x()
-        .and(m_driverController.rightBumper())
         .whileTrue(new RunCommand(() -> m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward), m_drive));
     m_driverController
         .y()
