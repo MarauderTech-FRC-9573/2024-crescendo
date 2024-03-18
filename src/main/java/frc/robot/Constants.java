@@ -24,11 +24,6 @@ public final class Constants {
     // Current limit for drivetrain motors
     public static final int kCurrentLimit = 60;
     
-    public static final int joystickPort = 0;    
-  
-    public static int operatorControllerPort = 1;
-    public static int driveControllerPort = 0;
-    
     // values are related to PID and need to be tuned:
     public static final double kP = 0;
     public static final double kI = 0;
@@ -81,7 +76,6 @@ public final class Constants {
     
     public static final int kAngleSetpoint = 0;
 
-
   }
   
   public static final class ShooterConstants {
@@ -108,7 +102,10 @@ public final class Constants {
   
   }
 
-  public static final class OIConstants {    
+  public static class OIConstants { 
+          
+    public static int operatorControllerPort = 1;
+    public static int driveControllerPort = 0;
   
   }
 
