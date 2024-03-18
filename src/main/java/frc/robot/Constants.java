@@ -172,5 +172,12 @@ public final class Constants {
   
   }
 
+  public static final class IntakeConstants {
+    public static final int brushMotorPort = 8;
+    public static final int intakeMotorPort = 9;
+    public static final double IntakeMotorMoveForward = 0.5;
+    public static final double IntakeMotorMoveBack = 0.5;
+  }
+
   
 }
