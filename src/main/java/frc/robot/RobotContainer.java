@@ -16,6 +16,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.TurnToAngle;
 import frc.robot.commands.TurnToAngleProfiled;
+import frc.robot.commands.autonomous.AimAndRange;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
@@ -55,8 +56,7 @@ public class RobotContainer {
     .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
     .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(1.0)));
     
-    
-    
+    driveController.a().whileTrue(new AimAndRange(visionSubsystem, driveSubsystem));
     
   }
   

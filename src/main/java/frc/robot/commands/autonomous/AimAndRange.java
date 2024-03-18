@@ -35,6 +35,7 @@ public class AimAndRange extends Command{
         PhotonPipelineResult result = m_camera.getLatestResult();
         
         if (result.hasTargets()) {
+            System.out.println("Target detected");
             // First calculate range
             double range =
             PhotonUtils.calculateDistanceToTargetMeters(0.76, 57.13, ((2*(22/7))/9), Units.degreesToRadians(result.getBestTarget().getPitch()));
@@ -49,7 +50,10 @@ public class AimAndRange extends Command{
             
             m_drivetrain.driveArcade(forwardSpeed, rotationSpeed);
 
-        };
+        } else {
+            System.out.println("No target detected");
+            m_drivetrain.driveArcade(0, 0);
+        }
         
     }
     
