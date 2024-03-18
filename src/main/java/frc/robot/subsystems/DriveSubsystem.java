@@ -61,6 +61,11 @@ public class DriveSubsystem extends SubsystemBase {
     Pose2d m_pose;
     
     final SysIdRoutine m_sysIdRoutine;
+
+    CANSparkMax leftFront;
+    CANSparkMax leftRear;
+    CANSparkMax rightFront;
+    CANSparkMax rightRear;
     
     // Gains must be determined, disabled because that's what causes it to spin weirdly
     // private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);
@@ -70,10 +75,10 @@ public class DriveSubsystem extends SubsystemBase {
     * member variables and perform any configuration or set up necessary on hardware.
     */
     public DriveSubsystem() {
-        CANSparkMax leftFront = new CANSparkMax(kLeftFrontID, CANSparkLowLevel.MotorType.kBrushed);
-        CANSparkMax leftRear = new CANSparkMax(kLeftRearID, CANSparkLowLevel.MotorType.kBrushed);
-        CANSparkMax rightFront = new CANSparkMax(kRightFrontID, CANSparkLowLevel.MotorType.kBrushed);
-        CANSparkMax rightRear = new CANSparkMax(kRightRearID, CANSparkLowLevel.MotorType.kBrushed);
+        leftFront = new CANSparkMax(kLeftFrontID, CANSparkLowLevel.MotorType.kBrushed);
+        leftRear = new CANSparkMax(kLeftRearID, CANSparkLowLevel.MotorType.kBrushed);
+        rightFront = new CANSparkMax(kRightFrontID, CANSparkLowLevel.MotorType.kBrushed);
+        rightRear = new CANSparkMax(kRightRearID, CANSparkLowLevel.MotorType.kBrushed);
         
         /*Sets current limits for the drivetrain motors. This helps reduce the likelihood of wheel spin, reduces motor heating
         *at stall (Drivetrain pushing against something) and helps maintain battery voltage under heavy demand */
@@ -106,44 +111,22 @@ public class DriveSubsystem extends SubsystemBase {
         
         // Create a new SysId routine for characterizing the drive.
         m_sysIdRoutine =
-        new SysIdRoutine(
-        // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-        new SysIdRoutine.Config(),
-        new SysIdRoutine.Mechanism(
-        // Tell SysId how to plumb the driving voltage to the motors.
-        (Measure<Voltage> volts) -> {
-            leftFront.setVoltage(volts.in(Volts));
-            rightFront.setVoltage(volts.in(Volts));
-        },
-        // Tell SysId how to record a frame of data for each motor on the mechanism being
-        // characterized.
-        log -> {
-            // Record a frame for the left motors.  Since these share an encoder, we consider
-            // the entire group to be one motor.
-            log.motor("drive-left")
-            .voltage(
-            m_appliedVoltage.mut_replace(
-            leftFront.get() * RobotController.getBatteryVoltage(), Volts))
-            .linearPosition(m_distance.mut_replace(driveLeftEncoder.getDistance(), Meters))
-            .linearVelocity(
-            m_velocity.mut_replace(driveLeftEncoder.getRate(), MetersPerSecond));
-            // Record a frame for the right motors.  Since these share an encoder, we consider
-            // the entire group to be one motor.
-            log.motor("drive-right")
-            .voltage(
-            m_appliedVoltage.mut_replace(
-            driveRightEncoder.get() * RobotController.getBatteryVoltage(), Volts))
-            .linearPosition(m_distance.mut_replace(driveRightEncoder.getDistance(), Meters))
-            .linearVelocity(
-            m_velocity.mut_replace(driveRightEncoder.getRate(), MetersPerSecond));
-        },
-        // Tell SysId to make generated commands require this subsystem, suffix test state in
-        // WPILog with this subsystem's name ("drive")
-        this));
-        
-        
-        
-        
+            // Create the SysId routine
+            new SysIdRoutine(
+                new SysIdRoutine.Config(),
+
+                new SysIdRoutine.Mechanism(
+
+                    (Measure<Voltage> volts) -> {
+
+                        this.tankDriveVolts(10,10);
+
+                    },
+
+                null, // No log consumer, since data is recorded by URCL
+                    this
+                )
+            );
     }
     
     boolean isStopped = false;
@@ -190,7 +173,15 @@ public class DriveSubsystem extends SubsystemBase {
         }
     }
     
+    //Drive using volts for robot characterization
+
+    public void tankDriveVolts(double leftVolts, double rightVolts) {
+        
+        leftFront.setVoltage(leftVolts);
+        rightFront.setVoltage(rightVolts);
+        m_drivetrain.feed();
     
+    }
     
     @Override
     public void periodic() {
