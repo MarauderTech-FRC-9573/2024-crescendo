@@ -28,10 +28,17 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_drive = new DriveSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
-
   // The driver's controller
   private final CommandXboxController m_driverController =
       new CommandXboxController(OIConstants.driveControllerPort);
+
+  public RobotContainer() {
+  
+    configureBindings();
+
+    m_drive.setDefaultCommand(new RunCommand(() -> m_drive.driveArcade(m_driverController.getLeftY(), -m_driverController.getRightX()), m_drive));
+
+  }
 
   /**
    * Use this method to define bindings between conditions and commands. These are useful for
@@ -59,7 +66,7 @@ public class RobotContainer {
         .y()
         .whileTrue(new RunCommand(() -> m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse), m_drive));
 
-     m_driverController.a().whileTrue(new PrepareLaunchSpeaker(m_shooter).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchSpeaker(m_shooter)).handleInterrupt(() -> m_shooter.stop()));
+     m_driverController.leftBumper().whileTrue(new PrepareLaunchSpeaker(m_shooter).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchSpeaker(m_shooter)).handleInterrupt(() -> m_shooter.stop()));
   }
 
   /**
