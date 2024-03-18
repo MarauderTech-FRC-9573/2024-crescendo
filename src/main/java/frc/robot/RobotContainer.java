@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeMove;
+import frc.robot.commands.IntakeReceiver;
 import frc.robot.commands.LaunchAmp;
 import frc.robot.commands.LaunchSpeaker;
 import frc.robot.commands.PrepareLaunchAmp;
@@ -45,6 +46,9 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
     
     operatorController.x().whileTrue(new IntakeMove(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+
+    operatorController.y().whileTrue(new IntakeReceiver(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+  
   }
   
   public Command getAutonomousCommand() {

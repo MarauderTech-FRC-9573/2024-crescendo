@@ -14,8 +14,8 @@ public class IntakeSubsystem extends SubsystemBase {
   Boolean intakeMotor;
   
   public IntakeSubsystem() {
-    m_brushMotor = new CANSparkMax(IntakeConstants.brushMotorPort, CANSparkLowLevel.MotorType.kBrushed);
-    m_intakeMotor = new CANSparkMax(IntakeConstants.intakeMotorPort, CANSparkLowLevel.MotorType.kBrushed);
+    m_brushMotor = new CANSparkMax(IntakeConstants.brushMotorPort, CANSparkLowLevel.MotorType.kBrushless);
+    m_intakeMotor = new CANSparkMax(IntakeConstants.intakeMotorPort, CANSparkLowLevel.MotorType.kBrushless);
     intakeMotor = true;
   }
     
