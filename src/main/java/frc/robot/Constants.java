@@ -96,8 +96,8 @@ public final class Constants {
     To move to get or receive the note from the ground.
     And to move the received note to the shooter and release.
     */
-    public static int brushMotorPort = 8;
-    public static int intakeMotorPort = 9;
+    public static int brushMotorPort = 9;
+    public static int intakeMotorPort = 8;
     //Subject to change
 
   }
