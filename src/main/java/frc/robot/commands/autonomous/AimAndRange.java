@@ -24,6 +24,7 @@ public class AimAndRange extends Command{
         m_photonCamera = m_camera.camera;
         forwardController = m_camera.forwardController;
         turnController = m_camera.turnController; 
+        addRequirements(m_drivetrain, m_camera);
     }
 
     @Override
