@@ -119,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
 
                     (Measure<Voltage> volts) -> {
 
-                        this.tankDriveVolts(volts.in(Volts), volts.in(Volts));
+                        this.driveTankVolts(volts.in(Volts), volts.in(Volts));
 
                     },
 
@@ -175,12 +175,11 @@ public class DriveSubsystem extends SubsystemBase {
     
     //Drive using volts for robot characterization
 
-    public void tankDriveVolts(double leftVolts, double rightVolts) {
-        
-        leftFront.setVoltage(leftVolts);
+    public void driveTankVolts(double leftVolts, double rightVolts) {
         System.out.println("Left Volts: " + leftVolts);
-        rightFront.setVoltage(rightVolts);
         System.out.println("Right Volts: " + rightVolts);
+        m_drivetrain.tankDrive(leftVolts, rightVolts);
+        
         m_drivetrain.feed();
     
     }

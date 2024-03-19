@@ -36,7 +36,7 @@ public class RobotContainer {
   
     configureBindings();
 
-    m_drive.setDefaultCommand(new RunCommand(() -> m_drive.tankDriveVolts(m_driverController.getLeftY(), -m_driverController.getRightX()), m_drive));
+    m_drive.setDefaultCommand(new RunCommand(() -> m_drive.driveTankVolts(m_driverController.getLeftY(), -m_driverController.getRightX()), m_drive));
 
   }
 
@@ -63,7 +63,7 @@ public class RobotContainer {
         .y()
         .whileTrue(new RunCommand(() -> m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse), m_drive));
 
-     m_driverController.leftBumper().whileTrue(new RunCommand(() -> m_drive.tankDriveVolts(12, 12)));
+     m_driverController.leftBumper().whileTrue(new RunCommand(() -> m_drive.driveTankVolts(12, 12)));
   }
 
   /**
