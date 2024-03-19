@@ -94,7 +94,7 @@ public class DriveSubsystem extends SubsystemBase {
         
         // Invert the left side so both side drive forward with positive motor outputs
         leftFront.setInverted(false);
-        rightFront.setInverted(true);
+        rightFront.setInverted(false);
         
         // Put the front motors into the differential drive object. This will control all 4 motors with
         // the rears set to follow the fronts
@@ -176,10 +176,9 @@ public class DriveSubsystem extends SubsystemBase {
     //Drive using volts for robot characterization
 
     public void driveTankVolts(double leftVolts, double rightVolts) {
-        System.out.println("Left Volts: " + leftVolts);
-        System.out.println("Right Volts: " + rightVolts);
+        // System.out.println("Left Volts: " + leftVolts);
+        // System.out.println("Right Volts: " + rightVolts);
         m_drivetrain.tankDrive(leftVolts, rightVolts);
-        
         m_drivetrain.feed();
     
     }
@@ -194,7 +193,7 @@ public class DriveSubsystem extends SubsystemBase {
         driveLeftEncoder.getDistance(),
         driveRightEncoder.getDistance());
         SmartDashboard.putNumber("Gyro ", this.getHeading());
-        System.out.println("Gyro: " + this.getHeading());
+        // System.out.println("Gyro: " + this.getHeading());
     }
     
     public double getHeading() {
