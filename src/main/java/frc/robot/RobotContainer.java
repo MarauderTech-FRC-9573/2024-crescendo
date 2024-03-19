@@ -63,7 +63,7 @@ public class RobotContainer {
         .y()
         .whileTrue(new RunCommand(() -> m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse), m_drive));
 
-     m_driverController.leftBumper().whileTrue(new PrepareLaunchSpeaker(m_shooter).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchSpeaker(m_shooter)).handleInterrupt(() -> m_shooter.stop()));
+     m_driverController.leftBumper().whileTrue(new RunCommand(() -> m_drive.tankDriveVolts(12, 12));
   }
 
   /**
