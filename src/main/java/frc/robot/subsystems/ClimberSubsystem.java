@@ -6,32 +6,40 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
-  private final CANSparkMax climberMotor;
+  private final CANSparkMax climberMotor1;
+  private final CANSparkMax climberMotor2;
   private final DigitalInput limitSwitch;
-  private double position;
+  private double position1;
+  private double position2;
 
   public ClimberSubsystem() {
-    climberMotor = new CANSparkMax(ClimberConstants.kClimberID, CANSparkMax.MotorType.kBrushless);
+    climberMotor1 = new CANSparkMax(ClimberConstants.kClimber1ID, CANSparkMax.MotorType.kBrushless);
+    climberMotor2 = new CANSparkMax(ClimberConstants.kClimber2ID, CANSparkMax.MotorType.kBrushless);
     limitSwitch = new DigitalInput(ClimberConstants.kClimberLimitSwitch);
-    position = climberMotor.getEncoder().getPosition();
+    position1 = climberMotor1.getEncoder().getPosition();
   }
 
   public void extend() {
     if (!limitSwitch.get()) {
-      climberMotor.set(1);
-      position = climberMotor.getEncoder().getPosition();
+      climberMotor1.set(1);
+      climberMotor2.set(1);
+      position1 = climberMotor1.getEncoder().getPosition();
+      position2 = climberMotor2.getEncoder().getPosition();
     }
   }
 
   public void retract() {
     if (limitSwitch.get()) {
-      climberMotor.set(-1);
-      position = climberMotor.getEncoder().getPosition();
+      climberMotor1.set(-1);
+      climberMotor2.set(-1);
+      position1 = climberMotor1.getEncoder().getPosition();
+      position2 = climberMotor2.getEncoder().getPosition();
     }
   }
 
   public void stop() {
-    climberMotor.stopMotor();
+    climberMotor1.stopMotor();
+    climberMotor2.stopMotor();
   }
 
   public boolean isRetracted() {
@@ -39,7 +47,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public double getPosition() {
-    return position;
+    return position1;
   }
 
   @Override

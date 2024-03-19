@@ -182,7 +182,8 @@ public final class Constants {
     // public static final Measure<Dimensionless> kAutoHome = Percent.of(-10);
 
     //Climber ID
-    public static final int kClimberID = 10;
+    public static final int kClimber1ID = 10;
+    public static final int kClimber2ID = 11;
 
     public static final int kClimberLimitSwitch = 9;
   }
