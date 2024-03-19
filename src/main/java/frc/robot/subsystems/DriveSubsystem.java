@@ -178,7 +178,9 @@ public class DriveSubsystem extends SubsystemBase {
     public void tankDriveVolts(double leftVolts, double rightVolts) {
         
         leftFront.setVoltage(leftVolts);
+        System.out.println("Left Volts: " + leftVolts);
         rightFront.setVoltage(rightVolts);
+        System.out.println("Right Volts: " + rightVolts);
         m_drivetrain.feed();
     
     }
