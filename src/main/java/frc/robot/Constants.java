@@ -11,6 +11,8 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Dimensionless;
+import edu.wpi.first.units.Measure;
 
 public final class Constants {
   public static final class DriveConstants {
@@ -165,5 +167,23 @@ public final class Constants {
   public static class FieldConstants {
     public static final double kFieldLength = 4.0;
     public static final double kFieldWidth = 3.0;
+  }
+
+  public static class ClimberConstants {
+    //power to extend climb motor (percentage)
+    public static final Measure<Dimensionless> kExtendPower = Percent.of(25);
+
+    //Power to retract climber (percentage)
+    public static final Measure<Dimensionless> kRetractPower = Percent.of(-100);
+
+    //climber extension soft limit (rotations)
+    public static final float kForwardLimit = 180f;
+
+    public static final Measure<Dimensionless> kAutoHome = Percent.of(-10);
+
+    //Climber ID
+    public static final int kClimberID = 10;
+
+    public static final int kClimberLimitSwitch = 9;
   }
 }
