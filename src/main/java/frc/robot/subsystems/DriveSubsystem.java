@@ -58,7 +58,32 @@ public class DriveSubsystem extends SubsystemBase {
     // ODOMETRY 
     private final DifferentialDriveOdometry m_odometry;
     
+    
+    
     Pose2d m_pose;
+    
+    CANSparkMax leftFront = new CANSparkMax(kLeftFrontID, CANSparkLowLevel.MotorType.kBrushed);
+    CANSparkMax leftRear = new CANSparkMax(kLeftRearID, CANSparkLowLevel.MotorType.kBrushed);
+    CANSparkMax rightFront = new CANSparkMax(kRightFrontID, CANSparkLowLevel.MotorType.kBrushed);
+    CANSparkMax rightRear = new CANSparkMax(kRightRearID, CANSparkLowLevel.MotorType.kBrushed);
+    
+    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+    private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+    private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+    // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+    private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+    
+    
+    private final SysIdRoutine m_sysid = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> {
+        leftFront.setVoltage(volts.in(Volts));
+        rightFront.setVoltage(volts.in(Volts));
+        
+    }, log -> {
+        log.motor("drive-left").voltage(m_appliedVoltage.mut_replace(leftFront.get() * RobotController.getBatteryVoltage(), Volts)).linearPosition(m_distance.mut_replace(driveLeftEncoder.getDistance(), Meters)).linearVelocity(m_velocity.mut_replace(driveLeftEncoder.getRate(), MetersPerSecond));
+        log.motor("drive-right").voltage(m_appliedVoltage.mut_replace(rightFront.get() * RobotController.getBatteryVoltage(), Volts)).linearPosition(m_distance.mut_replace(driveRightEncoder.getDistance(), Meters)).linearVelocity(m_velocity.mut_replace(driveRightEncoder.getRate(), MetersPerSecond));
+    }, this));
+    
     
     
     // Gains must be determined, disabled because that's what causes it to spin weirdly
@@ -69,11 +94,6 @@ public class DriveSubsystem extends SubsystemBase {
     * member variables and perform any configuration or set up necessary on hardware.
     */
     public DriveSubsystem() {
-        CANSparkMax leftFront = new CANSparkMax(kLeftFrontID, CANSparkLowLevel.MotorType.kBrushed);
-        CANSparkMax leftRear = new CANSparkMax(kLeftRearID, CANSparkLowLevel.MotorType.kBrushed);
-        CANSparkMax rightFront = new CANSparkMax(kRightFrontID, CANSparkLowLevel.MotorType.kBrushed);
-        CANSparkMax rightRear = new CANSparkMax(kRightRearID, CANSparkLowLevel.MotorType.kBrushed);
-        
         /*Sets current limits for the drivetrain motors. This helps reduce the likelihood of wheel spin, reduces motor heating
         *at stall (Drivetrain pushing against something) and helps maintain battery voltage under heavy demand */
         leftFront.setSmartCurrentLimit(kCurrentLimit);
@@ -117,65 +137,66 @@ public class DriveSubsystem extends SubsystemBase {
             }
         } else {
             isStopped = false; This doesn't work, so temp commmenting it out*/
-        System.out.println("Controller input, moving");
-        // Calculate the PID output for left and right motors
-        System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
-        System.out.println("Right Encoder: " + driveRightEncoder.getRate());
+            System.out.println("Controller input, moving");
+            // Calculate the PID output for left and right motors
+            System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+            System.out.println("Right Encoder: " + driveRightEncoder.getRate());
+            
+            double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
+            double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
+            
+            // Ensure the motor input is within the allowable range
+            leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
+            rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
+            
+            System.out.println("leftMotorInput Post Clamp: " + leftOutput);
+            System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
+            
+            // System.out.println("Speed input passed to arcadeDrive: " + speed);
+            // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
+            
+            // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
+            // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
+            // Set the motor speeds            
+            m_drivetrain.arcadeDrive(speed + leftOutput, -rotation + rightOutput); 
+        }
         
-        double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
-        double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
         
-        // Ensure the motor input is within the allowable range
-        leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
-        rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
         
-        System.out.println("leftMotorInput Post Clamp: " + leftOutput);
-        System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
+        @Override
+        public void periodic() {
+            // Get the rotation of the robot from the gyro.
+            var gyroAngle = m_gyro.getRotation2d();
+            
+            // Update the pose
+            m_pose = m_odometry.update(gyroAngle,
+            driveLeftEncoder.getDistance(),
+            driveRightEncoder.getDistance());
+            SmartDashboard.putNumber("Gyro ", this.getHeading());
+            System.out.println("Gyro: " + this.getHeading());
+        }
         
-        // System.out.println("Speed input passed to arcadeDrive: " + speed);
-        // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
+        public double getHeading() {
+            return Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+        }
         
-        // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
-        // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
-        // Set the motor speeds            
-        m_drivetrain.arcadeDrive(speed + leftOutput, -rotation + rightOutput); 
+        public void zeroHeading() {
+            
+            m_gyro.reset();
+            
+        }
+        
+        public void setMaxOutput(double maxOutput) {
+            
+            m_drivetrain.setMaxOutput(maxOutput);
+            
+        }
+        
+        public double getTurnRate() {
+            
+            return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+            
+        }
+        
     }
     
-    
-    
-    @Override
-    public void periodic() {
-        // Get the rotation of the robot from the gyro.
-        var gyroAngle = m_gyro.getRotation2d();
-        
-        // Update the pose
-        m_pose = m_odometry.update(gyroAngle,
-        driveLeftEncoder.getDistance(),
-        driveRightEncoder.getDistance());
-        SmartDashboard.putNumber("Gyro ", this.getHeading());
-        System.out.println("Gyro: " + this.getHeading());
-    }
-    
-    public double getHeading() {
-        return Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-    }
-    
-    public void zeroHeading() {
-        
-        m_gyro.reset();
-        
-    }
-    
-    public void setMaxOutput(double maxOutput) {
-        
-        m_drivetrain.setMaxOutput(maxOutput);
-        
-    }
-    
-    public double getTurnRate() {
-        
-        return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-        
-    }
-    
-}
