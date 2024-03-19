@@ -26,8 +26,8 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem = new VisionSubsystem();
   private final ClimberSubsystem  climberSubsystem = new ClimberSubsystem();
 
-  private final CommandXboxController driveController = new CommandXboxController(DriveConstants.driveControllerPort);
-  private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
+  private final CommandXboxController driveController = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
   
   public RobotContainer() {
     configureButtonBindings();
