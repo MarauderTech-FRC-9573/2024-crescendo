@@ -36,8 +36,6 @@ public class RobotContainer {
   
     configureBindings();
 
-    m_drive.setDefaultCommand(new RunCommand(() -> m_drive.driveTankVolts(m_driverController.getLeftY(), -m_driverController.getRightX()), m_drive));
-
   }
 
   /**
@@ -50,20 +48,31 @@ public class RobotContainer {
    */
   public void configureBindings() {
     // Control the drive with split-stick arcade controls
+    m_drive.setDefaultCommand(
+        m_drive.arcadeSysId(
+            () -> -m_driverController.getLeftY(), () -> -m_driverController.getRightX()));
+
+    // Bind full set of SysId routine tests to buttons; a complete routine should run each of these
+    // once.
+    // Using bumpers as a modifier and combining it with the buttons so that we can have both sets
+    // of bindings at once
     m_driverController
         .a()
-        .whileTrue(new RunCommand(() -> m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward), m_drive));
+        .and(m_driverController.rightBumper())
+        .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     m_driverController
         .b()
-        .whileTrue(new RunCommand(() -> m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse), m_drive));
+        .and(m_driverController.rightBumper())
+        .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     m_driverController
         .x()
-        .whileTrue(new RunCommand(() -> m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward), m_drive));
+        .and(m_driverController.rightBumper())
+        .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     m_driverController
         .y()
-        .whileTrue(new RunCommand(() -> m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse), m_drive));
+        .and(m_driverController.rightBumper())
+        .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-     m_driverController.leftBumper().whileTrue(new RunCommand(() -> m_drive.driveTankVolts(12, 12)));
   }
 
   /**

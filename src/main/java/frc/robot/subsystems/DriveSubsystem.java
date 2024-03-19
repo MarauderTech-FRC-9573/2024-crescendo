@@ -21,6 +21,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import static frc.robot.Constants.DriveConstants.*;
 
+import java.util.function.DoubleSupplier;
+
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -218,22 +220,29 @@ public class DriveSubsystem extends SubsystemBase {
         
     }
     
-    /**
-    * Returns a command that will execute a quasistatic test in the given direction.
-    *
-    * @param direction The direction (forward or reverse) to run the test in
-    */
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutine.quasistatic(direction);
-    }
-    
-    /**
-    * Returns a command that will execute a dynamic test in the given direction.
-    *
-    * @param direction The direction (forward or reverse) to run the test in
-    */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutine.dynamic(direction);
-    }
-    
-}
+  public Command arcadeSysId(DoubleSupplier fwd, DoubleSupplier rot) {
+    // A split-stick arcade command, with forward/backward controlled by the left
+    // hand, and turning controlled by the right.
+    return run(() -> m_drivetrain.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble()))
+        .withName("arcadeDrive");
+  }
+
+  /**
+   * Returns a command that will execute a quasistatic test in the given direction.
+   *
+   * @param direction The direction (forward or reverse) to run the test in
+   */
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  /**
+   * Returns a command that will execute a dynamic test in the given direction.
+   *
+   * @param direction The direction (forward or reverse) to run the test in
+   */
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
+  }
+}    
+
