@@ -100,6 +100,7 @@ public final class Constants {
     public static int ArmMotorPort = 8;
     //Subject to change
 
+    public static final int[] getpositionArmPorts = new int[] {13, 14};
   }
   public static final class OIConstants {    
   }

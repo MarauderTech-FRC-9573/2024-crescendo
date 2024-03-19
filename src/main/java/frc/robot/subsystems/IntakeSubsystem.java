@@ -16,15 +16,16 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     m_IntakeMotor = new CANSparkMax(IntakeConstants.IntakeMotorPort, CANSparkLowLevel.MotorType.kBrushed);
     m_ArmMotor = new CANSparkMax(IntakeConstants.ArmMotorPort, CANSparkLowLevel.MotorType.kBrushed);
-    intakeMotor = true;
+    armMotor = true;
+    getpositionArm = m_ArmMotor.getEncoder().getPosition();
   }
     
-    public void setBrushMotor(double speed) {
+    public void setIntakeMotor(double speed) {
       m_IntakeMotor.set(speed);
     }
     
     
-    public void setIntakeMotor(double speed) {
+    public void setArmMotor(double speed) {
       m_ArmMotor.set(speed);
     }
     
@@ -33,20 +34,26 @@ public class IntakeSubsystem extends SubsystemBase {
       m_ArmMotor.set(0);
     }
     
-    public Command moveIntake() {
+    public Command moveArm() {
       return new SequentialCommandGroup(
         new InstantCommand(() -> {
-      if (intakeMotor) {
-        setIntakeMotor(-IntakeConstants.IntakeMotorMoveBack);
+      if (armMotor) {
+        setArmMotor(-IntakeConstants.IntakeMotorMoveBack);
+        getpositionArm = m_ArmMotor.getEncoder().getPosition();
       } else {
-        setIntakeMotor(-IntakeConstants.IntakeMotorMoveForward);
+        setArmMotor(-IntakeConstants.IntakeMotorMoveForward);
+        getpositionArm = m_ArmMotor.getEncoder().getPosition();
       }
       
-      intakeMotor = !intakeMotor; 
+      armMotor = !armMotor; 
       }, this),
       new WaitCommand(1),
       new InstantCommand(this::stop, this)
       );      
+
+      public double getpositionArm() {
+        return getpositionArm;
+      }
       
     }
   }
