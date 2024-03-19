@@ -101,8 +101,6 @@ public class DriveSubsystem extends SubsystemBase {
         // Put the front motors into the differential drive object. This will control all 4 motors with
         // the rears set to follow the fronts
         m_drivetrain = new DifferentialDrive(leftFront, rightFront);
-
-        m_drivetrain.setSafetyEnabled(false);
         
         m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));
         
