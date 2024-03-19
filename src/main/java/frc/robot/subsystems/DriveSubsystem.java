@@ -21,8 +21,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import static frc.robot.Constants.DriveConstants.*;
 
-import java.util.function.DoubleSupplier;
-
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -121,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
 
                     (Measure<Voltage> volts) -> {
 
-                        this.driveArcade(10, 10);
+                        this.tankDriveVolts(10,10);
 
                     },
 
@@ -177,8 +175,12 @@ public class DriveSubsystem extends SubsystemBase {
     
     //Drive using volts for robot characterization
 
-    public Command driveArcade(DoubleSupplier fwd, DoubleSupplier rot) {
-        return run(() -> m_drivetrain.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble())).andThen(() -> {}).withName("driveArcade");
+    public void tankDriveVolts(double leftVolts, double rightVolts) {
+        
+        leftFront.setVoltage(leftVolts);
+        rightFront.setVoltage(rightVolts);
+        m_drivetrain.feed();
+    
     }
     
     @Override
@@ -191,7 +193,7 @@ public class DriveSubsystem extends SubsystemBase {
         driveLeftEncoder.getDistance(),
         driveRightEncoder.getDistance());
         SmartDashboard.putNumber("Gyro ", this.getHeading());
-        // System.out.println("Gyro: " + this.getHeading());
+        System.out.println("Gyro: " + this.getHeading());
     }
     
     public double getHeading() {
