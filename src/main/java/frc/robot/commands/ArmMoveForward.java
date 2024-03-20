@@ -18,7 +18,7 @@ public class ArmMoveForward extends Command {
 
     @Override
     public void initialize() {
-        intakeSubsystem.setIntakeMotor(IntakeConstants.ArmMotorMoveForwardSpeed);
+        intakeSubsystem.setArmMotor(IntakeConstants.ArmMotorMoveForwardSpeed);
         
     }
 

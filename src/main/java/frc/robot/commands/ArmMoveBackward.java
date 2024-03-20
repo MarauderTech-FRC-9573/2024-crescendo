@@ -18,7 +18,7 @@ public class ArmMoveBackward extends Command {
 
     @Override
     public void initialize() {
-        intakeSubsystem.setIntakeMotor(IntakeConstants.ArmMotorMoveBackSpeed);
+        intakeSubsystem.setArmMotor(IntakeConstants.ArmMotorMoveBackSpeed);
         
     }
 
