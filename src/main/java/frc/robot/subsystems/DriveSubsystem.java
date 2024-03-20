@@ -82,7 +82,7 @@ public class DriveSubsystem extends SubsystemBase {
         rightFront.setVoltage(volts.in(Volts));
         
     }, log -> {
-        log.motor("drive-left").voltage(m_appliedVoltage.mut_replace(leftFront.get() * RobotController.getBatteryVoltage(), Volts)).linearPosition(m_distance.mut_replace(driveLeftEncoder.getDistance(), Meters)).linearVelocity(m_velocity.mut_replace(driveLeftEncoder.getRate(), MetersPerSecond));
+        log.motor("drive-left").voltage(m_appliedVoltage.mut_replace(leftFront.get() * RobotController.getBatteryVoltage(), Volts)).linearPosition(m_distance.mut_replace(driveRightEncoder.getDistance(), Meters)).linearVelocity(m_velocity.mut_replace(driveRightEncoder.getRate(), MetersPerSecond));
         log.motor("drive-right").voltage(m_appliedVoltage.mut_replace(rightFront.get() * RobotController.getBatteryVoltage(), Volts)).linearPosition(m_distance.mut_replace(driveRightEncoder.getDistance(), Meters)).linearVelocity(m_velocity.mut_replace(driveRightEncoder.getRate(), MetersPerSecond));
     }, this));
 
@@ -118,7 +118,7 @@ public class DriveSubsystem extends SubsystemBase {
         // the rears set to follow the fronts
         m_drivetrain = new DifferentialDrive(leftFront, rightFront);
         
-        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));        
+        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveRightEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));        
         
     }
     
@@ -181,11 +181,11 @@ public class DriveSubsystem extends SubsystemBase {
         
         // Update the pose
         m_pose = m_odometry.update(gyroAngle,
-        driveLeftEncoder.getDistance(),
+        driveRightEncoder.getDistance(),
         driveRightEncoder.getDistance());
         SmartDashboard.putNumber("Gyro ", this.getHeading());
         // System.out.println("Gyro: " + this.getHeading());
-        System.out.println("left: " + driveLeftEncoder.getRate());
+        System.out.println("left: " + driveRightEncoder.getRate());
         System.out.println("right: " + driveRightEncoder.getRate());
         
     }
