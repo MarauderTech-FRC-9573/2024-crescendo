@@ -44,7 +44,7 @@ public class DriveSubsystem extends SubsystemBase {
     DifferentialDrive m_drivetrain;
     
     // ENCODERS
-    private final Encoder driveLeftEncoder = new Encoder(0, 1);
+    private final Encoder driveLeftEncoder = new Encoder(4, 5);
     private final Encoder driveRightEncoder = new Encoder(2, 3);
     
     // PID
@@ -95,7 +95,7 @@ public class DriveSubsystem extends SubsystemBase {
         
         
         // Invert the left side so both side drive forward with positive motor outputs
-        leftFront.setInverted(false);
+        leftFront.setInverted(true);
         rightFront.setInverted(false);
         
         // Put the front motors into the differential drive object. This will control all 4 motors with
@@ -153,7 +153,7 @@ public class DriveSubsystem extends SubsystemBase {
             System.out.println("Controller input, moving");
             // Calculate the PID output for left and right motors
             System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
-            System.out.println("Right Encoder: " + driveRightEncoder.getRate());
+            System.out.println("RightEncoder: " + driveRightEncoder.getRate());
             
             double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
             double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
@@ -196,6 +196,9 @@ public class DriveSubsystem extends SubsystemBase {
         driveRightEncoder.getDistance());
         SmartDashboard.putNumber("Gyro ", this.getHeading());
         // System.out.println("Gyro: " + this.getHeading());
+        System.out.println("left: " + driveLeftEncoder.getRate());
+        System.out.println("right: " + driveRightEncoder.getRate());
+        
     }
     
     public double getHeading() {
@@ -223,8 +226,6 @@ public class DriveSubsystem extends SubsystemBase {
     public Command arcadeSysId(DoubleSupplier fwd, DoubleSupplier rot) {
         // A split-stick arcade command, with forward/backward controlled by the left
         // hand, and turning controlled by the right.
-        System.out.println(driveLeftEncoder.getRate());
-        System.out.println(driveRightEncoder.getRate());
         
         return run(() -> m_drivetrain.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble()))
         .withName("arcadeDrive");
