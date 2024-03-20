@@ -100,6 +100,10 @@ public final class Constants {
     public static int intakeMotorPort = 8;  
     //Subject to change
 
+    public static final int[] IntakeArmEncoderPorts = new int[] {13, 14};
+    
+    // Encoder for finding the angles of the arm motor and preventing moving the arm too much.
+
   }
   public static final class OIConstants {    
   }
