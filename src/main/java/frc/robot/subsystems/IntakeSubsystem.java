@@ -20,7 +20,6 @@ public class IntakeSubsystem extends SubsystemBase {
     m_IntakeMotor = new CANSparkMax(IntakeConstants.IntakeMotorPort, CANSparkLowLevel.MotorType.kBrushless);
     m_ArmMotor = new CANSparkMax(IntakeConstants.ArmMotorPort, CANSparkLowLevel.MotorType.kBrushless);
     armMotor = true;
-    positionArm = m_ArmMotor.getEncoder().getPosition();
   }
     
     public void setIntakeMotor(double speed) {
@@ -58,6 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() { 
+      positionArm = m_ArmMotor.getEncoder().getPosition();
       System.out.println("Arm Motor Position: " + positionArm);
     }
   }
