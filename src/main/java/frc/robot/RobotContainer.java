@@ -50,7 +50,7 @@ public class RobotContainer {
     // Control the drive with split-stick arcade controls
     m_drive.setDefaultCommand(
         m_drive.arcadeSysId(
-            () -> -m_driverController.getLeftY(), () -> -m_driverController.getRightX()));
+            () -> m_driverController.getLeftY(), () -> -m_driverController.getRightX()));
 
     // Bind full set of SysId routine tests to buttons; a complete routine should run each of these
     // once.
