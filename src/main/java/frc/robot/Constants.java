@@ -10,6 +10,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 
 public final class Constants {
+  
   public static final class DriveConstants {
 
       // PWM ports/CAN IDs for motor controllers
@@ -88,10 +89,10 @@ public final class Constants {
   public static final class IntakeConstants {
 
     // Motor Speeds
-    public static double IntakeMotorReleaseSpeed = 1.0;
-    public static double IntakeMotorReceiveSpeed = -1.0;
-    public static double ArmMotorMoveForwardSpeed = 1.0;
-    public static double ArmMotorMoveBackSpeed = -1.0;
+    public static double IntakeMotorReleaseSpeed = 0.1;
+    public static double IntakeMotorReceiveSpeed = -0.1;
+    public static double ArmMotorMoveForwardSpeed = 0.1;
+    public static double ArmMotorMoveBackSpeed = -0.1;
 
     // Motor ID Ports
     public static int IntakeMotorPort = 9;
