@@ -51,7 +51,7 @@ public class RobotContainer {
     // Ground Intake Button Bindings
     operatorController.rightBumper().whileTrue(new IntakeArmSwitch(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
     operatorController.x().whileTrue(new IntakeReceiver(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
-    operatorController.y().whileTrue(new IntakeReleaser(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+    operatorController.y().whileTrue(new IntakeReleaser(intakeSubsystem).withTimeout(1).handleInterrupt(() -> intakeSubsystem.stop()));
   
   }
   

@@ -13,59 +13,37 @@ public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax m_IntakeMotor;
   CANSparkMax m_ArmMotor;
   Boolean intakeMotor;
-  Boolean armMotor;
   double positionArm;
   
   public IntakeSubsystem() {
     m_IntakeMotor = new CANSparkMax(IntakeConstants.IntakeMotorPort, CANSparkLowLevel.MotorType.kBrushless);
     m_ArmMotor = new CANSparkMax(IntakeConstants.ArmMotorPort, CANSparkLowLevel.MotorType.kBrushless);
-    armMotor = true;
   }
     
     public void setIntakeMotor(double speed) {
       m_IntakeMotor.set(speed);
     }
     
+    public double getArmPostition() {
+      return positionArm;
+    }
     
     public void setArmMotor(double speed) {
       m_ArmMotor.set(speed);
     }
 
     public void setArmPosition(double position) {
-      m_ArmMotor.getEncoder().setPosition(position);
+      m_ArmMotor.getEncoder().setPosition(0.0);
     }
     
     public void stop() {
       m_IntakeMotor.set(0);
       m_ArmMotor.set(0);
     }
-    
-    public Command moveArm() {
-      return new SequentialCommandGroup(
-        new InstantCommand(() -> {
-      if (armMotor) {
-        setArmMotor(-IntakeConstants.ArmMotorMoveBackSpeed);
-        positionArm = m_ArmMotor.getEncoder().getPosition();
-      } else {
-        setArmMotor(-IntakeConstants.ArmMotorMoveForwardSpeed);
-        positionArm = m_ArmMotor.getEncoder().getPosition();
-      }
-      
-      armMotor = !armMotor; 
-      }, this),
-      new WaitCommand(1),
-      new InstantCommand(this::stop, this)
-      );     
-      
-    }
 
     @Override
     public void periodic() { 
       positionArm = m_ArmMotor.getEncoder().getPosition();
       System.out.println("Arm Motor Position: " + positionArm);
-    }
-
-    public double getArmPostition() {
-      return positionArm;
     }
   }

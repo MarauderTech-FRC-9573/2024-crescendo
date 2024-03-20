@@ -18,16 +18,17 @@ public class IntakeArmSwitch extends Command {
 
     @Override
     public void initialize() {
-        if (intakeSubsystem.getArmPostition() == 7) {
-            intakeSubsystem.setArmPosition(0);
-        } else {
-            intakeSubsystem.setArmPosition(7);
-        }
+        //intakeSubsystem.setArmPosition(0.0);
     }
 
     @Override 
     public void execute() {
-
+        if (intakeSubsystem.getArmPostition() > 0.25) {
+            intakeSubsystem.setArmMotor(IntakeConstants.ArmMotorMoveForwardSpeed);
+        }
+        else if (intakeSubsystem.getArmPostition() < 0.25) {
+            intakeSubsystem.setArmMotor(IntakeConstants.ArmMotorMoveBackwardSpeed);
+        }
     }
 
     @Override 
