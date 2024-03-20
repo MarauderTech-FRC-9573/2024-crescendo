@@ -14,13 +14,13 @@ public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax m_ArmMotor;
   Boolean intakeMotor;
   Boolean armMotor;
-  double getpositionArm;
+  double positionArm;
   
   public IntakeSubsystem() {
     m_IntakeMotor = new CANSparkMax(IntakeConstants.IntakeMotorPort, CANSparkLowLevel.MotorType.kBrushless);
     m_ArmMotor = new CANSparkMax(IntakeConstants.ArmMotorPort, CANSparkLowLevel.MotorType.kBrushless);
     armMotor = true;
-    getpositionArm = m_ArmMotor.getEncoder().getPosition();
+    positionArm = m_ArmMotor.getEncoder().getPosition();
   }
     
     public void setIntakeMotor(double speed) {
@@ -42,10 +42,10 @@ public class IntakeSubsystem extends SubsystemBase {
         new InstantCommand(() -> {
       if (armMotor) {
         setArmMotor(-IntakeConstants.ArmMotorMoveBack);
-        getpositionArm = m_ArmMotor.getEncoder().getPosition();
+        positionArm = m_ArmMotor.getEncoder().getPosition();
       } else {
         setArmMotor(-IntakeConstants.ArmMotorMoveForward);
-        getpositionArm = m_ArmMotor.getEncoder().getPosition();
+        positionArm = m_ArmMotor.getEncoder().getPosition();
       }
       
       armMotor = !armMotor; 
@@ -54,5 +54,10 @@ public class IntakeSubsystem extends SubsystemBase {
       new InstantCommand(this::stop, this)
       );     
       
+    }
+
+    @Override
+    public void periodic() { 
+      System.out.println("Arm Motor Position: " + positionArm);
     }
   }
