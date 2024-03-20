@@ -40,10 +40,10 @@ public class IntakeSubsystem extends SubsystemBase {
       return new SequentialCommandGroup(
         new InstantCommand(() -> {
       if (armMotor) {
-        setArmMotor(-IntakeConstants.ArmMotorMoveBack);
+        setArmMotor(-IntakeConstants.ArmMotorMoveBackSpeed);
         positionArm = m_ArmMotor.getEncoder().getPosition();
       } else {
-        setArmMotor(-IntakeConstants.ArmMotorMoveForward);
+        setArmMotor(-IntakeConstants.ArmMotorMoveForwardSpeed);
         positionArm = m_ArmMotor.getEncoder().getPosition();
       }
       

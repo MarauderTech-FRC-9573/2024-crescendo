@@ -88,10 +88,10 @@ public final class Constants {
   public static final class IntakeConstants {
 
     // Motor Speeds
-    public static double IntakeMotorRelease = 1.0;
-    public static double IntakeMotorReceive = -1.0;
-    public static double ArmMotorMoveForward = 1.0;
-    public static double ArmMotorMoveBack = -1.0;
+    public static double IntakeMotorReleaseSpeed = 1.0;
+    public static double IntakeMotorReceiveSpeed = -1.0;
+    public static double ArmMotorMoveForwardSpeed = 1.0;
+    public static double ArmMotorMoveBackSpeed = -1.0;
 
     // Motor ID Ports
     public static int IntakeMotorPort = 9;

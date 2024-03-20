@@ -18,7 +18,7 @@ public class IntakeReceiver extends Command {
 
     @Override
     public void initialize() {
-        intakeSubsystem.setIntakeMotor(IntakeConstants.IntakeMotorReceive);
+        intakeSubsystem.setIntakeMotor(IntakeConstants.IntakeMotorReceiveSpeed);
         
     }
 
