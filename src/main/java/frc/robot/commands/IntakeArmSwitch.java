@@ -15,6 +15,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class IntakeArmSwitch extends Command {
     IntakeSubsystem intakeSubsystem;
     PIDController pid = new PIDController(IntakeConstants.kPArm, IntakeConstants.kIArm, IntakeConstants.kDArm);
+    double setpoint = 0.25;
 
     public IntakeArmSwitch(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
@@ -31,9 +32,8 @@ public class IntakeArmSwitch extends Command {
     public void execute() {
         if (intakeSubsystem.getArmPostition() > 0.25) {
             intakeSubsystem.setArmMotor(pid.calculate(intakeSubsystem.getArmPostition(), 0.25));
-        }
-        else if (intakeSubsystem.getArmPostition() < 0.25) {
-            intakeSubsystem.setArmMotor(pid.calculate(intakeSubsystem.getArmPostition(), 0));
+        } else if (intakeSubsystem.getArmPostition() < 0.25) {
+            intakeSubsystem.setArmMotor(pid.calculate(intakeSubsystem.getArmPostition(), 0.25));
         }
         else {
             intakeSubsystem.stop();
