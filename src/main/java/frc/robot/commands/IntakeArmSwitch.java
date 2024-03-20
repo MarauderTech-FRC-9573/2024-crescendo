@@ -1,5 +1,9 @@
 package frc.robot.commands;
 
+import static frc.robot.Constants.DriveConstants.kD;
+import static frc.robot.Constants.DriveConstants.kI;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -10,9 +14,11 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeArmSwitch extends Command {
     IntakeSubsystem intakeSubsystem;
+    PIDController pid = new PIDController(IntakeConstants.kPArm, IntakeConstants.kIArm, IntakeConstants.kDArm);
 
     public IntakeArmSwitch(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
+        pid.setTolerance(5, 10);
         addRequirements(intakeSubsystem);
     }
 
@@ -24,10 +30,14 @@ public class IntakeArmSwitch extends Command {
     @Override 
     public void execute() {
         if (intakeSubsystem.getArmPostition() > 0.25) {
-            intakeSubsystem.setArmMotor(IntakeConstants.ArmMotorMoveForwardSpeed);
+            intakeSubsystem.setArmMotor(pid.calculate(intakeSubsystem.getArmPostition(), 0.25));
         }
         else if (intakeSubsystem.getArmPostition() < 0.25) {
-            intakeSubsystem.setArmMotor(IntakeConstants.ArmMotorMoveBackwardSpeed);
+            intakeSubsystem.setArmMotor(pid.calculate(intakeSubsystem.getArmPostition(), 0));
+        }
+        else {
+            intakeSubsystem.stop();
+            pid.reset(); 
         }
     }
 
