@@ -1,16 +1,18 @@
 package frc.robot;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.IntakeMove;
+import frc.robot.commands.ArmMoveBackward;
+import frc.robot.commands.ArmMoveForward;
 import frc.robot.commands.LaunchAmp;
 import frc.robot.commands.LaunchSpeaker;
 import frc.robot.commands.PrepareLaunchAmp;
 import frc.robot.commands.PrepareLaunchSpeaker;
-import frc.robot.commands.IntakeMove;
+import frc.robot.commands.ArmMoveForward;
 import frc.robot.commands.IntakeReceiver;
 import frc.robot.commands.IntakeReleaser;
 import frc.robot.subsystems.DriveSubsystem;
@@ -47,9 +49,9 @@ public class RobotContainer {
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
     
-    operatorController.x().whileTrue(new IntakeMove(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+    operatorController.x().whileTrue(new ArmMoveForward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
 
-    operatorController.y().whileTrue(new IntakeReceiver(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+    operatorController.y().whileTrue(new ArmMoveBackward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
   
   }
   

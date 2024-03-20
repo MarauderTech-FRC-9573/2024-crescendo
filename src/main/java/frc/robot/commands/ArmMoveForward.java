@@ -8,10 +8,10 @@ import frc.robot.subsystems.IntakeSubsystem;
  *
 */
 
-public class IntakeMove extends Command {
+public class ArmMoveForward extends Command {
     IntakeSubsystem intakeSubsystem;
 
-    public IntakeMove(IntakeSubsystem intakeSubsystem) {
+    public ArmMoveForward(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         addRequirements(intakeSubsystem);
     }
