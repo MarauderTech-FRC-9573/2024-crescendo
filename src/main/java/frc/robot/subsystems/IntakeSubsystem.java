@@ -30,6 +30,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setArmMotor(double speed) {
       m_ArmMotor.set(speed);
     }
+
+    public void setArmPosition(double position) {
+      m_ArmMotor.getEncoder().setPosition(position);
+    }
     
     public void stop() {
       m_IntakeMotor.set(0);
@@ -59,5 +63,9 @@ public class IntakeSubsystem extends SubsystemBase {
     public void periodic() { 
       positionArm = m_ArmMotor.getEncoder().getPosition();
       System.out.println("Arm Motor Position: " + positionArm);
+    }
+
+    public double getArmPostition() {
+      return positionArm;
     }
   }
