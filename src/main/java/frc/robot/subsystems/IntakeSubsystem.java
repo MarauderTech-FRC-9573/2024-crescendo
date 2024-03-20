@@ -9,44 +9,51 @@ import edu.wpi.first.wpilibj2.command.*;
 
 //Almost same code as the shootersubsystem.
 public class IntakeSubsystem extends SubsystemBase {
-  CANSparkMax m_brushMotor;
-  CANSparkMax m_intakeMotor;
+  CANSparkMax m_IntakeMotor;
+  CANSparkMax m_ArmMotor;
   Boolean intakeMotor;
   
   public IntakeSubsystem() {
-    m_brushMotor = new CANSparkMax(IntakeConstants.brushMotorPort, CANSparkLowLevel.MotorType.kBrushless);
-    m_intakeMotor = new CANSparkMax(IntakeConstants.intakeMotorPort, CANSparkLowLevel.MotorType.kBrushless);
-    intakeMotor = true;
+    m_IntakeMotor = new CANSparkMax(IntakeConstants.IntakeMotorPort, CANSparkLowLevel.MotorType.kBrushed);
+    m_ArmMotor = new CANSparkMax(IntakeConstants.ArmMotorPort, CANSparkLowLevel.MotorType.kBrushed);
+    armMotor = true;
+    getpositionArm = m_ArmMotor.getEncoder().getPosition();
   }
     
-    public void setBrushMotor(double speed) {
-      m_brushMotor.set(speed);
+    public void setIntakeMotor(double speed) {
+      m_IntakeMotor.set(speed);
     }
     
     
-    public void setIntakeMotor(double speed) {
-      m_intakeMotor.set(speed);
+    public void setArmMotor(double speed) {
+      m_ArmMotor.set(speed);
     }
     
     public void stop() {
-      m_brushMotor.set(0);
-      m_intakeMotor.set(0);
+      m_IntakeMotor.set(0);
+      m_ArmMotor.set(0);
     }
     
-    public Command moveIntake() {
+    public Command moveArm() {
       return new SequentialCommandGroup(
         new InstantCommand(() -> {
-      if (intakeMotor) {
-        setIntakeMotor(-IntakeConstants.IntakeMotorMoveBack);
+      if (armMotor) {
+        setArmMotor(-IntakeConstants.IntakeMotorMoveBack);
+        getpositionArm = m_ArmMotor.getEncoder().getPosition();
       } else {
-        setIntakeMotor(-IntakeConstants.IntakeMotorMoveForward);
+        setArmMotor(-IntakeConstants.IntakeMotorMoveForward);
+        getpositionArm = m_ArmMotor.getEncoder().getPosition();
       }
       
-      intakeMotor = !intakeMotor; 
+      armMotor = !armMotor; 
       }, this),
       new WaitCommand(1),
       new InstantCommand(this::stop, this)
       );      
+
+      public double getpositionArm() {
+        return getpositionArm;
+      }
       
     }
   }
