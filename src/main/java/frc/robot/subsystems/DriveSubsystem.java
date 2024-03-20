@@ -63,7 +63,7 @@ public class DriveSubsystem extends SubsystemBase {
     Pose2d m_pose;
     
     final SysIdRoutine m_sysIdRoutine;
-
+    
     CANSparkMax leftFront;
     CANSparkMax leftRear;
     CANSparkMax rightFront;
@@ -113,22 +113,22 @@ public class DriveSubsystem extends SubsystemBase {
         
         // Create a new SysId routine for characterizing the drive.
         m_sysIdRoutine =
-            // Create the SysId routine
-            new SysIdRoutine(
-                new SysIdRoutine.Config(),
-
-                new SysIdRoutine.Mechanism(
-
-                    (Measure<Voltage> volts) -> {
-
-                        this.driveTankVolts(volts.in(Volts), volts.in(Volts));
-
-                    },
-
-                null, // No log consumer, since data is recorded by URCL
-                    this
-                )
-            );
+        // Create the SysId routine
+        new SysIdRoutine(
+        new SysIdRoutine.Config(),
+        
+        new SysIdRoutine.Mechanism(
+        
+        (Measure<Voltage> volts) -> {
+            
+            this.driveTankVolts(volts.in(Volts), volts.in(Volts));
+            
+        },
+        
+        null, // No log consumer, since data is recorded by URCL
+        this
+        )
+        );
     }
     
     boolean isStopped = false;
@@ -176,15 +176,13 @@ public class DriveSubsystem extends SubsystemBase {
     }
     
     //Drive using volts for robot characterization
-
+    
     public void driveTankVolts(double leftVolts, double rightVolts) {
-        System.out.println(driveLeftEncoder.getRate());
-        System.out.println(driveRightEncoder.getRate());
         // System.out.println("Left Volts: " + leftVolts);
         // System.out.println("Right Volts: " + rightVolts);
         m_drivetrain.tankDrive(leftVolts, rightVolts);
         m_drivetrain.feed();
-    
+        
     }
     
     @Override
@@ -222,29 +220,32 @@ public class DriveSubsystem extends SubsystemBase {
         
     }
     
-  public Command arcadeSysId(DoubleSupplier fwd, DoubleSupplier rot) {
-    // A split-stick arcade command, with forward/backward controlled by the left
-    // hand, and turning controlled by the right.
-    return run(() -> m_drivetrain.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble()))
+    public Command arcadeSysId(DoubleSupplier fwd, DoubleSupplier rot) {
+        // A split-stick arcade command, with forward/backward controlled by the left
+        // hand, and turning controlled by the right.
+        System.out.println(driveLeftEncoder.getRate());
+        System.out.println(driveRightEncoder.getRate());
+        
+        return run(() -> m_drivetrain.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble()))
         .withName("arcadeDrive");
-  }
-
-  /**
-   * Returns a command that will execute a quasistatic test in the given direction.
-   *
-   * @param direction The direction (forward or reverse) to run the test in
-   */
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
-  }
-
-  /**
-   * Returns a command that will execute a dynamic test in the given direction.
-   *
-   * @param direction The direction (forward or reverse) to run the test in
-   */
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
-  }
+    }
+    
+    /**
+    * Returns a command that will execute a quasistatic test in the given direction.
+    *
+    * @param direction The direction (forward or reverse) to run the test in
+    */
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return m_sysIdRoutine.quasistatic(direction);
+    }
+    
+    /**
+    * Returns a command that will execute a dynamic test in the given direction.
+    *
+    * @param direction The direction (forward or reverse) to run the test in
+    */
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return m_sysIdRoutine.dynamic(direction);
+    }
 }    
 
