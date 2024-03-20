@@ -40,7 +40,7 @@ public class RobotContainer {
      * command for 1 seconds and then run the LaunchNote command */
     driveController.a().whileTrue(new LaunchSpeaker(shooterSubsystem));
     driveController.b().whileTrue(new LaunchAmp(shooterSubsystem));
-    driveController.x().whileTrue(new ClimbStage(climberSubsystem, 1, true));
+    driveController.x().whileTrue(new ClimbStage(climberSubsystem, true));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     // driveController.leftBumper().whileTrue(new IntakeSource(shooterSubsystem));

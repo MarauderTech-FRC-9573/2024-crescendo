@@ -185,6 +185,6 @@ public final class Constants {
     public static final int kClimber1ID = 10;
     public static final int kClimber2ID = 11;
 
-    public static final int kClimberLimitSwitch = 9;
+    //public static final int kClimberLimitSwitch = 9;
   }
 }

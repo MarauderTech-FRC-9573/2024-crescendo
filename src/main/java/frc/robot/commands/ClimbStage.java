@@ -5,12 +5,10 @@ import frc.robot.subsystems.ClimberSubsystem;
 
 public class ClimbStage extends Command {
     private ClimberSubsystem climberSubsystem;
-    private double power;
     private boolean isExtending;
 
-    public ClimbStage(ClimberSubsystem climberSubsystem, double power, boolean isExtending) {
+    public ClimbStage(ClimberSubsystem climberSubsystem, boolean isExtending) {
         this.climberSubsystem = climberSubsystem;
-        this.power = power;
         this.isExtending = isExtending;
         addRequirements(climberSubsystem);
     }
