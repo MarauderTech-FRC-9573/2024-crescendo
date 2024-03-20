@@ -62,12 +62,33 @@ public class DriveSubsystem extends SubsystemBase {
     
     Pose2d m_pose;
     
-    final SysIdRoutine m_sysIdRoutine;
     
-    CANSparkMax leftFront;
-    CANSparkMax leftRear;
-    CANSparkMax rightFront;
-    CANSparkMax rightRear;
+    
+    CANSparkMax leftFront = new CANSparkMax(kLeftFrontID, CANSparkLowLevel.MotorType.kBrushed);
+    CANSparkMax leftRear = new CANSparkMax(kLeftRearID, CANSparkLowLevel.MotorType.kBrushed);
+    CANSparkMax rightFront = new CANSparkMax(kRightFrontID, CANSparkLowLevel.MotorType.kBrushed);
+    CANSparkMax rightRear = new CANSparkMax(kRightRearID, CANSparkLowLevel.MotorType.kBrushed);
+    
+    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+    private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+    private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+    // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+    private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+    
+    
+    private final SysIdRoutine m_sysid = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> {
+        leftFront.setVoltage(volts.in(Volts));
+        rightFront.setVoltage(volts.in(Volts));
+        
+    }, log -> {
+        log.motor("drive-left").voltage(m_appliedVoltage.mut_replace(leftFront.get() * RobotController.getBatteryVoltage(), Volts)).linearPosition(m_distance.mut_replace(driveLeftEncoder.getDistance(), Meters)).linearVelocity(m_velocity.mut_replace(driveLeftEncoder.getRate(), MetersPerSecond));
+        log.motor("drive-right").voltage(m_appliedVoltage.mut_replace(rightFront.get() * RobotController.getBatteryVoltage(), Volts)).linearPosition(m_distance.mut_replace(driveRightEncoder.getDistance(), Meters)).linearVelocity(m_velocity.mut_replace(driveRightEncoder.getRate(), MetersPerSecond));
+    }, this));
+
+    boolean isStopped = false;
+    
+    
     
     // Gains must be determined, disabled because that's what causes it to spin weirdly
     // private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);
@@ -77,11 +98,6 @@ public class DriveSubsystem extends SubsystemBase {
     * member variables and perform any configuration or set up necessary on hardware.
     */
     public DriveSubsystem() {
-        leftFront = new CANSparkMax(kLeftFrontID, CANSparkLowLevel.MotorType.kBrushed);
-        leftRear = new CANSparkMax(kLeftRearID, CANSparkLowLevel.MotorType.kBrushed);
-        rightFront = new CANSparkMax(kRightFrontID, CANSparkLowLevel.MotorType.kBrushed);
-        rightRear = new CANSparkMax(kRightRearID, CANSparkLowLevel.MotorType.kBrushed);
-        
         /*Sets current limits for the drivetrain motors. This helps reduce the likelihood of wheel spin, reduces motor heating
         *at stall (Drivetrain pushing against something) and helps maintain battery voltage under heavy demand */
         leftFront.setSmartCurrentLimit(kCurrentLimit);
@@ -102,36 +118,9 @@ public class DriveSubsystem extends SubsystemBase {
         // the rears set to follow the fronts
         m_drivetrain = new DifferentialDrive(leftFront, rightFront);
         
-        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));
+        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));        
         
-        // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-        final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-        // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-        final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-        // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-        final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
-        
-        // Create a new SysId routine for characterizing the drive.
-        m_sysIdRoutine =
-        // Create the SysId routine
-        new SysIdRoutine(
-        new SysIdRoutine.Config(),
-        
-        new SysIdRoutine.Mechanism(
-        
-        (Measure<Voltage> volts) -> {
-            
-            this.driveTankVolts(volts.in(Volts), volts.in(Volts));
-            
-        },
-        
-        null, // No log consumer, since data is recorded by URCL
-        this
-        )
-        );
     }
-    
-    boolean isStopped = false;
     
     /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
     * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
@@ -237,7 +226,7 @@ public class DriveSubsystem extends SubsystemBase {
     * @param direction The direction (forward or reverse) to run the test in
     */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutine.quasistatic(direction);
+        return m_sysid.quasistatic(direction);
     }
     
     /**
@@ -246,7 +235,7 @@ public class DriveSubsystem extends SubsystemBase {
     * @param direction The direction (forward or reverse) to run the test in
     */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutine.dynamic(direction);
+        return m_sysid.dynamic(direction);
     }
 }    
 
