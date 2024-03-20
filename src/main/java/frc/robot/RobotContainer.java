@@ -16,6 +16,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.LaunchSpeaker;
 import frc.robot.commands.PrepareLaunchSpeaker;
+import edu.wpi.first.wpilibj.SmartDashboard.smartdashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -29,12 +30,48 @@ public class RobotContainer {
   private final DriveSubsystem m_drive = new DriveSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
   // The driver's controller
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OIConstants.driveControllerPort);
+  private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.driveControllerPort);
+
+  private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
   public RobotContainer() {
-  
+
+    initializeSubsystems();
     configureBindings();
+    initializeAutoChooser();
+
+  }
+
+  public void initializeSubsystems() {
+
+    // Control the drive with split-stick arcade controls
+    m_drive.setDefaultCommand(
+        m_drive.arcadeSysId(
+            () -> m_driverController.getLeftY(), () -> -m_driverController.getRightX()));
+
+  }
+
+  public void initializeAutoChooser() {
+
+    m_autoChooser.setDefaultOption("Drive forward: ", 
+        new WaitCommand(0.1)
+            .andThen(new DriveForwardCmd(m_drive, 10, 0.5))
+            .withTimeout(1)
+            .andThen(new RunCommand(() -> m_drive.arcadeDrive(0,0), m_drive)));
+    
+    m_autoChooser.addOption("SysID Quasistatic Foward: ", 
+        m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    
+    m_autoChooser.addOption("SysID Quasistatic Backward: ", 
+        m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        
+    m_autoChooser.addOption("SysID Dynamic Foward: ", 
+        m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    
+    m_autoChooser.addOption("SysID Quasistatic Backward: ", 
+        m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+
+
 
   }
 
@@ -47,31 +84,27 @@ public class RobotContainer {
    * <p>Event binding methods are available on the {@link Trigger} class.
    */
   public void configureBindings() {
-    // Control the drive with split-stick arcade controls
-    m_drive.setDefaultCommand(
-        m_drive.arcadeSysId(
-            () -> m_driverController.getLeftY(), () -> -m_driverController.getRightX()));
 
-    // Bind full set of SysId routine tests to buttons; a complete routine should run each of these
-    // once.
-    // Using bumpers as a modifier and combining it with the buttons so that we can have both sets
-    // of bindings at once
+    m_driverController
+        .a().whileTrue(new PrepareLaunchSpeaker(m_shooter).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchSpeaker(m_shooter)).handleInterrupt(() -> m_shooter.stop()));
+    
+    m_driverController
+        .b().whileTrue(new PrepareLaunchAmp(m_shooter).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchAmp(m_shooter)).handleInterrupt(() -> m_shooter.stop()));
+    
+    m_driverController.leftBumper().whileTrue(m_drive.getIntakeCommand());
+    
+    m_driverController.rightBumper()
+        .whileTrue(new InstantCommand(() -> m_drive.setMaxOutput(0.1)))
+        .whileFalse(new InstantCommand(() -> m_shooter.setMaxOutput(1.0)));
+
     m_driverController
         .a()
-        .and(m_driverController.rightBumper())
-        .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        .whileTrue(new WaitCommand(0.1).andThen(new TurnToAngle(90, driveSubsystem).withTimeout(1)));
+
+    // Turn to -90 degrees with a profile when the Circle button is pressed, with a 5 second timeout
     m_driverController
         .b()
-        .and(m_driverController.rightBumper())
-        .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    m_driverController
-        .x()
-        .and(m_driverController.rightBumper())
-        .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    m_driverController
-        .y()
-        .and(m_driverController.rightBumper())
-        .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        .whileTrue(new WaitCommand(0.1).andThen(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(1)));
 
   }
 
@@ -82,6 +115,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Do nothing
-    return m_drive.run(() -> {});
+    return m_autoChooser.getSelected();
   }
 }
