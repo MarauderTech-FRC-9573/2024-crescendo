@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.ShooterConstants;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel;
 import frc.robot.Constants.IntakeConstants;
 import edu.wpi.first.wpilibj2.command.*;
@@ -12,6 +13,8 @@ public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax m_IntakeMotor;
   CANSparkMax m_ArmMotor;
   Boolean intakeMotor;
+  Boolean armMotor;
+  double getpositionArm;
   
   public IntakeSubsystem() {
     m_IntakeMotor = new CANSparkMax(IntakeConstants.IntakeMotorPort, CANSparkLowLevel.MotorType.kBrushed);
@@ -38,10 +41,10 @@ public class IntakeSubsystem extends SubsystemBase {
       return new SequentialCommandGroup(
         new InstantCommand(() -> {
       if (armMotor) {
-        setArmMotor(-IntakeConstants.IntakeMotorMoveBack);
+        setArmMotor(-IntakeConstants.ArmMotorMoveBack);
         getpositionArm = m_ArmMotor.getEncoder().getPosition();
       } else {
-        setArmMotor(-IntakeConstants.IntakeMotorMoveForward);
+        setArmMotor(-IntakeConstants.ArmMotorMoveForward);
         getpositionArm = m_ArmMotor.getEncoder().getPosition();
       }
       
@@ -49,11 +52,7 @@ public class IntakeSubsystem extends SubsystemBase {
       }, this),
       new WaitCommand(1),
       new InstantCommand(this::stop, this)
-      );      
-
-      public double getpositionArm() {
-        return getpositionArm;
-      }
+      );     
       
     }
   }

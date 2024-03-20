@@ -18,7 +18,7 @@ public class IntakeReleaser extends Command {
 
     @Override
     public void initialize() {
-        intakeSubsystem.setBrushMotor(IntakeConstants.IntakeMotorRelease);
+        intakeSubsystem.setIntakeMotor(IntakeConstants.IntakeMotorRelease);
 
     }
 
