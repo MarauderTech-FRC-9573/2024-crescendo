@@ -44,8 +44,8 @@ public class DriveSubsystem extends SubsystemBase {
     DifferentialDrive m_drivetrain;
     
     // ENCODERS
-    private final Encoder driveLeftEncoder = new Encoder(4, 5);
-    private final Encoder driveRightEncoder = new Encoder(2, 3);
+    private final Encoder driveLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1]);
+    private final Encoder driveRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1]);
     
     // PID
     private double targetLeftVelocity = 3; // Target velocity in meters per second
