@@ -17,8 +17,8 @@ public class IntakeSubsystem extends SubsystemBase {
   double getpositionArm;
   
   public IntakeSubsystem() {
-    m_IntakeMotor = new CANSparkMax(IntakeConstants.IntakeMotorPort, CANSparkLowLevel.MotorType.kBrushed);
-    m_ArmMotor = new CANSparkMax(IntakeConstants.ArmMotorPort, CANSparkLowLevel.MotorType.kBrushed);
+    m_IntakeMotor = new CANSparkMax(IntakeConstants.IntakeMotorPort, CANSparkLowLevel.MotorType.kBrushless);
+    m_ArmMotor = new CANSparkMax(IntakeConstants.ArmMotorPort, CANSparkLowLevel.MotorType.kBrushless);
     armMotor = true;
     getpositionArm = m_ArmMotor.getEncoder().getPosition();
   }
