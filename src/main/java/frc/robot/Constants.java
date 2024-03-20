@@ -63,10 +63,9 @@ public final class Constants {
     
     public static final LinearSystem<N2, N2, N2> kDrivetrainPlant = LinearSystemId.identifyDrivetrainSystem(kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter,kvVoltSecondsPerRadian, kaVoltSecondsSquaredPerRadian);    
     
-    public static final int[] kLeftLeadEncoderPorts = new int[] {4, 5};
-    public static final int[] kRightLeadEncoderPorts = new int[] {6, 7};
-    public static final int[] kLeftFollowEncoderPorts = new int[] {8, 9};
-    public static final int[] kRightFollowEncoderPorts = new int[] {10, 11};
+    public static final int kLeftLeadEncoderPorts = 0;
+    public static final int kRightLeadEncoderPorts = 1;
+
     
     public static final boolean kLeftEncoderReversed = false;
     public static final boolean kRightEncoderReversed = true;

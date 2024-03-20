@@ -44,8 +44,8 @@ public class DriveSubsystem extends SubsystemBase {
     DifferentialDrive m_drivetrain;
     
     // ENCODERS
-    private final Encoder driveLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1], DriveConstants.kLeftEncoderReversed);
-    private final Encoder driveRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1], DriveConstants.kRightEncoderReversed);
+    private final Encoder driveLeftEncoder = new Encoder(0, 1);
+    private final Encoder driveRightEncoder = new Encoder(2, 3);
     
     // PID
     private double targetLeftVelocity = 3; // Target velocity in meters per second
@@ -178,6 +178,8 @@ public class DriveSubsystem extends SubsystemBase {
     //Drive using volts for robot characterization
 
     public void driveTankVolts(double leftVolts, double rightVolts) {
+        System.out.println(driveLeftEncoder.getRate());
+        System.out.println(driveRightEncoder.getRate());
         // System.out.println("Left Volts: " + leftVolts);
         // System.out.println("Right Volts: " + rightVolts);
         m_drivetrain.tankDrive(leftVolts, rightVolts);
