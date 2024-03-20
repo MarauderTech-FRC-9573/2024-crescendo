@@ -83,24 +83,23 @@ public final class Constants {
   
   
   }
-  // New Constants for the Intake
+  
+  // Intake Constants
   public static final class IntakeConstants {
 
+    // Motor Speeds
+    public static double IntakeMotorRelease = 1.0;
+    public static double IntakeMotorReceive = -1.0;
+    public static double ArmMotorMoveForward = 1.0;
+    public static double ArmMotorMoveBack = -1.0;
 
-    public static double IntakeMotorRelease = 3.0;
-    public static double IntakeMotorReceive = -3.0;
-    //Intake constants for the first motor to recieve and release
-    public static double ArmMotorMoveForward = 3.0;
-    public static double ArmMotorMoveBack = -3.0;
-    /*Intake constants for the second motor to move the intakesubsystem.
-    To move to get or receive the note from the ground.
-    And to move the received note to the shooter and release.
-    */
+    // Motor ID Ports
     public static int IntakeMotorPort = 9;
     public static int ArmMotorPort = 8;
-    //Subject to change
 
   }
+
+  // OI constants
   public static final class OIConstants {    
   }
 }
