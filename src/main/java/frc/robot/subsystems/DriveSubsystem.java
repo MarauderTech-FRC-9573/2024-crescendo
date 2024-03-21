@@ -132,15 +132,6 @@ public class DriveSubsystem extends SubsystemBase {
         System.out.println("leftMotorInput Post Clamp: " + leftOutput);
         System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
         
-        if (m_fieldSim != null) {
-            m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
-        }
-
-    }
-    
-    
-    public void arcadeDrive(double speed, double rotation) {
-        m_drivetrain.arcadeDrive(speed, rotation);
         // System.out.println("Speed input passed to arcadeDrive: " + speed);
         // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
         
