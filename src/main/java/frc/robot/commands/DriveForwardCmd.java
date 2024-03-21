@@ -19,11 +19,15 @@ public class DriveForwardCmd extends Command {
     
     @Override
     public void initialize() {
-        
+
+        driveSubsystem.driveArcade(speed, 0);
+
     }
     
     @Override
     public void execute() {
-        driveSubsystem.driveArcade(speed, 0);
+        
+
+        
     }
 }

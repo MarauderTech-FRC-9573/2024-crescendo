@@ -70,20 +70,20 @@ public class RobotContainer {
     m_autoChooser.setDefaultOption("Drive forward: ", 
         new WaitCommand(0.1)
             .andThen(new DriveForwardCmd(m_drive, 10, 0.5))
-            .withTimeout(1)
+            .withTimeout(3)
             .andThen(new RunCommand(() -> m_drive.driveArcade(0,0), m_drive)));
     
-    m_autoChooser.addOption("SysID Quasistatic Foward: ", 
+    m_autoChooser.addOption("SysID Quasistatic Foward(backward): ", 
         m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     
-    m_autoChooser.addOption("SysID Quasistatic Backward: ", 
+    m_autoChooser.addOption("SysID Quasistatic Backward(real forward): ", 
         m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         
-    m_autoChooser.addOption("SysID Dynamic Foward: ", 
+    m_autoChooser.addOption("SysID Dynamic Foward(backward): ", 
         m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     
-    m_autoChooser.addOption("SysID Quasistatic Backward: ", 
-        m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    m_autoChooser.addOption("SysID Dynamic Backward(real forward): ", 
+        m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
 
 
