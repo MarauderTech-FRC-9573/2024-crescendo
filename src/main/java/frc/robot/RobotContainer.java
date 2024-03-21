@@ -71,16 +71,22 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
     * command for 1 seconds and then run the LaunchNote command */
-    operatorController.a().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(1).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
-    operatorController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(1).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
+    // operatorController.a().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(1).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
+    // operatorController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(1).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
     
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
     
     // Ground Intake Button Bindings
     operatorController.rightBumper().whileTrue(new IntakeArmSwitch(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
-    operatorController.x().whileTrue(new IntakeReceiver(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
-    operatorController.y().whileTrue(new IntakeReleaser(intakeSubsystem).withTimeout(1).handleInterrupt(() -> intakeSubsystem.stop()));
+    // operatorController.x().whileTrue(new IntakeReceiver(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+    // operatorController.y().whileTrue(new IntakeReleaser(intakeSubsystem).withTimeout(1).handleInterrupt(() -> intakeSubsystem.stop()));
+    
+    operatorController.x().whileTrue(intakeSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    operatorController.y().whileTrue(intakeSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    operatorController.a().whileTrue(intakeSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    operatorController.b().whileTrue(intakeSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    
     
   }
   
