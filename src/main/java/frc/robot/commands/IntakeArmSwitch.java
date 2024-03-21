@@ -1,8 +1,5 @@
 package frc.robot.commands;
 
-import static frc.robot.Constants.DriveConstants.kD;
-import static frc.robot.Constants.DriveConstants.kI;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;

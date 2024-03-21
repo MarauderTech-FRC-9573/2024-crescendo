@@ -47,6 +47,7 @@ public final class Constants {
     public static int operatorControllerPort;
 
     public static int driveControllerPort;
+    public static boolean kGyroReversed = false;
     
     public static final LinearSystem<N2, N2, N2> kDrivetrainPlant =
     LinearSystemId.identifyDrivetrainSystem(
