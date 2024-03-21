@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N2;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
+  
   public static final class DriveConstants {
     
     // PWM ports/CAN IDs for motor controllers
@@ -23,6 +25,11 @@ public final class Constants {
     
     // Current limit for drivetrain motors
     public static final int kCurrentLimit = 60;
+    
+    public static final int joystickPort = 0;    
+  
+    public static int operatorControllerPort = 1;
+    public static int driveControllerPort = 0;
     
     // values are related to PID and need to be tuned:
     public static final double kP = 0;
@@ -75,9 +82,105 @@ public final class Constants {
     
     public static final int kAngleSetpoint = 0;
 
+
   }
   
-  public static final class ShooterConstants {
+  
+  // public static final class ShooterConstants {
+    
+  //   public static double kIntakeLauncherSpeed = -3.0;
+  //   public static double kIntakeFeederSpeed = -3.0;
+  //   public static int launchWheelPort = 6;
+  //   public static int intakeWheelPort = 7;
+  //   public static double AmpLaunchWheelSpeed = 3.0;
+  //   public static double AmpFeedWheelSpeed = 3.0;
+  //   public static double SpeakerLaunchWheelSpeed = 6.0;
+  //   public static double SpeakerFeedWheelSpeed = 6.0;
+  
+  
+  // }
+  
+  // Intake Constants
+  public static final class IntakeConstants {
+
+    // Motor Speeds
+    public static double IntakeMotorReleaseSpeed = -0.01;
+    public static double IntakeMotorReceiveSpeed = 0.01;
+    public static double ArmMotorMoveForwardSpeed = 0.01;
+    public static double ArmMotorMoveBackwardSpeed = -0.01;
+
+    // Motor ID Ports
+    public static int IntakeMotorPort = 9;
+    public static int ArmMotorPort = 8;
+
+  }
+
+  // OI constants
+  public static final class OIConstants {    
+
+  }
+
+  public static class VisionConstants {
+    public static final String kCameraName1 = "Camera1";
+    public static final String kCameraName2 = "Camera2";
+    public static final Transform3d kCamera1ToRobotOffset = new Transform3d();
+    public static final Transform3d kCamera2ToRobotOffset = new Transform3d(0.0, -0.12, 0.0, new Rotation3d());    
+    
+    
+    public static final double kCamera1HeightMeters = 0.215;
+    public static final double kCamera2HeightMeters = 0.0;
+    public static final double kCamera3HeightMeters = 0.0;
+    
+    public static final double KCameraPitchRadians = 0.0;
+    
+    public static final double kTarget1HeightMeters = 0.540;
+    public static final double kTarget2HeightMeters = 0.522;
+    public static final double kTarget3HeightMeters = 0.530;
+    public static final double kTarget4HeightMeters = 0.0;
+    public static final double kTarget5HeightMeters = 0.0;
+    public static final double kTarget6HeightMeters = 0.0;
+    public static final double kTarget7HeightMeters = 0.0;
+    public static final double kTarget8HeightMeters = 0.0;
+    
+    public static double findTargetHeight(int targetID) {
+      switch(targetID) {
+        case 1: targetID = 1;
+        return kTarget1HeightMeters;
+        case 2: targetID = 2;
+        return kTarget2HeightMeters;
+        case 3: targetID = 3;
+        return kTarget3HeightMeters;
+        case 4: targetID = 4;
+        return kTarget4HeightMeters;
+        case 5: targetID = 5;
+        return kTarget5HeightMeters;
+        case 6: targetID = 6;
+        return kTarget6HeightMeters;
+        case 7: targetID = 7;
+        return kTarget7HeightMeters;
+        case 8: targetID = 8;
+        return kTarget8HeightMeters;
+        default: throw new Error("Invalid Target ID");
+      }
+    }
+    
+    // PID constants should be tuned per robot
+    
+    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
+    public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+    public static final double GOAL_RANGE_METERS = Units.feetToMeters(3);
+    public static double CAMERA_PITCH_RADIANS = Units.degreesToRadians(3);
+    
+    public static final int kAngleSetpoint = 0;
+
+  }
+  
+  public static class FieldConstants {
+    public static final double kFieldLength = 4.0;
+    public static final double kFieldWidth = 3.0;
+  }
+
+    public static final class ShooterConstants {
 
     // PWM ports/CAN IDs for motor controllers
     public static final int launchWheelPort= 6;
@@ -91,8 +194,8 @@ public final class Constants {
     // in reverse
     public static final double kSpeakerLauncherSpeed = -1;
     public static final double kSpeakerLaunchFeederSpeed = -1;
-    public static final double kSpeakerAmpLaunchSpeed = -0.5;
-    public static final double kSpeakerAmpLaunchFeederSpeed = -0.5;
+    public static final double kSpeakerAmpLaunchSpeed = -0.3;
+    public static final double kSpeakerAmpLaunchFeederSpeed = -0.3;
     public static final double kIntakeLauncherSpeed = 1;
     public static final double kIntakeFeederSpeed = .2;
 

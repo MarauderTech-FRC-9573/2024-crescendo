@@ -116,7 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
         // the rears set to follow the fronts
         m_drivetrain = new DifferentialDrive(leftFront, rightFront);
         
-        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveRightEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));        
+        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));
         
     }
     
@@ -126,7 +126,7 @@ public class DriveSubsystem extends SubsystemBase {
         System.out.println("Speed input to driveArcade: " + speed);
         System.out.println("Rotation input to driveArcade: " + rotation);
         
-        if (Math.floor(speed) == 0 && Math.floor(rotation) == 0) {
+        /* if (Math.floor(speed) == 0 && Math.floor(rotation) == 0) {
             
             if (isStopped)  {
                 System.out.println("Controller input, not moving");
@@ -136,30 +136,29 @@ public class DriveSubsystem extends SubsystemBase {
                 isStopped = true;
             }
         } else {
-            isStopped = false;
-            System.out.println("Controller input, moving");
-            // Calculate the PID output for left and right motors
-            //System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
-            System.out.println("RightEncoder: " + driveRightEncoder.getRate());
-            
-            //double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
-            double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
-            
-            // Ensure the motor input is within the allowable range
-            //leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
-            rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
-            
-            //System.out.println("leftMotorInput Post Clamp: " + leftOutput);
-            System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
-            
-            // System.out.println("Speed input passed to arcadeDrive: " + speed);
-            // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
-            
-            // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
-            // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
-            // Set the motor speeds            
-            m_drivetrain.arcadeDrive(speed, rotation + rightOutput);
-        }
+            isStopped = false; This doesn't work, so temp commmenting it out*/
+        System.out.println("Controller input, moving");
+        // Calculate the PID output for left and right motors
+        System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+        System.out.println("Right Encoder: " + driveRightEncoder.getRate());
+        
+        double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
+        double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
+        
+        // Ensure the motor input is within the allowable range
+        leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
+        rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
+        
+        System.out.println("leftMotorInput Post Clamp: " + leftOutput);
+        System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
+        
+        // System.out.println("Speed input passed to arcadeDrive: " + speed);
+        // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
+        
+        // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
+        // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
+        // Set the motor speeds            
+        m_drivetrain.arcadeDrive(speed + leftOutput, -rotation + rightOutput); 
     }
     
     //Drive using volts for robot characterization
@@ -241,5 +240,4 @@ public class DriveSubsystem extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysid.dynamic(direction);
     }
-}    
-
+}
