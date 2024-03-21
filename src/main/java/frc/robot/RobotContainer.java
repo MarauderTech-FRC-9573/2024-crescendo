@@ -6,12 +6,13 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.IntakeArmSwitch;
+import frc.robot.commands.ArmBackward;
+import frc.robot.commands.ArmForward;
 import frc.robot.commands.LaunchAmp;
 import frc.robot.commands.LaunchSpeaker;
 import frc.robot.commands.PrepareLaunchAmp;
 import frc.robot.commands.PrepareLaunchSpeaker;
-import frc.robot.commands.IntakeArmSwitch;
+import frc.robot.commands.ArmForward;
 import frc.robot.commands.IntakeReceiver;
 import frc.robot.commands.IntakeReleaser;
 import frc.robot.subsystems.DriveSubsystem;
@@ -45,11 +46,14 @@ public class RobotContainer {
     operatorController.a().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(1).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
     operatorController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(1).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
 
-    // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
-    operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
+    // Set up a binding to run the intake command while the operator is pressing and holding the left trigger
+    operatorController.leftTrigger().whileTrue(shooterSubsystem.getIntakeCommand());
     
-    // Ground Intake Button Bindings
-    operatorController.rightBumper().whileTrue(new IntakeArmSwitch(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+    // Arm Ground Intake Button Bindings
+    operatorController.leftBumper().whileTrue(new ArmForward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+    operatorController.rightBumper().whileTrue(new ArmBackward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+    
+    // Intake Ground Intake Button Bindings
     operatorController.x().whileTrue(new IntakeReceiver(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
     operatorController.y().whileTrue(new IntakeReleaser(intakeSubsystem).withTimeout(1).handleInterrupt(() -> intakeSubsystem.stop()));
   

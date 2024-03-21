@@ -8,26 +8,21 @@ import frc.robot.subsystems.IntakeSubsystem;
  *
 */
 
-public class IntakeArmSwitch extends Command {
+public class ArmForward extends Command {
     IntakeSubsystem intakeSubsystem;
-    public IntakeArmSwitch(IntakeSubsystem intakeSubsystem) {
+    public ArmForward(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
         addRequirements(intakeSubsystem);
     }
 
     @Override
     public void initialize() {
-        intakeSubsystem.setArmPosition(0.0);
+        intakeSubsystem.setArmMotor(IntakeConstants.ArmMotorMoveForwardSpeed);
     }
 
     @Override 
     public void execute() {
-        if (intakeSubsystem.getArmPostition() > 0.25) {
-            intakeSubsystem.setArmMotor(IntakeConstants.ArmMotorMoveForwardSpeed);
-        }
-        else if (intakeSubsystem.getArmPostition() < 0.25) {
-            intakeSubsystem.setArmMotor(IntakeConstants.ArmMotorMoveBackwardSpeed);
-        }
+        
     }
 
     @Override 
