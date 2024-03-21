@@ -41,9 +41,9 @@ public class IntakeSubsystem extends SubsystemBase {
       m_ArmMotor.set(0);
     }
 
-    @Override
-    public void periodic() { 
-      positionArm = m_ArmMotor.getEncoder().getPosition();
-      System.out.println("Arm Motor Position: " + positionArm);
-    }
+    // @Override
+    // public void periodic() { 
+    //   positionArm = m_ArmMotor.getEncoder().getPosition();
+    //   System.out.println("Arm Motor Position: " + positionArm);
+    // }
   }
