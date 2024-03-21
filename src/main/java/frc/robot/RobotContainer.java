@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -16,7 +17,15 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.LaunchSpeaker;
 import frc.robot.commands.PrepareLaunchSpeaker;
-import edu.wpi.first.wpilibj.SmartDashboard.smartdashboard;
+import frc.robot.commands.DriveForwardCmd;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.commands.TurnToAngle;
+import frc.robot.commands.TurnToAngleProfiled;
+import frc.robot.commands.LaunchAmp;
+import frc.robot.commands.PrepareLaunchAmp;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -62,7 +71,7 @@ public class RobotContainer {
         new WaitCommand(0.1)
             .andThen(new DriveForwardCmd(m_drive, 10, 0.5))
             .withTimeout(1)
-            .andThen(new RunCommand(() -> m_drive.arcadeDrive(0,0), m_drive)));
+            .andThen(new RunCommand(() -> m_drive.driveArcade(0,0), m_drive)));
     
     m_autoChooser.addOption("SysID Quasistatic Foward: ", 
         m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -96,20 +105,22 @@ public class RobotContainer {
     m_driverController
         .b().whileTrue(new PrepareLaunchAmp(m_shooter).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchAmp(m_shooter)).handleInterrupt(() -> m_shooter.stop()));
     
-    m_driverController.leftBumper().whileTrue(m_drive.getIntakeCommand());
+    m_driverController.leftBumper().whileTrue(m_shooter.getIntakeCommand());
     
     m_driverController.rightBumper()
         .whileTrue(new InstantCommand(() -> m_drive.setMaxOutput(0.1)))
-        .whileFalse(new InstantCommand(() -> m_shooter.setMaxOutput(1.0)));
+        .whileFalse(new InstantCommand(() -> m_drive.setMaxOutput(1.0)));
 
     m_driverController
         .a()
-        .whileTrue(new WaitCommand(0.1).andThen(new TurnToAngle(90, driveSubsystem).withTimeout(1)));
+        .whileTrue(new WaitCommand(0.1)
+        .andThen(new TurnToAngle(90, m_drive).withTimeout(1)));
 
     // Turn to -90 degrees with a profile when the Circle button is pressed, with a 5 second timeout
     m_driverController
         .b()
-        .whileTrue(new WaitCommand(0.1).andThen(new TurnToAngleProfiled(-90, driveSubsystem).withTimeout(1)));
+        .whileTrue(new WaitCommand(0.1)
+        .andThen(new TurnToAngleProfiled(-90, m_drive).withTimeout(1)));
 
   }
 
