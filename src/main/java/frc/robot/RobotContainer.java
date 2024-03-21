@@ -39,6 +39,7 @@ public class RobotContainer {
     initializeSubsystems();
     configureBindings();
     initializeAutoChooser();
+    SmartDashboard.putData(m_autoChooser);
 
   }
 
@@ -48,6 +49,10 @@ public class RobotContainer {
     m_drive.setDefaultCommand(
         m_drive.arcadeSysId(
             () -> m_driverController.getLeftY(), () -> -m_driverController.getRightX()));
+
+    SmartDashboard.putData(m_drive);
+    SmartDashboard.putData(m_shooter);
+    
 
   }
 
