@@ -98,9 +98,9 @@ public final class Constants {
     public static int IntakeMotorPort = 9;
     public static int ArmMotorPort = 8;
 
-    public static int kPArm = 0;
-    public static int kIArm = 0;
-    public static int kDArm = 0;
+    public static int kPArm = 1;
+    public static int kIArm = 1;
+    public static int kDArm = 1;
 
   }
 

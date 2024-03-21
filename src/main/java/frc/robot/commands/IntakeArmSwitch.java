@@ -25,15 +25,19 @@ public class IntakeArmSwitch extends Command {
 
     @Override
     public void initialize() {
-        //intakeSubsystem.setArmPosition(0.0);
+        intakeSubsystem.setArmPosition(0.0);
     }
 
     @Override 
     public void execute() {
         if (intakeSubsystem.getArmPostition() > 0.25) {
-            intakeSubsystem.setArmMotor(pid.calculate(intakeSubsystem.getArmPostition(), 0.25));
+            double movement = pid.calculate(intakeSubsystem.getArmPostition(), 0.25);
+            System.out.println(movement);
+            intakeSubsystem.setArmMotor(movement);
         } else if (intakeSubsystem.getArmPostition() < 0.25) {
-            intakeSubsystem.setArmMotor(pid.calculate(intakeSubsystem.getArmPostition(), 0.25));
+            double movement = pid.calculate(intakeSubsystem.getArmPostition(), 0.25);
+            System.out.println(movement);
+            intakeSubsystem.setArmMotor(movement);
         }
         else {
             intakeSubsystem.stop();
