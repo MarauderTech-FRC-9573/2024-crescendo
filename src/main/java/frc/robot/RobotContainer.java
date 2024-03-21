@@ -38,7 +38,7 @@ public class RobotContainer {
     driveController.b().whileTrue(new LaunchAmp(shooterSubsystem));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
-    driveController.leftBumper().whileTrue(new IntakeSource(shooterSubsystem));
+    driveController.leftTrigger().whileTrue(new IntakeSource(shooterSubsystem));
 
     //New commands from this branch specifically, idk why they were removed
 
