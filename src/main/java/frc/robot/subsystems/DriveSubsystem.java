@@ -44,7 +44,7 @@ public class DriveSubsystem extends SubsystemBase {
     DifferentialDrive m_drivetrain;
     
     // ENCODERS
-    private final Encoder driveLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1]);
+    //private final Encoder driveLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1]);
     private final Encoder driveRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1]);
     
     // PID
@@ -116,7 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
         // the rears set to follow the fronts
         m_drivetrain = new DifferentialDrive(leftFront, rightFront);
         
-        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));        
+        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveRightEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));        
         
     }
     
@@ -139,17 +139,17 @@ public class DriveSubsystem extends SubsystemBase {
             isStopped = false;
             System.out.println("Controller input, moving");
             // Calculate the PID output for left and right motors
-            System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+            //System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
             System.out.println("RightEncoder: " + driveRightEncoder.getRate());
             
-            double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
+            //double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
             double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
             
             // Ensure the motor input is within the allowable range
-            leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
+            //leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
             rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
             
-            System.out.println("leftMotorInput Post Clamp: " + leftOutput);
+            //System.out.println("leftMotorInput Post Clamp: " + leftOutput);
             System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
             
             // System.out.println("Speed input passed to arcadeDrive: " + speed);
@@ -158,7 +158,7 @@ public class DriveSubsystem extends SubsystemBase {
             // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
             // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
             // Set the motor speeds            
-            m_drivetrain.arcadeDrive(speed + leftOutput, rotation + rightOutput);
+            m_drivetrain.arcadeDrive(speed, rotation + rightOutput);
         }
     }
     
@@ -179,17 +179,17 @@ public class DriveSubsystem extends SubsystemBase {
         
         // Update the pose
         m_pose = m_odometry.update(gyroAngle,
-        driveLeftEncoder.getDistance(),
+        driveRightEncoder.getDistance(),
         driveRightEncoder.getDistance());
         SmartDashboard.putNumber("Gyro: ", this.getHeading());
         // System.out.println("Gyro: " + this.getHeading());
-        SmartDashboard.putNumber("Left Encoder Rate: ", driveLeftEncoder.getRate());
-        SmartDashboard.putNumber("Left Encoder Distance: ", driveLeftEncoder.getDistance());
+        //SmartDashboard.putNumber("Left Encoder Rate: ", driveLeftEncoder.getRate());
+        //SmartDashboard.putNumber("Left Encoder Distance: ", driveLeftEncoder.getDistance());
 
         SmartDashboard.putNumber("Right Encoder Rate: ", driveRightEncoder.getRate());
         SmartDashboard.putNumber("Right Encoder Distance: ", driveRightEncoder.getDistance());
 
-        System.out.println("left: " + driveLeftEncoder.getRate());
+        //System.out.println("left: " + driveLeftEncoder.getRate());
         System.out.println("right: " + driveRightEncoder.getRate());
         
     }
