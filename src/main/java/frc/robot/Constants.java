@@ -14,6 +14,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
+  
   public static final class DriveConstants {
     
     // PWM ports/CAN IDs for motor controllers
@@ -66,6 +67,7 @@ public final class Constants {
     public static final double kDriveGearing = 8;
     public static double kTrackwidthMeters = 0.69; 
     public static double kWheelDiameterMeters = 0.15;
+
     
     public static final LinearSystem<N2, N2, N2> kDrivetrainPlant = LinearSystemId.identifyDrivetrainSystem(kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter,kvVoltSecondsPerRadian, kaVoltSecondsSquaredPerRadian);    
     
@@ -85,7 +87,37 @@ public final class Constants {
 
   }
   
+  
+  // public static final class ShooterConstants {
+    
+  //   public static double kIntakeLauncherSpeed = -3.0;
+  //   public static double kIntakeFeederSpeed = -3.0;
+  //   public static int launchWheelPort = 6;
+  //   public static int intakeWheelPort = 7;
+  //   public static double AmpLaunchWheelSpeed = 3.0;
+  //   public static double AmpFeedWheelSpeed = 3.0;
+  //   public static double SpeakerLaunchWheelSpeed = 6.0;
+  //   public static double SpeakerFeedWheelSpeed = 6.0;
+  
+  
+  // }
+  
+  // Intake Constants
+  public static final class IntakeConstants {
 
+    // Motor Speeds
+    public static double IntakeMotorReleaseSpeed = -0.01;
+    public static double IntakeMotorReceiveSpeed = 0.01;
+    public static double ArmMotorMoveForwardSpeed = 0.01;
+    public static double ArmMotorMoveBackwardSpeed = -0.01;
+
+    // Motor ID Ports
+    public static int IntakeMotorPort = 9;
+    public static int ArmMotorPort = 8;
+
+  }
+
+  // OI constants
   public static final class OIConstants {    
 
   }
