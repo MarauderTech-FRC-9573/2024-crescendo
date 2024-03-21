@@ -16,17 +16,15 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.LaunchSpeaker;
-import frc.robot.commands.PrepareLaunchSpeaker;
-import frc.robot.commands.DriveForwardCmd;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.commands.TurnToAngle;
-import frc.robot.commands.TurnToAngleProfiled;
-import frc.robot.commands.LaunchAmp;
-import frc.robot.commands.PrepareLaunchAmp;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
+import frc.robot.subsystems.DriveSubsystem;
+  import frc.robot.subsystems.IntakeSubsystem;
+  import frc.robot.subsystems.ShooterSubsystem;
+  import frc.robot.Constants.DriveConstants;
+  import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
 * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,21 +32,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
 * subsystems, commands, and button mappings) should be declared here.
 **/
-  
-  /**
+
+/**
   * Use this to define the command that runs during autonomous.
   *
   * <p>Scheduled during {@link Robot#autonomousInit()}.
   */
-  import frc.robot.commands.LaunchAmp;
-  import frc.robot.commands.LaunchSpeaker;
-  import frc.robot.subsystems.DriveSubsystem;
-  import frc.robot.subsystems.IntakeSubsystem;
-  import frc.robot.subsystems.ShooterSubsystem;
-  import frc.robot.Constants.DriveConstants;
-  import edu.wpi.first.wpilibj2.command.InstantCommand;
-  import frc.robot.commands.IntakeSource;
-  import frc.robot.commands.*;
+import frc.robot.commands.*;
   
   public class RobotContainer {
     private final DriveSubsystem driveSubsystem = new DriveSubsystem();
@@ -59,6 +49,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
     private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
     
     private final PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
+
+      private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
+
     
     public RobotContainer() {
       pdh.setSwitchableChannel(true);
@@ -122,21 +115,21 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
       
       m_autoChooser.setDefaultOption("Drive forward: ", 
       new WaitCommand(0.1)
-      .andThen(new DriveForwardCmd(m_drive, 10, 0.5))
+      .andThen(new DriveForwardCmd(driveSubsystem, 10, 0.5))
       .withTimeout(3)
-      .andThen(new RunCommand(() -> m_drive.driveArcade(0,0), m_drive)));
+      .andThen(new RunCommand(() -> driveSubsystem.driveArcade(0,0), driveSubsystem)));
       
       m_autoChooser.addOption("SysID Quasistatic Foward(backward): ", 
-      m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
       
       m_autoChooser.addOption("SysID Quasistatic Backward(real forward): ", 
-      m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
       
       m_autoChooser.addOption("SysID Dynamic Foward(backward): ", 
-      m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
       
       m_autoChooser.addOption("SysID Dynamic Backward(real forward): ", 
-      m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
       
       
       
@@ -144,8 +137,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
     
     
     
-    // public Command getAutonomousCommand() {
-      //   return Autos.exampleAuto(driveSubsystem, driveController);
-      //   }
+    public Command getAutonomousCommand() {
+      return m_autoChooser.getSelected();
+    }
     }
     
