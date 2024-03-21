@@ -11,11 +11,12 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeArmSwitch extends Command {
     IntakeSubsystem intakeSubsystem;
-    PIDController pid = new PIDController(IntakeConstants.kPArm, IntakeConstants.kIArm, IntakeConstants.kDArm);
+    PIDController pid;
     double setpoint = 0.25;
 
     public IntakeArmSwitch(IntakeSubsystem intakeSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
+        this.pid = intakeSubsystem.pid;
         pid.setTolerance(5, 10);
         addRequirements(intakeSubsystem);
     }

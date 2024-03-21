@@ -102,6 +102,9 @@ public final class Constants {
     public static int kPArm = 1;
     public static int kIArm = 1;
     public static int kDArm = 1;
+    public static double kSVolts;
+    public static double kAVoltSecondsSquaredPerRotation;
+    public static double kVVoltSecondsPerRotation;
 
   }
 
