@@ -4,15 +4,16 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.LaunchAmp;
-import frc.robot.commands.LaunchSpeaker;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.IntakeSource;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
@@ -23,8 +24,12 @@ public class RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
 
   private final PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
+
+  private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
+
   
   public RobotContainer() {
+    initalizeAutoChooser();
     pdh.setSwitchableChannel(true);
     configureButtonBindings();
     driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.driveArcade(-driveController.getLeftY(), -driveController.getRightX()), driveSubsystem));
@@ -56,10 +61,21 @@ public class RobotContainer {
     operatorController.y().whileTrue(new IntakeReleaser(intakeSubsystem, shooterSubsystem).withTimeout(1).handleInterrupt(() -> intakeSubsystem.stop()));
   
   }
-  
-  // public Command getAutonomousCommand() {
-  //   return Autos.exampleAuto(driveSubsystem, driveController);
-  //   }
+
+  public void initalizeAutoChooser() {
+      
+      m_autoChooser.setDefaultOption("Drive forward: ", 
+      new WaitCommand(0.1)
+      .andThen(new RunCommand(() -> driveSubsystem.driveArcade(0.5, 0), driveSubsystem))
+      .withTimeout(3)
+      .andThen(new RunCommand(() -> driveSubsystem.driveArcade(0, 0), driveSubsystem)));
+
   }
+  
+  public Command getAutonomousCommand() {
+      return m_autoChooser.getSelected();
+    
+    }
+}
   
   
