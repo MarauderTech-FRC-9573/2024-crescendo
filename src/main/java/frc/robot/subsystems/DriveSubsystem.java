@@ -21,6 +21,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import static frc.robot.Constants.DriveConstants.*;
 
+import java.lang.System.Logger;
 import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.MutableMeasure.mutable;
@@ -30,6 +31,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
+import java.util.logging.Logger;
 
 /* This class declares the subsystem for the robot drivetrain if controllers are connected via CAN. Make sure to go to
 * RobotContainer and uncomment the line declaring this subsystem and comment the line for PWMDrivetrain.
@@ -77,14 +79,9 @@ public class DriveSubsystem extends SubsystemBase {
     private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
     
     
-    private final SysIdRoutine m_sysid = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> {
-        leftFront.setVoltage(volts.in(Volts));
-        rightFront.setVoltage(volts.in(Volts));
-        
-    }, null
-    , this));
-
     boolean isStopped = false;
+    
+     SysIdRoutine m_sysid;
     
     
     
@@ -109,14 +106,15 @@ public class DriveSubsystem extends SubsystemBase {
         
         
         // Invert the left side so both side drive forward with positive motor outputs
-        leftFront.setInverted(true);
-        rightFront.setInverted(false);
-        
-        // Put the front motors into the differential drive object. This will control all 4 motors with
-        // the rears set to follow the fronts
-        m_drivetrain = new DifferentialDrive(leftFront, rightFront);
-        
-        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));
+        // ...
+
+        m_sysid = new SysIdRoutine(
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism((voltage) -> this.runVolts(voltage.in(Volts)), null, this));
+
+        new SysIdRoutine.Config(null, null, null, (state) -> Logger.recordOutput("SysIdTestState", state.toString()));
+
+        // ...
         
     }
     
@@ -137,107 +135,113 @@ public class DriveSubsystem extends SubsystemBase {
             }
         } else {
             isStopped = false; This doesn't work, so temp commmenting it out*/
-        System.out.println("Controller input, moving");
-        // Calculate the PID output for left and right motors
-        System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
-        System.out.println("Right Encoder: " + driveRightEncoder.getRate());
+            System.out.println("Controller input, moving");
+            // Calculate the PID output for left and right motors
+            System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+            System.out.println("Right Encoder: " + driveRightEncoder.getRate());
+            
+            double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
+            double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
+            
+            // Ensure the motor input is within the allowable range
+            leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
+            rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
+            
+            System.out.println("leftMotorInput Post Clamp: " + leftOutput);
+            System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
+            
+            // System.out.println("Speed input passed to arcadeDrive: " + speed);
+            // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
+            
+            // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
+            // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
+            // Set the motor speeds            
+            m_drivetrain.arcadeDrive(speed + leftOutput, -rotation + rightOutput); 
+        }
         
-        double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
-        double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
+        //Drive using volts for robot characterization
         
-        // Ensure the motor input is within the allowable range
-        leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
-        rightOutput = MathUtil.clamp(rightOutput, -1.0, 1.0);
+        public void driveTankVolts(double leftVolts, double rightVolts) {
+            // System.out.println("Left Volts: " + leftVolts);
+            // System.out.println("Right Volts: " + rightVolts);
+            m_drivetrain.tankDrive(leftVolts, rightVolts);
+            m_drivetrain.feed();
+            
+        }
         
-        System.out.println("leftMotorInput Post Clamp: " + leftOutput);
-        System.out.println("rightMotorInput Post Clamp: "+ rightOutput);
+        public void runVolts(double volts) {
+            leftFront.setVoltage(volts);
+            rightFront.setVoltage(volts);
+        }
         
-        // System.out.println("Speed input passed to arcadeDrive: " + speed);
-        // System.out.println("Rotation input passed to arcadeDrive: " + rotation);
+        @Override
+        public void periodic() {
+            // Get the rotation of the robot from the gyro.
+            var gyroAngle = m_gyro.getRotation2d();
+            
+            // Update the pose
+            m_pose = m_odometry.update(gyroAngle,
+            driveRightEncoder.getDistance(),
+            driveRightEncoder.getDistance());
+            SmartDashboard.putNumber("Gyro: ", this.getHeading());
+            // System.out.println("Gyro: " + this.getHeading());
+            //SmartDashboard.putNumber("Left Encoder Rate: ", driveLeftEncoder.getRate());
+            //SmartDashboard.putNumber("Left Encoder Distance: ", driveLeftEncoder.getDistance());
+            
+            SmartDashboard.putNumber("Right Encoder Rate: ", driveRightEncoder.getRate());
+            SmartDashboard.putNumber("Right Encoder Distance: ", driveRightEncoder.getDistance());
+            
+            //System.out.println("left: " + driveLeftEncoder.getRate());
+            System.out.println("right: " + driveRightEncoder.getRate());
+            
+        }
         
-        // System.out.println("Speed argument passed to arcadeDrive: " + (speed + leftOutput));
-        // System.out.println("Rotation argument passed to arcadeDrive: " + (rotation + rightOutput)); 
-        // Set the motor speeds            
-        m_drivetrain.arcadeDrive(speed + leftOutput, -rotation + rightOutput); 
+        public double getHeading() {
+            return Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+        }
+        
+        public void zeroHeading() {
+            
+            m_gyro.reset();
+            
+        }
+        
+        public void setMaxOutput(double maxOutput) {
+            
+            m_drivetrain.setMaxOutput(maxOutput);
+            
+        }
+        
+        public double getTurnRate() {
+            
+            return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+            
+        }
+        
+        public Command arcadeSysId(DoubleSupplier fwd, DoubleSupplier rot) {
+            // A split-stick arcade command, with forward/backward controlled by the left
+            // hand, and turning controlled by the right.
+            
+            return run(() -> m_drivetrain.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble()))
+            .withName("arcadeDrive");
+        }
+        
+        /**
+        * Returns a command that will execute a quasistatic test in the given direction.
+        *
+        * @param direction The direction (forward or reverse) to run the test in
+        */
+        public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+            return m_sysid.quasistatic(direction);
+        }
+        
+        /**
+        * Returns a command that will execute a dynamic test in the given direction.
+        *
+        * @param direction The direction (forward or reverse) to run the test in
+        */
+        public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+            return m_sysid.dynamic(direction);
+        }
     }
     
-    //Drive using volts for robot characterization
-    
-    public void driveTankVolts(double leftVolts, double rightVolts) {
-        // System.out.println("Left Volts: " + leftVolts);
-        // System.out.println("Right Volts: " + rightVolts);
-        m_drivetrain.tankDrive(leftVolts, rightVolts);
-        m_drivetrain.feed();
-        
-    }
-    
-    @Override
-    public void periodic() {
-        // Get the rotation of the robot from the gyro.
-        var gyroAngle = m_gyro.getRotation2d();
-        
-        // Update the pose
-        m_pose = m_odometry.update(gyroAngle,
-        driveRightEncoder.getDistance(),
-        driveRightEncoder.getDistance());
-        SmartDashboard.putNumber("Gyro: ", this.getHeading());
-        // System.out.println("Gyro: " + this.getHeading());
-        //SmartDashboard.putNumber("Left Encoder Rate: ", driveLeftEncoder.getRate());
-        //SmartDashboard.putNumber("Left Encoder Distance: ", driveLeftEncoder.getDistance());
-
-        SmartDashboard.putNumber("Right Encoder Rate: ", driveRightEncoder.getRate());
-        SmartDashboard.putNumber("Right Encoder Distance: ", driveRightEncoder.getDistance());
-
-        //System.out.println("left: " + driveLeftEncoder.getRate());
-        System.out.println("right: " + driveRightEncoder.getRate());
-        
-    }
-    
-    public double getHeading() {
-        return Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-    }
-    
-    public void zeroHeading() {
-        
-        m_gyro.reset();
-        
-    }
-    
-    public void setMaxOutput(double maxOutput) {
-        
-        m_drivetrain.setMaxOutput(maxOutput);
-        
-    }
-    
-    public double getTurnRate() {
-        
-        return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-        
-    }
-    
-    public Command arcadeSysId(DoubleSupplier fwd, DoubleSupplier rot) {
-        // A split-stick arcade command, with forward/backward controlled by the left
-        // hand, and turning controlled by the right.
-        
-        return run(() -> m_drivetrain.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble()))
-        .withName("arcadeDrive");
-    }
-    
-    /**
-    * Returns a command that will execute a quasistatic test in the given direction.
-    *
-    * @param direction The direction (forward or reverse) to run the test in
-    */
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysid.quasistatic(direction);
-    }
-    
-    /**
-    * Returns a command that will execute a dynamic test in the given direction.
-    *
-    * @param direction The direction (forward or reverse) to run the test in
-    */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysid.dynamic(direction);
-    }
-}
