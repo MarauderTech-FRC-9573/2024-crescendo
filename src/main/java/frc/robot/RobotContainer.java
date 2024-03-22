@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -22,7 +21,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   private final CommandXboxController driveController = new CommandXboxController(DriveConstants.driveControllerPort);
-  private final PS4Controller operatorController = new PS4Controller(DriveConstants.operatorControllerPort);
+  private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
 
   private final PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
@@ -55,8 +54,8 @@ public class RobotContainer {
 
     
     // Arm Ground Intake Button Bindings
-    operatorController.L1().whileTrue(new ArmForward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
-    operatorController.L2().whileTrue(new ArmBackward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+    operatorController.leftBumper().whileTrue(new ArmForward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
+    operatorController.rightBumper().whileTrue(new ArmBackward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
     
     // Intake Ground Intake Button Bindings
     operatorController.x().whileTrue(new IntakeReceiver(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
