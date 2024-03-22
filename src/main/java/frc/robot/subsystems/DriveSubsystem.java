@@ -29,7 +29,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel;
 
 /* This class declares the subsystem for the robot drivetrain if controllers are connected via CAN. Make sure to go to
@@ -44,6 +43,9 @@ public class DriveSubsystem extends SubsystemBase {
     different method calls. */
     DifferentialDrive m_drivetrain;
     
+    // ENCODERS
+    private final Encoder driveLeftEncoder = new Encoder(DriveConstants.kLeftLeadEncoderPorts[0], DriveConstants.kLeftLeadEncoderPorts[1]);
+    private final Encoder driveRightEncoder = new Encoder(DriveConstants.kRightLeadEncoderPorts[0], DriveConstants.kRightLeadEncoderPorts[1]);
     
     // PID
     private double targetLeftVelocity = 3; // Target velocity in meters per second
@@ -67,8 +69,13 @@ public class DriveSubsystem extends SubsystemBase {
     CANSparkMax rightFront = new CANSparkMax(kRightFrontID, CANSparkLowLevel.MotorType.kBrushed);
     CANSparkMax rightRear = new CANSparkMax(kRightRearID, CANSparkLowLevel.MotorType.kBrushed);
     
-    RelativeEncoder driveLeftEncoder = leftFront.getEncoder();
-    RelativeEncoder driveRightEncoder = rightFront.getEncoder();
+    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+    private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+    private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+    // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+    private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+    
     
     private final SysIdRoutine m_sysid = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> {
         leftFront.setVoltage(volts.in(Volts));
@@ -109,7 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
         // the rears set to follow the fronts
         m_drivetrain = new DifferentialDrive(leftFront, rightFront);
         
-        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getPosition(), driveRightEncoder.getPosition(), new Pose2d(5.0, 13.5, new Rotation2d()));
+        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));
         
     }
     
@@ -132,11 +139,11 @@ public class DriveSubsystem extends SubsystemBase {
             isStopped = false; This doesn't work, so temp commmenting it out*/
         System.out.println("Controller input, moving");
         // Calculate the PID output for left and right motors
-        System.out.println("LeftEncoder: " + driveLeftEncoder.	getCountsPerRevolution());
-        System.out.println("Right Encoder: " + driveRightEncoder.getCountsPerRevolution());
+        System.out.println("LeftEncoder: " + driveLeftEncoder.getRate());
+        System.out.println("Right Encoder: " + driveRightEncoder.getRate());
         
-        double leftOutput = leftPIDController.calculate(driveLeftEncoder.getCountsPerRevolution(), targetLeftVelocity);
-        double rightOutput = rightPIDController.calculate(driveRightEncoder.getCountsPerRevolution(), targetRightVelocity);
+        double leftOutput = leftPIDController.calculate(driveLeftEncoder.getRate(), targetLeftVelocity);
+        double rightOutput = rightPIDController.calculate(driveRightEncoder.getRate(), targetRightVelocity);
         
         // Ensure the motor input is within the allowable range
         leftOutput = MathUtil.clamp(leftOutput, -1.0, 1.0);
@@ -171,18 +178,18 @@ public class DriveSubsystem extends SubsystemBase {
         
         // Update the pose
         m_pose = m_odometry.update(gyroAngle,
-        driveRightEncoder.getPosition(),
-        driveRightEncoder.getPosition());
+        driveRightEncoder.getDistance(),
+        driveRightEncoder.getDistance());
         SmartDashboard.putNumber("Gyro: ", this.getHeading());
         // System.out.println("Gyro: " + this.getHeading());
         //SmartDashboard.putNumber("Left Encoder Rate: ", driveLeftEncoder.getRate());
         //SmartDashboard.putNumber("Left Encoder Distance: ", driveLeftEncoder.getDistance());
 
-        SmartDashboard.putNumber("Right Encoder Rate: ", driveRightEncoder.getCountsPerRevolution());
-        SmartDashboard.putNumber("Right Encoder Distance: ", driveRightEncoder.getPosition());
+        SmartDashboard.putNumber("Right Encoder Rate: ", driveRightEncoder.getRate());
+        SmartDashboard.putNumber("Right Encoder Distance: ", driveRightEncoder.getDistance());
 
         //System.out.println("left: " + driveLeftEncoder.getRate());
-        System.out.println("right: " + driveRightEncoder.getCountsPerRevolution());
+        System.out.println("right: " + driveRightEncoder.getRate());
         
     }
     
