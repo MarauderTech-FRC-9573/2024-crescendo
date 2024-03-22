@@ -70,6 +70,8 @@ public class RobotContainer {
       .withTimeout(3)
       .andThen(new RunCommand(() -> driveSubsystem.driveArcade(0, 0), driveSubsystem)));
 
+      SmartDashboard.putData(m_autoChooser);
+
   }
   
   public Command getAutonomousCommand() {
