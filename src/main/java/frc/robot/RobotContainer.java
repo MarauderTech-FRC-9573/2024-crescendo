@@ -20,7 +20,6 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
-  private final CommandXboxController driveController = new CommandXboxController(DriveConstants.driveControllerPort);
   private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
 
   private final PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
