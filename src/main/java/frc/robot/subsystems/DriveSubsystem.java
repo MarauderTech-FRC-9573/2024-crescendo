@@ -31,7 +31,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
-import java.util.logging.Logger;
 
 /* This class declares the subsystem for the robot drivetrain if controllers are connected via CAN. Make sure to go to
 * RobotContainer and uncomment the line declaring this subsystem and comment the line for PWMDrivetrain.
@@ -81,7 +80,7 @@ public class DriveSubsystem extends SubsystemBase {
     
     boolean isStopped = false;
     
-     SysIdRoutine m_sysid;
+    SysIdRoutine m_sysid;
     
     
     
@@ -107,14 +106,21 @@ public class DriveSubsystem extends SubsystemBase {
         
         // Invert the left side so both side drive forward with positive motor outputs
         // ...
-
-        m_sysid = new SysIdRoutine(
-            new SysIdRoutine.Config(),
-            new SysIdRoutine.Mechanism((voltage) -> this.runVolts(voltage.in(Volts)), null, this));
-
-        new SysIdRoutine.Config(null, null, null, (state) -> Logger.recordOutput("SysIdTestState", state.toString()));
-
-        // ...
+        
+        var sysIdRoutine = new SysIdRoutine(
+        new SysIdRoutine.Config(
+        null, null, null, // Use default config
+        (state) -> Logger.recordOutput("SysIdTestState", state.toString())
+        ),
+        new SysIdRoutine.Mechanism(
+        (voltage) -> this.runVolts(voltage.in(Volts)),
+        null, // No log consumer, since data is recorded by AdvantageKit
+        this
+        )
+        );
+        
+        
+        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));
         
     }
     
