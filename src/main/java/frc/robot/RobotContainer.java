@@ -32,7 +32,7 @@ public class RobotContainer {
     initalizeAutoChooser();
     pdh.setSwitchableChannel(true);
     configureButtonBindings();
-    driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.driveArcade(-driveController.getLeftY(), -driveController.getRightX()), driveSubsystem));
+    driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.driveArcade(-operatorController.getLeftY(), -operatorController.getRightX()), driveSubsystem));
     SmartDashboard.putData("Autos: ", m_autoChooser);
 
   }
@@ -40,15 +40,15 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
-    driveController.a().whileTrue(new LaunchSpeaker(shooterSubsystem));
-    driveController.b().whileTrue(new LaunchAmp(shooterSubsystem));
+    operatorController.a().whileTrue(new LaunchSpeaker(shooterSubsystem));
+    operatorController.b().whileTrue(new LaunchAmp(shooterSubsystem));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
-    driveController.leftBumper().whileTrue(new IntakeSource(shooterSubsystem));
+    operatorController.leftBumper().whileTrue(new IntakeSource(shooterSubsystem));
 
     //New commands from this branch specifically, idk why they were removed
 
-    driveController.rightBumper()
+    operatorController.rightBumper()
         .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
         .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(1.0)));
 
