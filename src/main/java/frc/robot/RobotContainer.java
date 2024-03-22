@@ -33,7 +33,8 @@ public class RobotContainer {
     pdh.setSwitchableChannel(true);
     configureButtonBindings();
     driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.driveArcade(-driveController.getLeftY(), -driveController.getRightX()), driveSubsystem));
-    
+    SmartDashboard.putData("Autos: ", m_autoChooser);
+
   }
   
   private void configureButtonBindings() {
@@ -69,8 +70,6 @@ public class RobotContainer {
       .andThen(new RunCommand(() -> driveSubsystem.driveArcade(0.5, 0), driveSubsystem))
       .withTimeout(3)
       .andThen(new RunCommand(() -> driveSubsystem.driveArcade(0, 0), driveSubsystem)));
-
-      SmartDashboard.putData(m_autoChooser);
 
   }
   
