@@ -7,18 +7,22 @@ import frc.robot.subsystems.IntakeSubsystem;
 /*Basicly the same code from the shootersubsystem with different names.
  *
 */
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class IntakeReleaser extends Command {
     IntakeSubsystem intakeSubsystem;
+    ShooterSubsystem shooterSubsystem;
 
-    public IntakeReleaser(IntakeSubsystem intakeSubsystem) {
+    public IntakeReleaser(IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem) {
         this.intakeSubsystem = intakeSubsystem;
+        this.shooterSubsystem = shooterSubsystem;
         addRequirements(intakeSubsystem);
     }
 
     @Override
     public void initialize() {
         intakeSubsystem.setIntakeMotor(IntakeConstants.IntakeMotorReleaseSpeed);
+        shooterSubsystem.setLaunchWheel(0.3);
 
     }
 
