@@ -12,6 +12,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -50,8 +51,8 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
 
     //New commands from this branch specifically, idk why they were removed
-    driveController.x().whileTrue(shooterSubsystem.getIntakeCommand());
-    driveController.y().whileTrue(shooterSubsystem.getLaunchCommand());
+    operatorController.x().whileTrue(shooterSubsystem.getIntakeCommand());
+    operatorController.y().whileTrue(shooterSubsystem.getLaunchCommand());
 
     operatorController.rightBumper()
         .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
