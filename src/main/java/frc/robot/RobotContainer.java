@@ -4,6 +4,10 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.LaunchAmp;
+import frc.robot.commands.LaunchSpeaker;
+import frc.robot.commands.PrepareLaunchAmp;
+import frc.robot.commands.PrepareLaunchSpeaker;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -39,13 +43,15 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
-    operatorController.a().whileTrue(new LaunchSpeaker(shooterSubsystem));
-    operatorController.b().whileTrue(new LaunchAmp(shooterSubsystem));
+    operatorController.a().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
+    operatorController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
-    operatorController.leftBumper().whileTrue(new IntakeSource(shooterSubsystem));
+    operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
 
     //New commands from this branch specifically, idk why they were removed
+    driveController.x().whileTrue(shooterSubsystem.getIntakeCommand());
+    driveController.y().whileTrue(shooterSubsystem.getLaunchCommand());
 
     operatorController.rightBumper()
         .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
