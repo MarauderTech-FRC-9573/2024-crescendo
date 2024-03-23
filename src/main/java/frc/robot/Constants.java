@@ -196,8 +196,8 @@ public final class Constants {
       public static final double kSpeakerLaunchFeederSpeed = -1;
       public static final double kSpeakerAmpLaunchSpeed = -0.3;
       public static final double kSpeakerAmpLaunchFeederSpeed = -0.3;
-      public static final double kIntakeLauncherSpeed = 1;
-      public static final double kIntakeFeederSpeed = .2;
+      public static final double kIntakeLauncherSpeed = 0.2;
+      public static final double kIntakeFeederSpeed = 0.4;
       
       public static final double kLauncherDelay = 1;
       
