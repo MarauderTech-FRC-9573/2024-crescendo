@@ -36,14 +36,13 @@ public class RobotContainer {
     initalizeAutoChooser();
     pdh.setSwitchableChannel(true);
     configureButtonBindings();
-    driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.driveArcade(-operatorController.getLeftY(), -operatorController.getRightX()), driveSubsystem));
+    driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.driveArcade(operatorController.getLeftY(), operatorController.getRightX()), driveSubsystem));
+    driveSubsystem.setMaxOutput(0.5);
     SmartDashboard.putData("Autos: ", m_autoChooser);
 
   }
   
   private void configureButtonBindings() {
-    /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
-     * command for 1 seconds and then run the LaunchNote command */
     operatorController.a().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
     operatorController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
 
@@ -52,21 +51,7 @@ public class RobotContainer {
 
     //New commands from this branch specifically, idk why they were removed
     operatorController.x().whileTrue(shooterSubsystem.getIntakeCommand());
-    operatorController.y().whileTrue(shooterSubsystem.getLaunchCommand());
-
-    operatorController.rightBumper()
-        .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
-        .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(1.0)));
-
-    
-    // Arm Ground Intake Button Bindings
-    operatorController.leftTrigger().whileTrue(new ArmForward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
-    operatorController.rightTrigger().whileTrue(new ArmBackward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
-    
-    // Intake Ground Intake Button Bindings
-    operatorController.x().whileTrue(new IntakeReceiver(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
-    operatorController.y().whileTrue(new IntakeReleaser(intakeSubsystem, shooterSubsystem).withTimeout(1).handleInterrupt(() -> intakeSubsystem.stop()));
-  
+    operatorController.y().whileTrue(shooterSubsystem.getLaunchCommand());  
   }
 
   public void initalizeAutoChooser() {
