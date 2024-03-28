@@ -56,7 +56,7 @@ public class RobotContainer {
 
     operatorController.rightBumper()
         .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
-        .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(1.0)));
+        .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(DriveConstants.maxSpeed)));
 
     
     // Arm Ground Intake Button Bindings

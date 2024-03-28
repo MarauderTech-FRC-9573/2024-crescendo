@@ -68,6 +68,8 @@ public final class Constants {
     public static double kTrackwidthMeters = 0.69; 
     public static double kWheelDiameterMeters = 0.15;
     
+    public static double maxSpeed = 0.4;
+    
     
     public static final LinearSystem<N2, N2, N2> kDrivetrainPlant = LinearSystemId.identifyDrivetrainSystem(kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter,kvVoltSecondsPerRadian, kaVoltSecondsSquaredPerRadian);    
     
@@ -196,8 +198,8 @@ public final class Constants {
       public static final double kSpeakerLaunchFeederSpeed = -1;
       public static final double kSpeakerAmpLaunchSpeed = -0.3;
       public static final double kSpeakerAmpLaunchFeederSpeed = -0.3;
-      public static final double kIntakeLauncherSpeed = 0.2;
-      public static final double kIntakeFeederSpeed = 0.4;
+      public static final double kIntakeLauncherSpeed = 0.8;
+      public static final double kIntakeFeederSpeed = 0.2;
       
       public static final double kLauncherDelay = 1;
       

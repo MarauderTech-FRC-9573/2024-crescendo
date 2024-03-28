@@ -96,6 +96,7 @@ public class DriveSubsystem extends SubsystemBase {
         
         m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), driveLeftEncoder.getDistance(), driveRightEncoder.getDistance(), new Pose2d(5.0, 13.5, new Rotation2d()));
         
+        setMaxOutput(DriveConstants.maxSpeed);
     }
     
     boolean isStopped = false;
@@ -145,6 +146,7 @@ public class DriveSubsystem extends SubsystemBase {
     
     @Override
     public void periodic() {
+        
         // Get the rotation of the robot from the gyro.
         var gyroAngle = m_gyro.getRotation2d();
         
