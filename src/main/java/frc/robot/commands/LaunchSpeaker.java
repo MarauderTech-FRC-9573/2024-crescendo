@@ -14,7 +14,6 @@ public class LaunchSpeaker extends Command{
 
     @Override
     public void initialize() {
-        shooterSubsystem.setLaunchWheel(ShooterConstants.kSpeakerLauncherSpeed).withTimeout(1.0);
         shooterSubsystem.setLaunchWheel(ShooterConstants.kSpeakerLauncherSpeed);
         shooterSubsystem.setFeedWheel(ShooterConstants.kSpeakerLaunchFeederSpeed);
     }
