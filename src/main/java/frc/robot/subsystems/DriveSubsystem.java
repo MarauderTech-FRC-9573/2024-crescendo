@@ -2,32 +2,16 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 // Simulation libraries
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import static frc.robot.Constants.DriveConstants.*;
-
-import static edu.wpi.first.units.MutableMeasure.mutable;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
@@ -61,14 +45,14 @@ public class DriveSubsystem extends SubsystemBase {
     private final CANSparkMax leftRear = new CANSparkMax(kLeftRearID, CANSparkLowLevel.MotorType.kBrushed);
     private final CANSparkMax rightFront = new CANSparkMax(kRightFrontID, CANSparkLowLevel.MotorType.kBrushed);
     private final CANSparkMax rightRear = new CANSparkMax(kRightRearID, CANSparkLowLevel.MotorType.kBrushed);
-
+    
     private final DifferentialDriveOdometry m_odometry;
     
     public DriveSubsystem() {
         // Set the rear motors to follow the front motors.
         leftRear.follow(leftFront);
         rightRear.follow(rightFront);
-
+        
         // This block of code initializes the DriveSubsystem class. It sets up the rear motors to follow the front motors, sets the current limit for all motors, inverts the left side of the drivetrain, creates a DifferentialDrive object to control all four motors, and sets the maximum output speed.
         leftFront.setSmartCurrentLimit(kCurrentLimit);
         leftRear.setSmartCurrentLimit(kCurrentLimit);
@@ -82,64 +66,50 @@ public class DriveSubsystem extends SubsystemBase {
         // Put the front motors into the differential drive object. This will control all 4 motors with
         // the rears set to follow the fronts
         m_drivetrain = new DifferentialDrive(leftFront, rightFront);
-
+        
         m_leftEncoder.setDistancePerPulse(2 * Math.PI * DriveConstants.kWheelRadius / DriveConstants.kEncoderResolution);
         m_rightEncoder.setDistancePerPulse(2 * Math.PI * DriveConstants.kWheelRadius / DriveConstants.kEncoderResolution);
-
+        
         m_leftEncoder.reset();
         m_rightEncoder.reset();
-
+        
         m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
         
         setMaxOutput(DriveConstants.maxSpeed);
     }
     
-    boolean isStopped = false;
     
-    /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
-    * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
-    public void driveArcade(double speed, double rotation) {
+    /**
+     * Drives the robot using arcade drive control.
+     * 
+     * @param fwd The forward input value.
+     * @param rot The rotation input value.
+     */
+    public void driveArcade(double fwd, double rot) {
+        var speed = m_kinematics.toWheelSpeeds(new ChassisSpeeds(fwd, 0.0, rot));
         
-        
-        m_drivetrain.arcadeDrive(speed, -rotation); 
+        final double leftFeedforward = m_feedforward.calculate(speed.leftMetersPerSecond);
+        final double rightFeedForward = m_feedforward.calculate(speed.rightMetersPerSecond);
+
+        final double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getRate(), speed.leftMetersPerSecond);
+        final double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getRate(), speed.rightMetersPerSecond);
+        leftFront.setVoltage(leftOutput + leftFeedforward);
+        rightFront.setVoltage(rightOutput + rightFeedForward);
     }
     
     
     
     @Override
     public void periodic() {
-        
         // Get the rotation of the robot from the gyro.
-        var gyroAngle = m_gyro.getRotation2d();
-        
-        // Update the pose
-        m_odometry.update(gyroAngle,
-        m_leftEncoder.getDistance(),
-        m_rightEncoder.getDistance());
-        SmartDashboard.putNumber("Gyro ", this.getHeading());
-        //System.out.println("Gyro: " + this.getHeading());
+        m_odometry.update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());    
     }
-    
-    public double getHeading() {
-        return Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-    }
-    
-    public void zeroHeading() {
         
-        m_gyro.reset();
-        
-    }
-    
     public void setMaxOutput(double maxOutput) {
         
         m_drivetrain.setMaxOutput(maxOutput);
         
     }
     
-    public double getTurnRate() {
-        
-        return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-        
-    }
     
 }

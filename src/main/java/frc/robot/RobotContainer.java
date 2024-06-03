@@ -50,10 +50,10 @@ public class RobotContainer {
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
 
-    //New commands from this branch specifically, idk why they were removed
     operatorController.x().whileTrue(shooterSubsystem.getIntakeCommand());
     operatorController.y().whileTrue(shooterSubsystem.getLaunchCommand());
 
+    // Right Bumper: slow button for precision driving
     operatorController.rightBumper()
         .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
         .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(DriveConstants.maxSpeed)));
