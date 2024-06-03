@@ -40,8 +40,6 @@ public class RobotContainer {
   }
   
   private void configureButtonBindings() {
-    /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
-     * command for 1 seconds and then run the LaunchNote command */
     operatorController.a().whileTrue(new LaunchSpeaker(shooterSubsystem));
     operatorController.b().whileTrue(new LaunchAmp(shooterSubsystem));
 
@@ -50,7 +48,6 @@ public class RobotContainer {
 
     //New commands from this branch specifically, idk why they were removed
     operatorController.x().whileTrue(shooterSubsystem.getIntakeCommand());
-    operatorController.y().whileTrue(shooterSubsystem.getLaunchCommand());
 
     operatorController.rightBumper()
         .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
@@ -62,8 +59,6 @@ public class RobotContainer {
     operatorController.rightTrigger().whileTrue(new ArmBackward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
     
     // Intake Ground Intake Button Bindings
-    operatorController.x().whileTrue(new IntakeReceiver(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
-    operatorController.y().whileTrue(new IntakeReleaser(intakeSubsystem, shooterSubsystem).withTimeout(1).handleInterrupt(() -> intakeSubsystem.stop()));
   
   }
 
