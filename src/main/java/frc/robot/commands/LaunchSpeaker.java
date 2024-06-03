@@ -9,31 +9,28 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class LaunchSpeaker extends Command{
     ShooterSubsystem shooterSubsystem;
-
- public LaunchSpeaker(ShooterSubsystem shooterSubsystem) {
+    
+    public LaunchSpeaker(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
         addRequirements(shooterSubsystem);
     }
-
+    
     @Override
     public void initialize() {
-    new SequentialCommandGroup(
-        new InstantCommand(() -> shooterSubsystem.setLaunchWheel(ShooterConstants.kSpeakerLaunchFeederSpeed), shooterSubsystem),
-        new WaitCommand(ShooterConstants.kLauncherDelay),
-        new InstantCommand(() -> shooterSubsystem.setFeedWheel(ShooterConstants.kSpeakerLaunchFeederSpeed), shooterSubsystem)
-    ).schedule();
+        shooterSubsystem.setLaunchWheel(ShooterConstants.kSpeakerLaunchFeederSpeed);
+        new WaitCommand(ShooterConstants.kLauncherDelay);
+        shooterSubsystem.setFeedWheel(ShooterConstants.kSpeakerLaunchFeederSpeed);
     }
-
     @Override 
     public void execute() {
-
+        
     }
-
+    
     @Override 
     public boolean isFinished() {
         return false;
     }
-
+    
     @Override 
     public void end(boolean interrupted) {
         shooterSubsystem.stop();
