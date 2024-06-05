@@ -69,7 +69,12 @@ public final class Constants {
     public static double kWheelDiameterMeters = 0.15;
     
     public static double maxSpeed = 0.4;
-    
+
+    public static final double kMaxSpeed = 3.0; // meters per second. needs to be checked
+    public static final double kMaxAngularSpeed = 2 * Math.PI; // one rotaton per second 
+    public static final double kTrackWidth = 0.381 * 2; 
+    public static final double kWheelRadius = 0.0508;
+    public static final int kEncoderResolution = 4096; 
     
     public static final LinearSystem<N2, N2, N2> kDrivetrainPlant = LinearSystemId.identifyDrivetrainSystem(kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter,kvVoltSecondsPerRadian, kaVoltSecondsSquaredPerRadian);    
     
