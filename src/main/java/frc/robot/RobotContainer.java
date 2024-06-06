@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.LaunchAmp;
 import frc.robot.commands.LaunchSpeaker;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
@@ -52,13 +50,6 @@ public class RobotContainer {
     operatorController.rightBumper()
         .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
         .whileFalse(new InstantCommand(() -> driveSubsystem.setMaxOutput(DriveConstants.maxSpeed)));
-
-    
-    // Arm Ground Intake Button Bindings
-    operatorController.leftTrigger().whileTrue(new ArmForward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
-    operatorController.rightTrigger().whileTrue(new ArmBackward(intakeSubsystem).handleInterrupt(() -> intakeSubsystem.stop()));
-    
-    // Intake Ground Intake Button Bindings
   
   }
 
