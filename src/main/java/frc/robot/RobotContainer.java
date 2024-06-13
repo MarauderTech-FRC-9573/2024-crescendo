@@ -8,6 +8,7 @@ import frc.robot.commands.LaunchAmp;
 import frc.robot.commands.LaunchSpeaker;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class RobotContainer {
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-
+  private final VisionSubsystem  visionSubsystem = new VisionSubsystem();
   private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
 
   private final PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
@@ -41,9 +42,6 @@ public class RobotContainer {
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
-
-    //New commands from this branch specifically, idk why they were removed
-    operatorController.x().whileTrue(shooterSubsystem.getIntakeCommand());
 
     operatorController.rightBumper()
         .whileTrue(new InstantCommand(() -> driveSubsystem.setMaxOutput(0.1)))
