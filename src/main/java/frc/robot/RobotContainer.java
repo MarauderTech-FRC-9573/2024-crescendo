@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.LaunchAmp;
 import frc.robot.commands.LaunchSpeaker;
+import frc.robot.commands.PrepareLaunchAmp;
+import frc.robot.commands.PrepareLaunchSpeaker;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
