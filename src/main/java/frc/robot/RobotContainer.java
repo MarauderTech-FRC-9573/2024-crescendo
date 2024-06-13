@@ -58,9 +58,14 @@ public class RobotContainer {
       .andThen(new RunCommand(() -> driveSubsystem.driveArcade(0.5, 0), driveSubsystem))
       .withTimeout(3)
       .andThen(new RunCommand(() -> driveSubsystem.driveArcade(0, 0), driveSubsystem)));
-
+      m_autoChooser.addOption("Speaker note: ", new WaitCommand(0.1).andThen(new RunCommand(() -> driveSubsystem.driveArcade(0.5, 0), driveSubsystem)).withTimeout(3).andThen(new RunCommand(() -> LaunchSpeaker(shooterSubsystem), shooterSubsystem)));
   }
   
+  private Object LaunchSpeaker(ShooterSubsystem shooterSubsystem2) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'LaunchSpeaker'");
+  }
+
   public Command getAutonomousCommand() {
       return m_autoChooser.getSelected();
     
