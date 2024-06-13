@@ -67,6 +67,7 @@ public final class Constants {
     public static double kTrackwidthMeters = 0.69; 
     public static double kWheelDiameterMeters = 0.15;
     
+    // max speed of the robot
     public static double maxSpeed = 1.0;
     
     
