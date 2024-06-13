@@ -10,6 +10,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -37,8 +38,8 @@ public class RobotContainer {
   }
   
   private void configureButtonBindings() {
-    operatorController.a().whileTrue(new LaunchSpeaker(shooterSubsystem));
-    operatorController.b().whileTrue(new LaunchAmp(shooterSubsystem));
+    operatorController.a().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
+    operatorController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
