@@ -25,14 +25,14 @@ public class RobotContainer {
   private final VisionSubsystem  visionSubsystem = new VisionSubsystem();
   private final CommandXboxController operatorController = new CommandXboxController(DriveConstants.operatorControllerPort);
 
-  private final PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
+  //private final PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
   
   public RobotContainer() {
     initalizeAutoChooser();
-    pdh.setSwitchableChannel(true);
+    //pdh.setSwitchableChannel(true);
     configureButtonBindings();
     driveSubsystem.setDefaultCommand(new RunCommand(() -> driveSubsystem.driveArcade(-operatorController.getLeftY(), -operatorController.getRightX()), driveSubsystem));
     SmartDashboard.putData("Autos: ", m_autoChooser);
@@ -41,7 +41,7 @@ public class RobotContainer {
   
   private void configureButtonBindings() {
     operatorController.a().whileTrue(new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
-    operatorController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(ShooterConstants.kLauncherDelay).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
+    operatorController.b().whileTrue(new PrepareLaunchAmp(shooterSubsystem).withTimeout(0.5).andThen(new LaunchAmp(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
     operatorController.leftBumper().whileTrue(shooterSubsystem.getIntakeCommand());
@@ -60,6 +60,7 @@ public class RobotContainer {
       .withTimeout(3)
       .andThen(new RunCommand(() -> driveSubsystem.driveArcade(0, 0), driveSubsystem)));
 
+      m_autoChooser.addOption("Shoot 1", new PrepareLaunchSpeaker(shooterSubsystem).withTimeout(3.0).andThen(new LaunchSpeaker(shooterSubsystem)).handleInterrupt(() -> shooterSubsystem.stop()));
   }
   
   public Command getAutonomousCommand() {
