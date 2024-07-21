@@ -9,6 +9,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionSubsystem extends SubsystemBase {
     Thread m_visionThread;
@@ -45,6 +46,7 @@ public class VisionSubsystem extends SubsystemBase {
                 // Put a rectangle on the image
                 Imgproc.rectangle(
                 mat, new Point(100, 100), new Point(400, 400), new Scalar(255, 255, 255), 5);
+                System.out.println("Thread test");
                 // Give the output stream a new image to display
                 outputStream.putFrame(mat);
             }
