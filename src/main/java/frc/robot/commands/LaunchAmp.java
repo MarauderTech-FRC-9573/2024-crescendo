@@ -14,7 +14,7 @@ public class LaunchAmp extends Command {
 
     @Override
     public void initialize() {
-        shooterSubsystem.setLaunchWheel(ShooterConstants.kSpeakerAmpLaunchSpeed);
+        shooterSubsystem.setLaunchWheel(ShooterConstants.kSpeakerAmpLauncherSpeed);
         shooterSubsystem.setFeedWheel(ShooterConstants.kSpeakerAmpLaunchFeederSpeed);
     }
 

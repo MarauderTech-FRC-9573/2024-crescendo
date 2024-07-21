@@ -185,8 +185,8 @@ public final class Constants {
     public static final class ShooterConstants {
       
       // PWM ports/CAN IDs for motor controllers
-      public static final int launchWheelPort= 6;
-      public static final int intakeWheelPort = 7;
+      public static final int LauncherPort= 6; //Bottom motor away from mouth
+      public static final int FeedPort = 7; //Top motor near the mouth
       
       // Current limit for launcher and feed wheels
       public static final int kLauncherCurrentLimit = 80;
@@ -194,12 +194,12 @@ public final class Constants {
       
       // Speeds for wheels when intaking and launching. Intake speeds are negative to run the wheels
       // in reverse
-      public static final double kSpeakerLauncherSpeed = -1;
-      public static final double kSpeakerLaunchFeederSpeed = -1;
-      public static final double kSpeakerAmpLaunchSpeed = -0.3;
-      public static final double kSpeakerAmpLaunchFeederSpeed = -0.4;
-      public static final double kIntakeLauncherSpeed = 0.8;
-      public static final double kIntakeFeederSpeed = 0.2;
+      public static final double kSpeakerLauncherSpeed = -1; //Speed of bottom motor
+      public static final double kSpeakerLaunchFeederSpeed = -1; //Speed of top motor
+      public static final double kSpeakerAmpLauncherSpeed = -0.3; //Speed of bottom motor
+      public static final double kSpeakerAmpLaunchFeederSpeed = -0.4; //Speed of top motor
+      public static final double kIntakeLauncherSpeed = 0.8; //Speed of bottom motor
+      public static final double kIntakeFeederSpeed = 0.2; //Speed of top motor
       
       public static final double kLauncherDelay = 1;
       

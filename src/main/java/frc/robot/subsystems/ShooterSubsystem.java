@@ -10,8 +10,8 @@ public class ShooterSubsystem extends SubsystemBase {
   CANSparkMax m_feedWheel;
 
   public ShooterSubsystem() {
-    m_launchWheel = new CANSparkMax(ShooterConstants.launchWheelPort, CANSparkLowLevel.MotorType.kBrushed);
-    m_feedWheel = new CANSparkMax(ShooterConstants.intakeWheelPort, CANSparkLowLevel.MotorType.kBrushed);
+    m_launchWheel = new CANSparkMax(ShooterConstants.LauncherPort, CANSparkLowLevel.MotorType.kBrushed);
+    m_feedWheel = new CANSparkMax(ShooterConstants.FeedPort, CANSparkLowLevel.MotorType.kBrushed);
 
     m_launchWheel.setSmartCurrentLimit(ShooterConstants.kLauncherCurrentLimit);
     m_feedWheel.setSmartCurrentLimit(ShooterConstants.kFeedCurrentLimit);
